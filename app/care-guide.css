@@ -1,0 +1,14 @@
+.pet-care-guide{padding:90px 0;background:#ffe4f2;border-top:1px solid var(--pink);border-bottom:1px solid var(--pink)}
+.guide-intro{max-width:760px;margin-bottom:34px}
+.guide-intro h2{font:500 clamp(38px,5vw,62px)/1.05 Georgia,serif;letter-spacing:-.03em;margin:12px 0 18px}
+.guide-intro>p:last-child,.guide-note{color:#6a5146;line-height:1.7}
+.pet-care-options{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pet-care-options details{background:rgba(255,250,245,.8);border:1px solid rgba(233,118,166,.38);border-radius:18px;padding:0 22px}
+.pet-care-options summary{cursor:pointer;display:flex;justify-content:space-between;gap:16px;align-items:center;padding:22px 0;font-weight:900}
+.pet-care-options summary span{font:500 25px Georgia,serif}
+.pet-care-options summary small{color:#765d52;text-align:right}
+.pet-care-options details p{margin:0;padding:0 0 22px;color:#6a5146;line-height:1.65}
+.guide-note{margin:24px 0 0}
+.guide-note a{color:inherit;font-weight:800}
+@media(max-width:800px){.pet-care-options{grid-template-columns:1fr}}
+@media(max-width:520px){.pet-care-options summary{align-items:flex-start;flex-direction:column;gap:5px}.pet-care-options summary small{text-align:left}}

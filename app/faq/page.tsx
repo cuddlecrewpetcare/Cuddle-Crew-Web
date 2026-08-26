@@ -1,8 +1,9 @@
 import Link from 'next/link';
+import SiteHeader from '../SiteHeader';
 
 export default function FAQ() {
   return <main className="shell">
-    <Link className="brand back" href="/"><span className="brand-mark">CC</span><span>Cuddle Crew<small>Pet Care</small></span></Link>
+    <SiteHeader/>
     <section className="subhero"><p className="eyebrow">Policies & FAQ</p><h1>Kind, clear expectations.</h1><p className="lede">A little planning helps every pet receive calm, consistent care.</p></section>
     <section className="content-card"><h2>Do new clients need a meet-and-greet?</h2><p>Yes. A complimentary meet-and-greet is required for every new household before the first service. Registration and booking requests are not automatic confirmations. Your dates are reserved only after Lauren reviews the location, care needs, temperament, health requirements, and schedule—and manually approves the request.</p></section>
     <section className="content-card"><h2>What if I need care at the last minute?</h2><p>Requests made under 24 hours depend on availability and may include a <strong>$10 surcharge per daytime visit</strong> or a <strong>$25 surcharge per overnight</strong>.</p></section>
