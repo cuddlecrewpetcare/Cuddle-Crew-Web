@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import SiteHeader from '../SiteHeader';
 
 export default function FAQ() {
@@ -19,6 +18,6 @@ export default function FAQ() {
     <section className="content-card"><h2>Which services are not offered?</h2><p>Cuddle Crew does not provide boarding in Lauren’s home, continuous 24-hour care, grooming, training, veterinary procedures, injections, off-leash walks, or dog-park visits. Transportation is not a general pet-taxi service, but veterinary transportation may be agreed in advance or used when reasonably necessary during an emergency.</p></section>
     <section className="content-card"><h2>What about privacy and pet photos?</h2><p>Client and household information is used only to coordinate and provide requested services. Pet photos are shared publicly only with permission and are not presented as reviews or endorsements.</p></section>
     <section className="content-card"><h2>How do I get started?</h2><p>New clients can <a href="https://cuddlecrewpetcare.petssl.com/account">register and request availability online</a>. Existing clients can <a href="https://cuddlecrewpetcare.petssl.com/login">log in here</a>. Questions? Email <a href="mailto:lauren@cuddlecrewpetcare.com">lauren@cuddlecrewpetcare.com</a> or call <a href="tel:+19162523550">916-252-3550</a>.</p></section>
-    <p><Link className="text-link" href="/">← Return home</Link></p>
+    <p><a className="text-link" href="/">← Return home</a></p>
   </main>;
 }

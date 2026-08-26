@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import SiteHeader from '../SiteHeader';
 
 export default function Credentials(){return <main className="shell">
@@ -8,5 +7,5 @@ export default function Credentials(){return <main className="shell">
  <section className="content-card"><p className="eyebrow">Insurance & bonding</p><h2>What the coverage means</h2><div className="coverage-list"><details open><summary><span>General liability</span><strong>$1M occurrence / $2M aggregate</strong></summary><p>This generally helps respond to covered third-party bodily injury or property-damage claims connected with business operations, subject to the policy’s terms, exclusions, and limits.</p></details><details><summary><span>Care, custody, or control</span><strong>$50,000</strong></summary><p>This is pet-specific protection that generally applies to covered incidents involving a client’s animal while the animal is entrusted to the sitter’s care, subject to the policy’s terms, exclusions, and limits.</p></details><details><summary><span>Dishonesty bond</span><strong>$5,000</strong></summary><p>This generally provides protection for covered client-property loss caused by dishonest acts, subject to the bond’s terms, exclusions, and limits.</p></details></div><p className="fine-print">These summaries are general explanations, not a guarantee that a particular event will be covered. The issued insurance policy and bond control.</p></section>
  <section className="content-card"><h2>Training status</h2><p><strong>Pet CPR certification is in progress and is not yet completed.</strong> This page will be updated when certification is earned.</p></section>
  <section className="content-card"><h2>What attentive care means</h2><p>Every visit is shaped around your instructions and your pet’s body language, comfort, energy, and routine. You receive thoughtful updates so you can feel connected while away.</p></section>
- <p><Link className="text-link" href="/">← Return home</Link> · <Link className="text-link" href="/faq">Read policies & FAQ →</Link></p>
+ <p><a className="text-link" href="/">← Return home</a> · <a className="text-link" href="/faq">Read policies & FAQ →</a></p>
  </main>}
