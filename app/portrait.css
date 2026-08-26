@@ -47,3 +47,19 @@
   font-size: 11px;
   font-weight: 800;
 }
+
+.review-links a {
+  border: 1px solid #e976a6;
+  border-radius: 999px;
+  padding: 12px 17px;
+  background: #fff;
+  color: #3b241a;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.review-links a:hover,
+.review-links a:focus-visible {
+  background: #ffb4db;
+}
