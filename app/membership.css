@@ -1,0 +1,6 @@
+.membership-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,420px);gap:clamp(1.5rem,4vw,3.5rem);align-items:center}
+.certificate-link{display:grid;gap:.6rem;color:#3b241a;font-weight:800;text-align:center;text-decoration:none}
+.certificate-link img{width:100%;height:auto;border-radius:14px;border:1px solid rgba(59,36,26,.14);box-shadow:0 12px 30px rgba(59,36,26,.12)}
+.certificate-link:hover span{text-decoration:underline;text-underline-offset:4px}
+.fine-print{font-size:.93rem;color:#6f5a50}
+@media(max-width:760px){.membership-card{grid-template-columns:1fr}.certificate-link{max-width:440px}}
