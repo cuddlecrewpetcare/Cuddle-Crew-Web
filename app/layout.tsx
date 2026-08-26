@@ -13,8 +13,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://cuddle-crew-sacramento.laurenblalock.chatgpt.site'),
   title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
   description: 'Warm, attentive pet sitting and dog walking in Sacramento and surrounding communities.',
+  openGraph: {
+    title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
+    description: 'Thoughtful pet sitting and dog walking in Sacramento and surrounding communities.',
+    url: '/',
+    siteName: 'Cuddle Crew Pet Care',
+    images: [{ url: '/og.png', width: 1760, height: 918, alt: 'Cuddle Crew Pet Care — thoughtful pet sitting and dog walking in Sacramento' }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
+    description: 'Thoughtful pet sitting and dog walking in Sacramento and surrounding communities.',
+    images: ['/og.png'],
+  },
 };
 
 export default function RootLayout({
