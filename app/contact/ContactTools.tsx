@@ -1,5 +1,5 @@
 'use client';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 
 const email = 'lauren@cuddlecrewpetcare.com';
 
@@ -7,11 +7,24 @@ export default function ContactTools(){
   const [copied,setCopied]=useState(false);
   const [name,setName]=useState('');
   const [replyTo,setReplyTo]=useState('');
+  const [phone,setPhone]=useState('');
+  const [zip,setZip]=useState('');
   const [message,setMessage]=useState('');
+  const [status,setStatus]=useState<'idle'|'sending'|'sent'|'error'>('idle');
+  const startedAt=useRef(Date.now());
   const copyEmail=async()=>{ await navigator.clipboard.writeText(email); setCopied(true); window.setTimeout(()=>setCopied(false),2500); };
-  const prepare=(event:FormEvent)=>{ event.preventDefault(); const subject=encodeURIComponent('Pet care question'); const body=encodeURIComponent(`Name: ${name}\nReply-to email: ${replyTo}\n\n${message}`); window.location.href=`mailto:${email}?subject=${subject}&body=${body}`; };
+  const mailDraft=()=>{ const subject=encodeURIComponent('Pet care question'); const body=encodeURIComponent(`Name: ${name}\nReply-to email: ${replyTo}\nPhone: ${phone||'Not provided'}\nZIP: ${zip||'Not provided'}\n\n${message}`); window.location.href=`mailto:${email}?subject=${subject}&body=${body}`; };
+  const submit=async(event:FormEvent<HTMLFormElement>)=>{
+    event.preventDefault(); setStatus('sending');
+    const data=new FormData(event.currentTarget);
+    try{
+      const response=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,replyTo,phone,zip,message,website:data.get('website'),startedAt:startedAt.current})});
+      if(!response.ok) throw new Error('send failed');
+      setStatus('sent'); setName(''); setReplyTo(''); setPhone(''); setZip(''); setMessage(''); startedAt.current=Date.now();
+    }catch{setStatus('error');}
+  };
   return <div className="contact-tools">
-    <section className="contact-direct" aria-labelledby="direct-contact"><p className="eyebrow">Direct contact</p><h2 id="direct-contact">Reach Lauren your way.</h2><p>If your device does not open an email app, use the copy button and paste the address into Gmail, Outlook, or your preferred service.</p><div className="contact-buttons"><button type="button" className="button" onClick={copyEmail}>{copied?'Email copied!':'Copy email address'}</button><a className="text-link" href={`mailto:${email}?subject=Pet%20care%20question`}>Open email app →</a><a className="text-link" href="tel:+19162523550">Call 916-252-3550 →</a></div><p className="contact-address">{email}</p></section>
-    <form className="inquiry-builder" onSubmit={prepare}><p className="eyebrow">Optional message helper</p><h2>Prepare an inquiry.</h2><p>This creates a draft in your email app. The website does not store or send the information itself.</p><label>Your name<input required value={name} onChange={e=>setName(e.target.value)}/></label><label>Your email<input required type="email" value={replyTo} onChange={e=>setReplyTo(e.target.value)}/></label><label>What would you like to ask?<textarea required rows={7} value={message} onChange={e=>setMessage(e.target.value)} placeholder="Pet type, dates, ZIP code, care needs, and any questions…"/></label><button className="button" type="submit">Create email draft</button></form>
+    <section className="contact-direct" aria-labelledby="direct-contact"><p className="eyebrow">Direct contact</p><h2 id="direct-contact">Reach Lauren your way.</h2><p>You can send the form here, call, or contact Lauren from your own email account.</p><div className="contact-buttons"><button type="button" className="button" onClick={copyEmail}>{copied?'Email copied!':'Copy email address'}</button><a className="text-link" href={`mailto:${email}?subject=Pet%20care%20question`}>Open email app →</a><a className="text-link" href="tel:+19162523550">Call 916-252-3550 →</a></div><p className="contact-address">{email}</p></section>
+    <form className="inquiry-builder" onSubmit={submit}><p className="eyebrow">Initial inquiry</p><h2>Ask Lauren a question.</h2><p>Share the basics below. This does not register you, create a reservation, or guarantee availability.</p><label>Your name<input required maxLength={80} autoComplete="name" value={name} onChange={e=>setName(e.target.value)}/></label><label>Your email<input required maxLength={254} autoComplete="email" type="email" value={replyTo} onChange={e=>setReplyTo(e.target.value)}/></label><div className="inquiry-pair"><label>Phone <small>Optional</small><input maxLength={30} autoComplete="tel" type="tel" value={phone} onChange={e=>setPhone(e.target.value)}/></label><label>Service ZIP <small>Optional</small><input maxLength={10} inputMode="numeric" autoComplete="postal-code" value={zip} onChange={e=>setZip(e.target.value)}/></label></div><label>What would you like to ask?<textarea required minLength={10} maxLength={3000} rows={7} value={message} onChange={e=>setMessage(e.target.value)} placeholder="Pet type, dates, care needs, and any questions…"/></label><label className="form-trap" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off"/></label><p className="form-privacy">Please don’t include door or alarm codes, payment details, veterinary records, or detailed medical information. Use the secure client portal for those details.</p><button className="button" type="submit" disabled={status==='sending'}>{status==='sending'?'Sending…':'Send inquiry'}</button>{status==='sent'&&<p className="form-status success" role="status">Thanks—your inquiry was sent to Lauren.</p>}{status==='error'&&<div className="form-status error" role="alert"><p>The message could not be sent right now.</p><button type="button" className="text-link" onClick={mailDraft}>Open it as an email draft instead →</button></div>}</form>
   </div>;
 }
