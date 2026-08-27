@@ -1,0 +1,4 @@
+import SiteHeader from '../SiteHeader';
+import ContactTools from './ContactTools';
+
+export default function Contact(){return <main><SiteHeader/><div className="shell"><section className="subhero"><p className="eyebrow">Contact Cuddle Crew</p><h1>Questions are always welcome.</h1><p className="lede">Tell Lauren about your pets, dates, ZIP code, or an unusual routine before you register. No pressure and no automatic booking.</p></section><ContactTools/><section className="contact-next"><div><h2>Ready to request care?</h2><p>Use the secure client portal for household access details, pet profiles, veterinary information, and formal service requests.</p></div><a className="button" href="https://cuddlecrewpetcare.petssl.com/account">New client registration</a></section><p className="back"><a className="text-link" href="/">← Return home</a></p></div></main>}
