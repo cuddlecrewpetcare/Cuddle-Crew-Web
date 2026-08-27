@@ -1,0 +1,32 @@
+@font-face {
+  font-family: 'Satisfy';
+  src: url('/fonts/Satisfy-Regular.ttf') format('truetype');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.hero h1 em { font-family: 'Satisfy', cursive; font-size: 1.08em; letter-spacing: 0; }
+.ready-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; padding: 0; list-style: none; }
+.ready-list li { position: relative; background: rgba(255,255,255,.62); border-radius: 12px; padding: 14px 14px 14px 38px; font: 700 13px/1.45 Arial,sans-serif; color: #5f493f; }
+.ready-list li::before { content: '✓'; position: absolute; left: 15px; color: var(--clay); font-weight: 900; }
+.readiness-note { font-size: 14px !important; line-height: 1.55 !important; }
+.social-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+.social-button { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 999px; padding: 11px 17px; background: #fff; color: inherit; text-decoration: none; font-size: 12px; font-weight: 800; transition: transform .18s ease, background .18s ease, box-shadow .18s ease; }
+.social-button:hover, .social-button:focus-visible { background: #fff0f7; box-shadow: 0 7px 20px rgba(59,36,26,.1); transform: translateY(-2px); }
+.social-icon { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; font-size: 17px; }
+.social-button.facebook .social-icon { background: #1877f2; color: #fff; }
+.social-button.yelp .social-icon { background: #d32323; color: #fff; }
+.social-button.google .social-icon { background: #fff; border: 1px solid #eee; }
+.social-links-compact { display: inline-flex; margin: 0; gap: 7px; vertical-align: middle; }
+.social-links-compact .social-button { padding: 5px; border: 0; background: transparent; }
+.social-links-compact .social-button:hover { box-shadow: none; background: #fff0f7; }
+.footer-links { display: flex; align-items: center; gap: 16px; }
+.footer-links > a { text-decoration: none; }
+
+@media (max-width: 560px) {
+  .ready-list { grid-template-columns: 1fr; }
+  .social-links:not(.social-links-compact) { display: grid; }
+  .social-button { justify-content: center; }
+  .footer-links { align-items: flex-start; flex-wrap: wrap; }
+}

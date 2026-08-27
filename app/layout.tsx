@@ -42,6 +42,24 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'PetSitting',
+            name: 'Cuddle Crew Pet Care',
+            url: 'https://cuddle-crew-sacramento.laurenblalock.chatgpt.site',
+            email: 'lauren@cuddlecrewpetcare.com',
+            telephone: '+1-916-252-3550',
+            image: 'https://cuddle-crew-sacramento.laurenblalock.chatgpt.site/og.png',
+            areaServed: 'Sacramento and surrounding communities, California',
+            sameAs: [
+              'https://share.google/O3aya8JQkApZ4prHu',
+              'https://www.facebook.com/profile.php?id=61593543881861',
+              'https://www.yelp.com/biz/cuddle-crew-pet-care-carmichael-2',
+            ],
+          }) }}
+        />
         {children}
       </body>
     </html>
