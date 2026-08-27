@@ -14,11 +14,11 @@ export async function POST(request:Request){
   const startedAt=Number(body.startedAt);
   const elapsed=Date.now()-startedAt;
   if(!Number.isFinite(startedAt)||elapsed<3000||elapsed>7_200_000) return Response.json({error:'Please reload the form and try again.'},{status:400});
-  const name=clean(body.name,80), replyTo=clean(body.replyTo,254), phone=clean(body.phone,30), zip=clean(body.zip,10), message=clean(body.message,3000);
+  const name=clean(body.name,80), replyTo=clean(body.replyTo,254), phone=clean(body.phone,30), zip=clean(body.zip,10), topic=clean(body.topic,80)||'General question', message=clean(body.message,3000);
   if(name.length<2||!emailPattern.test(replyTo)||message.length<10) return Response.json({error:'Please check the required fields.'},{status:400});
-  const text=`New website inquiry\n\nName: ${name}\nEmail: ${replyTo}\nPhone: ${phone||'Not provided'}\nService ZIP: ${zip||'Not provided'}\n\nMessage:\n${message}`;
-  const html=`<h2>New website inquiry</h2><p><strong>Name:</strong> ${escapeHtml(name)}<br><strong>Email:</strong> ${escapeHtml(replyTo)}<br><strong>Phone:</strong> ${escapeHtml(phone||'Not provided')}<br><strong>Service ZIP:</strong> ${escapeHtml(zip||'Not provided')}</p><h3>Message</h3><p>${escapeHtml(message).replace(/\n/g,'<br>')}</p>`;
-  const response=await fetch(RESEND_ENDPOINT,{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json','User-Agent':'CuddleCrewPetCare/1.0','Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({from:'Cuddle Crew Website <website@cuddlecrewpetcare.com>',to:[recipient],reply_to:replyTo,subject:`Pet care inquiry from ${name}`,text,html})});
+  const text=`New website inquiry\n\nTopic: ${topic}\nName: ${name}\nEmail: ${replyTo}\nPhone: ${phone||'Not provided'}\nService ZIP: ${zip||'Not provided'}\n\nMessage:\n${message}`;
+  const html=`<h2>New website inquiry</h2><p><strong>Topic:</strong> ${escapeHtml(topic)}<br><strong>Name:</strong> ${escapeHtml(name)}<br><strong>Email:</strong> ${escapeHtml(replyTo)}<br><strong>Phone:</strong> ${escapeHtml(phone||'Not provided')}<br><strong>Service ZIP:</strong> ${escapeHtml(zip||'Not provided')}</p><h3>Message</h3><p>${escapeHtml(message).replace(/\n/g,'<br>')}</p>`;
+  const response=await fetch(RESEND_ENDPOINT,{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json','User-Agent':'CuddleCrewPetCare/1.0','Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({from:'Cuddle Crew Website <website@cuddlecrewpetcare.com>',to:[recipient],reply_to:replyTo,subject:`${topic} — inquiry from ${name}`,text,html})});
   if(!response.ok){console.error('Resend contact delivery failed',response.status);return Response.json({error:'Unable to send inquiry.'},{status:502});}
   return Response.json({ok:true});
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import './contact-form.css';
+import './estimator-enhancements.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://cuddle-crew-sacramento.laurenblalock.chatgpt.site'),
+  metadataBase: new URL('https://www.cuddlecrewpetcare.com'),
   title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
   description: 'Warm, attentive pet sitting and dog walking in Sacramento and surrounding communities.',
   openGraph: {
@@ -49,10 +50,10 @@ export default function RootLayout({
             '@context': 'https://schema.org',
             '@type': 'PetSitting',
             name: 'Cuddle Crew Pet Care',
-            url: 'https://cuddle-crew-sacramento.laurenblalock.chatgpt.site',
+            url: 'https://www.cuddlecrewpetcare.com',
             email: 'lauren@cuddlecrewpetcare.com',
             telephone: '+1-916-252-3550',
-            image: 'https://cuddle-crew-sacramento.laurenblalock.chatgpt.site/og.png',
+            image: 'https://www.cuddlecrewpetcare.com/og.png',
             areaServed: 'Sacramento and surrounding communities, California',
             sameAs: [
               'https://share.google/O3aya8JQkApZ4prHu',
