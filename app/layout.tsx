@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
   metadataBase: new URL('https://www.cuddlecrewpetcare.com'),
   title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
   description: 'Warm, attentive pet sitting and dog walking in Sacramento and surrounding communities.',
