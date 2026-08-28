@@ -1,2 +1,2 @@
 import type {MetadataRoute} from 'next';
-export default function sitemap():MetadataRoute.Sitemap{if(process.env.SITE_INDEXING_ENABLED!=='true')return[];const base='https://www.cuddlecrewpetcare.com';return['','/plan','/safety','/credentials','/faq','/contact','/privacy'].map((path)=>({url:`${base}${path}`,lastModified:new Date(),changeFrequency:path?'monthly':'weekly',priority:path?0.7:1}));}
+export default function sitemap():MetadataRoute.Sitemap{if(process.env.SITE_INDEXING_ENABLED!=='true')return[];const base='https://www.cuddlecrewpetcare.com';return['','/plan','/holidays','/choosing-care','/safety','/credentials','/faq','/contact','/privacy'].map((path)=>({url:`${base}${path}`,lastModified:new Date(),changeFrequency:path?'monthly':'weekly',priority:path?0.7:1}));}
