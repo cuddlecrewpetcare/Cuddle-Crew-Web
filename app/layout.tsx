@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const indexing=process.env.SITE_INDEXING_ENABLED==='true';
 export const metadata: Metadata = {
-  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
+  robots: { index: indexing, follow: indexing, googleBot: { index: indexing, follow: indexing } },
   metadataBase: new URL('https://www.cuddlecrewpetcare.com'),
   title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
   description: 'Warm, attentive pet sitting and dog walking in Sacramento and surrounding communities.',
@@ -50,13 +51,15 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'PetSitting',
+            '@type': 'LocalBusiness',
             name: 'Cuddle Crew Pet Care',
             url: 'https://www.cuddlecrewpetcare.com',
             email: 'lauren@cuddlecrewpetcare.com',
             telephone: '+1-916-252-3550',
             image: 'https://www.cuddlecrewpetcare.com/og.png',
             areaServed: 'Sacramento and surrounding communities, California',
+            priceRange: '$$',
+            makesOffer: {'@type':'OfferCatalog',name:'Pet care services',itemListElement:[{'@type':'Offer','name':'Drop-in pet visits'},{'@type':'Offer','name':'Dog walks'},{'@type':'Offer','name':'Overnight pet sitting'}]},
             sameAs: [
               'https://share.google/O3aya8JQkApZ4prHu',
               'https://www.facebook.com/profile.php?id=61593543881861',
@@ -64,7 +67,7 @@ export default function RootLayout({
             ],
           }) }}
         />
-        <a className="skip-link" href="#main-content">Skip to main content</a><div id="main-content">{children}</div>
+        <a className="skip-link" href="#main-content">Skip to main content</a>{children}
       </body>
     </html>
   );

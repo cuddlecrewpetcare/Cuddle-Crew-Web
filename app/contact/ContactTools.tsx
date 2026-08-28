@@ -1,5 +1,5 @@
 'use client';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
 const email = 'lauren@cuddlecrewpetcare.com';
 
@@ -12,7 +12,8 @@ export default function ContactTools(){
   const [message,setMessage]=useState('');
   const [topic,setTopic]=useState('Availability or scheduling');
   const [status,setStatus]=useState<'idle'|'sending'|'sent'|'error'>('idle');
-  const startedAt=useRef(Date.now());
+  const startedAt=useRef(0);
+  useEffect(()=>{startedAt.current=Date.now()},[]);
   const copyEmail=async()=>{ await navigator.clipboard.writeText(email); setCopied(true); window.setTimeout(()=>setCopied(false),2500); };
   const mailDraft=()=>{ const subject=encodeURIComponent('Pet care question'); const body=encodeURIComponent(`Name: ${name}\nReply-to email: ${replyTo}\nPhone: ${phone||'Not provided'}\nZIP: ${zip||'Not provided'}\n\n${message}`); window.location.href=`mailto:${email}?subject=${subject}&body=${body}`; };
   const submit=async(event:FormEvent<HTMLFormElement>)=>{

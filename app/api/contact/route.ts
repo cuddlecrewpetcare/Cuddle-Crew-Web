@@ -1,15 +1,18 @@
 const RESEND_ENDPOINT='https://api.resend.com/emails';
 const recipient='lauren@cuddlecrewpetcare.com';
+import {clientKey,rateLimit,verifyTurnstile} from '../../lib/rate-limit';
 
 const clean=(value:unknown,max:number)=>typeof value==='string'?value.trim().slice(0,max):'';
 const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const escapeHtml=(value:string)=>value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]!));
 
 export async function POST(request:Request){
+  const ip=clientKey(request),limit=rateLimit(`contact:${ip}`,5,10*60_000);if(!limit.allowed)return Response.json({error:'Too many attempts. Please wait before trying again.'},{status:429,headers:{'Retry-After':String(limit.retryAfter)}});
   const apiKey=process.env.RESEND_API_KEY;
   if(!apiKey) return Response.json({error:'Contact delivery is not configured.'},{status:503});
   let body:Record<string,unknown>;
   try{body=await request.json();}catch{return Response.json({error:'Invalid request.'},{status:400});}
+  if(!await verifyTurnstile(clean(body.turnstileToken,2048),ip))return Response.json({error:'Verification failed. Please try again.'},{status:400});
   if(clean(body.website,200)) return Response.json({ok:true});
   const startedAt=Number(body.startedAt);
   const elapsed=Date.now()-startedAt;

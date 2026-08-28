@@ -1,0 +1,5 @@
+type Bucket={count:number;reset:number};
+const buckets=new Map<string,Bucket>();
+export const clientKey=(request:Request)=>request.headers.get('cf-connecting-ip')||request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||'unknown';
+export const rateLimit=(key:string,limit:number,windowMs:number)=>{const now=Date.now(),current=buckets.get(key);if(!current||current.reset<=now){buckets.set(key,{count:1,reset:now+windowMs});return{allowed:true,retryAfter:0};}current.count++;return{allowed:current.count<=limit,retryAfter:Math.ceil((current.reset-now)/1000)};};
+export const verifyTurnstile=async(token:string,ip:string)=>{const secret=process.env.TURNSTILE_SECRET_KEY;if(!secret)return true;if(!token)return false;const body=new FormData();body.set('secret',secret);body.set('response',token);if(ip!=='unknown')body.set('remoteip',ip);try{const response=await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify',{method:'POST',body});const result=await response.json() as {success?:boolean};return result.success===true;}catch{return false;}};

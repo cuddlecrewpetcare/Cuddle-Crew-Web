@@ -3,12 +3,10 @@
 import { useEffect, useRef } from 'react';
 import type { GeoJsonObject } from 'geojson';
 import type { GeoJSON as LeafletGeoJSON, Map, Path } from 'leaflet';
+import {business} from './config/business';
 
 const zoneByZip: Record<string, { name: string; color: string; fee: string }> = {};
-for (const zip of ['95608','95628','95821','95864']) zoneByZip[zip] = { name: 'Core', color: '#64FF41', fee: 'No travel fee' };
-for (const zip of ['95610','95621','95662','95825','95841','95842']) zoneByZip[zip] = { name: 'Standard', color: '#3075FF', fee: 'No travel fee' };
-for (const zip of ['95660','95661','95670','95678','95826','95827','95843','95655']) zoneByZip[zip] = { name: 'Extended', color: '#FFBF5E', fee: '$5 per visit' };
-for (const zip of ['95630','95648','95650','95677','95742','95746','95747','95762','95765']) zoneByZip[zip] = { name: 'Far Extended', color: '#E45CFF', fee: '$10 per visit' };
+for(const zone of Object.values(business.zones))for(const zip of zone.zips)zoneByZip[zip]={name:zone.name,color:zone.color,fee:zone.fee?`$${zone.fee} per visit`:'No travel fee'};
 
 export default function ServiceAreaMap({ selectedZip, onSelect }: { selectedZip: string; onSelect: (zip: string) => void }) {
   const mapEl = useRef<HTMLDivElement>(null);

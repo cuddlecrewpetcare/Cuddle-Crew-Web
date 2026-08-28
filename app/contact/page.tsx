@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import SiteHeader from '../SiteHeader';
 import ContactTools from './ContactTools';
 

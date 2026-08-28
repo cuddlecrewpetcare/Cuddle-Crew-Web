@@ -12,8 +12,10 @@ const dateRange=(start:string,end:string)=>{
   return out;
 };
 type PublicDay={date:string;status:'Good Availability'|'Limited Availability'|'Very Limited'|'Contact for Availability'};
+import {clientKey,rateLimit} from '../../lib/rate-limit';
 
 export async function GET(request:Request){
+  const limit=rateLimit(`availability:${clientKey(request)}`,30,5*60_000);if(!limit.allowed)return Response.json({error:'Too many checks. Please wait and try again.'},{status:429,headers:{'Retry-After':String(limit.retryAfter)}});
   const url=new URL(request.url),start=url.searchParams.get('start')||'',end=url.searchParams.get('end')||'';
   if(!/^\d{4}-\d{2}-\d{2}$/.test(start)||!/^\d{4}-\d{2}-\d{2}$/.test(end)||end<start)return Response.json({error:'Choose a valid date range.'},{status:400});
   const days=dateRange(start,end);if(days.length<1||days.length>31)return Response.json({error:'Choose a range of 31 days or fewer.'},{status:400});
