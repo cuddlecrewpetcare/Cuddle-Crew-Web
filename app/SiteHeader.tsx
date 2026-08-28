@@ -1,7 +1,8 @@
 'use client';
 /* eslint-disable @next/next/no-html-link-for-pages */
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 export default function SiteHeader(){
  const[open,setOpen]=useState(false),close=()=>setOpen(false);
+ useEffect(()=>{if(!open)return;const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'){setOpen(false);requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('.nav-toggle')?.focus());}};document.addEventListener('keydown',escape);return()=>document.removeEventListener('keydown',escape);},[open]);
  return <><header className="sticky-header"><nav className="nav shell" aria-label="Primary navigation"><a className="brand" href="/#top" onClick={close}><span className="brand-mark">CC</span><span>Cuddle Crew<small>Pet Care</small></span></a><button className="nav-toggle" type="button" aria-expanded={open} aria-controls="primary-links" onClick={()=>setOpen(x=>!x)}><span className="sr-only">{open?'Close':'Open'} navigation</span><span aria-hidden="true">{open?'×':'☰'}</span></button><div id="primary-links" className={`nav-links${open?' is-open':''}`}><div className="nav-menu"><a href="/#services" onClick={close}>Services</a><div className="nav-dropdown"><a href="/#services" onClick={close}>Drop-in visits</a><a href="/#services" onClick={close}>Dog walks</a><a href="/#services" onClick={close}>Overnight care</a></div></div><a href="/plan" onClick={close}>Plan care</a><a href="/#estimate" onClick={close}>Estimate</a><a href="/#area" onClick={close}>Service area</a><a href="/safety" onClick={close}>Safety</a><a href="/credentials" onClick={close}>Credentials</a><a href="/faq" onClick={close}>FAQ</a><a href="/contact" onClick={close}>Contact</a></div><a className="button small nav-register" href="https://cuddlecrewpetcare.petssl.com/account">Register</a></nav></header><span id="main-content" className="skip-target" tabIndex={-1}/></>;
 }

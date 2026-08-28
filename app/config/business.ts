@@ -14,12 +14,23 @@ export const business = {
     overnight:{dog:85,cat:80}, additionalDog:10, additionalOther:5, overnightAddOn30:20,
     overnightAddOn60:35, holidayVisit:15, holidayOvernight:30, shortNoticeVisit:10,
     sameDayVisit:20, shortNoticeOvernight:25 },
+  shortNotice: {
+    daytimeRule: 'under 48 hours, excluding same-day requests',
+    sameDayRule: 'same calendar day',
+    overnightRule: 'under 48 hours',
+  },
   zones: {
     core:{name:'Core',fee:0,color:'#64FF41',zips:['95608','95628','95821','95864']},
     standard:{name:'Standard',fee:0,color:'#3075FF',zips:['95610','95621','95662','95825','95841','95842']},
     extended:{name:'Extended',fee:5,color:'#FFBF5E',zips:['95660','95661','95670','95678','95826','95827','95843','95655']},
     farExtended:{name:'Far Extended',fee:10,color:'#E45CFF',zips:['95630','95648','95650','95677','95742','95746','95747','95762','95765']},
   },
-  credentials: {insurer:'Business Insurers of the Carolinas',liabilityOccurrence:1_000_000,liabilityAggregate:2_000_000,cccPerClaim:50_000,cccAnnual:50_000,dishonestyBond:5_000,psiExpires:'2027-08-19',cprStatus:'in progress',cprProgram:'Pet Tech® PetSaver™ eight-hour certification'},
+  credentials: {
+    insurer:'Business Insurers of the Carolinas', insurerUrl:'https://www.business-insurers.com/pet-sitter-dog-walker-pet-taxi-and-pooper-scooper-insurance/',
+    liabilityOccurrence:1_000_000,liabilityAggregate:2_000_000,cccPerClaim:50_000,cccAnnual:50_000,dishonestyBond:5_000,
+    psi:{status:'active',expires:'2027-08-19',lastVerified:'2026-08-27',certificateUrl:'/psi-membership-certificate.jpg'},
+    cpr:{status:'in progress',program:'Pet Tech® PetSaver™ eight-hour certification',programUrl:'https://pettech.net/cpr-day/'},
+  },
+  availabilityOverrides: [] as readonly {start:string;end:string;status:'Limited Availability'|'Very Limited'|'Contact for Availability';note?:string}[],
 } as const;
 export const allServiceZips = Object.values(business.zones).flatMap(zone=>zone.zips);
