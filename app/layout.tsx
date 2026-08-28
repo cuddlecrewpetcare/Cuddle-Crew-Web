@@ -64,7 +64,7 @@ export default function RootLayout({
             ],
           }) }}
         />
-        {children}
+        <a className="skip-link" href="#main-content">Skip to main content</a><div id="main-content">{children}</div>
       </body>
     </html>
   );
