@@ -1,4 +1,6 @@
 const dayMs=86_400_000;
+import {business} from '../../config/business';
+import {applyAvailabilityOverrides,AvailabilityStatus} from '../../lib/business-rules';
 const iso=(date:Date)=>date.toISOString().slice(0,10);
 const parseIcsDate=(value:string)=>{
   const raw=value.split(':').pop()?.trim()||'';
@@ -11,7 +13,7 @@ const dateRange=(start:string,end:string)=>{
   for(let cursor=new Date(`${start}T12:00:00Z`),last=new Date(`${end}T12:00:00Z`);cursor<=last;cursor=new Date(cursor.getTime()+dayMs))out.push(iso(cursor));
   return out;
 };
-type PublicDay={date:string;status:'Good Availability'|'Limited Availability'|'Very Limited'|'Contact for Availability'};
+type PublicDay={date:string;status:AvailabilityStatus};
 import {clientKey,rateLimit} from '../../lib/rate-limit';
 
 export async function GET(request:Request){
@@ -30,7 +32,7 @@ export async function GET(request:Request){
     const events=text.split('BEGIN:VEVENT').slice(1).map(block=>block.split('END:VEVENT')[0]);
     const load:Record<string,number>={};for(const day of days)load[day]=0;
     for(const event of events){if(/STATUS:CANCELLED/i.test(event)||/TRANSP:TRANSPARENT/i.test(event))continue;const startLine=event.match(/^DTSTART[^\r\n]*$/mi)?.[0],endLine=event.match(/^DTEND[^\r\n]*$/mi)?.[0];if(!startLine)continue;const begins=parseIcsDate(startLine),ends=endLine?parseIcsDate(endLine):null;if(!begins)continue;const first=iso(begins),last=iso(new Date(Math.max(begins.getTime(),(ends?.getTime()||begins.getTime()+3_600_000)-1)));for(const day of dateRange(first,last)){if(day in load)load[day]++}}
-    const publicDays:PublicDay[]=days.map(date=>({date,status:load[date]<=1?'Good Availability':load[date]<=3?'Limited Availability':load[date]<=5?'Very Limited':'Contact for Availability'}));
+    const publicDays:PublicDay[]=days.map(date=>{const calendarStatus:AvailabilityStatus=load[date]<=1?'Good Availability':load[date]<=3?'Limited Availability':load[date]<=5?'Very Limited':'Contact for Availability';return{date,status:applyAvailabilityOverrides(date,calendarStatus,business.availabilityOverrides)}});
     const rank={'Good Availability':0,'Limited Availability':1,'Very Limited':2,'Contact for Availability':3};const state=publicDays.reduce((worst,day)=>rank[day.status]>rank[worst]?day.status:worst,'Good Availability' as PublicDay['status']);
     return Response.json({state,days:publicDays,lastUpdated:new Date().toISOString(),source:'calendar',disclaimer:'Availability is provided for planning purposes only and may not reflect recent requests or scheduling changes. Services are not reserved until reviewed and confirmed.'},{headers:{'Cache-Control':'public, max-age=300, stale-while-revalidate=300'}});
   }catch{return fallback()}

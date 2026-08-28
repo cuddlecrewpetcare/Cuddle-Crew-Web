@@ -1,12 +1,14 @@
 const RESEND_ENDPOINT='https://api.resend.com/emails';
 const recipient='lauren@cuddlecrewpetcare.com';
 import {clientKey,rateLimit,verifyTurnstile} from '../../lib/rate-limit';
+import {turnstileMode} from '../../lib/turnstile-config';
 
 const clean=(value:unknown,max:number)=>typeof value==='string'?value.trim().slice(0,max):'';
 const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const escapeHtml=(value:string)=>value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]!));
 
 export async function POST(request:Request){
+  if(turnstileMode(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,process.env.TURNSTILE_SECRET_KEY)==='misconfigured'){console.error('Turnstile configuration requires both site and secret keys.');return Response.json({error:'Contact security is temporarily misconfigured. Please email Lauren directly.'},{status:503});}
   const ip=clientKey(request),limit=rateLimit(`contact:${ip}`,5,10*60_000);if(!limit.allowed)return Response.json({error:'Too many attempts. Please wait before trying again.'},{status:429,headers:{'Retry-After':String(limit.retryAfter)}});
   const apiKey=process.env.RESEND_API_KEY;
   if(!apiKey) return Response.json({error:'Contact delivery is not configured.'},{status:503});

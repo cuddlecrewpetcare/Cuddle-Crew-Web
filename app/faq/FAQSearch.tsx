@@ -1,7 +1,7 @@
 'use client'; import{useMemo,useState}from'react';
 const entries=[
 ['Getting started','Do new clients need a meet-and-greet?','Yes. A complimentary meet-and-greet is required for every new household. Registration and requests are not automatic confirmations; dates are reserved only after Lauren reviews and manually approves the request.'],
-['Pricing','What if I need care at short notice?','Daytime requests 24–48 hours before the selected window include $10 per visit; same-day daytime requests include $20 per visit. Overnight requests under 48 hours may include $25 per overnight day. All depend on availability and are evaluated in Pacific Time.'],
+['Pricing','What if I need care at short notice?','Daytime requests under 48 hours before the selected window include $10 per visit. Same-day daytime requests include $20 per visit instead, not both fees. Overnight requests under 48 hours may include $25 per overnight day. All depend on availability and are evaluated in Pacific Time.'],
 ['Policies','What is the cancellation policy?','48 or more hours ahead receives a full refund; under 48 hours is charged 50%; same-day cancellations are charged in full.'],
 ['Pricing','Which dates have holiday charges?',"New Year’s Day, Easter, Mother’s Day, Independence Day, Thanksgiving, Christmas Eve, Christmas Day, and New Year’s Eve. Daytime visits add $15 per visit; overnight care adds $30 per day."],
 ['Services','What does an overnight include?','Overnight care is approximately 6 PM–8 AM and excludes daytime care. A same-day 30-minute drop-in is $20 or a 60-minute drop-in is $35, plus applicable pet, travel, holiday, and short-notice charges.'],

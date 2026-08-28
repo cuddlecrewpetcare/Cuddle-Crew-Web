@@ -12,3 +12,6 @@ export const possibleGapRange=(windowIndexes:number[],durationMinutes:number,ove
 /** @deprecated Use possibleGapRange so public guidance reflects flexible arrival windows. */
 export const largestDailyGap=(windowIndexes:number[],overnight=false)=>possibleGapRange(windowIndexes,60,overnight)?.maximum??null;
 export const shortNoticeKind=(serviceDate:string,startHour:number,now:Date)=>{const service=new Date(`${serviceDate}T${String(startHour).padStart(2,'0')}:00:00`),diff=service.getTime()-now.getTime();if(diff<0)return'past' as const;if(isoLocal(now)===serviceDate)return'same-day' as const;if(diff<48*3_600_000)return'under-48' as const;return'standard' as const;};
+export type AvailabilityStatus='Good Availability'|'Limited Availability'|'Very Limited'|'Contact for Availability';
+const availabilityRank:Record<AvailabilityStatus,number>={'Good Availability':0,'Limited Availability':1,'Very Limited':2,'Contact for Availability':3};
+export const applyAvailabilityOverrides=(date:string,current:AvailabilityStatus,overrides:readonly {start:string;end:string;status:Exclude<AvailabilityStatus,'Good Availability'>}[])=>overrides.filter(x=>x.start<=date&&x.end>=date).reduce<AvailabilityStatus>((status,override)=>availabilityRank[override.status]>availabilityRank[status]?override.status:status,current);

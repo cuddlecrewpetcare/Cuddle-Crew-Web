@@ -14,7 +14,8 @@ Quality commands:
 - `npm test` — business-rule regression tests.
 - `npm run lint` — ESLint.
 - `npm run build` — production build.
-- `npm run check` — tests, lint, and build.
+- `npm run typecheck` — explicit TypeScript validation.
+- `npm run check` — tests, typecheck, lint, and build.
 
 ## Configuration
 
@@ -24,11 +25,11 @@ Server-only environment variables:
 
 - `RESEND_API_KEY` sends contact-form messages.
 - `PRIVATE_CALENDAR_ICS_URL` powers the privacy-preserving availability summary. Never expose this calendar URL to the browser.
-- `TURNSTILE_SECRET_KEY` enables server-side bot verification when paired with the public site key.
+- `TURNSTILE_SECRET_KEY` enables server-side bot verification only when paired with the public site key.
 
 Public configuration:
 
-- `NEXT_PUBLIC_TURNSTILE_SITE_KEY` displays Cloudflare Turnstile when configured.
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY` displays Cloudflare Turnstile only when the server secret is also configured. Configure both Turnstile values or leave both blank; partial configuration returns a clear administrative error rather than silently rejecting visitors.
 - `SITE_INDEXING_ENABLED=true` opts the site into search indexing and the sitemap. It defaults to unlisted/noindex.
 
 ## Deployment

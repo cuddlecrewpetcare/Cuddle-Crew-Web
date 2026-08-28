@@ -10,8 +10,9 @@
     "build": "vinext build",
     "start": "vinext start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "check": "npm run test && npm run lint && npm run build"
+    "check": "npm run test && npm run typecheck && npm run lint && npm run build"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.20",

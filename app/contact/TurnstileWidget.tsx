@@ -12,7 +12,7 @@ declare global {
 }
 
 export default function TurnstileWidget({siteKey,onToken,resetKey}:{siteKey:string;onToken:(token:string)=>void;resetKey:number}){
-  const host=useRef<HTMLDivElement>(null),widgetId=useRef<string>();
+  const host=useRef<HTMLDivElement>(null),widgetId=useRef<string|undefined>(undefined);
   useEffect(()=>{
     let cancelled=false;
     const render=()=>{if(cancelled||!host.current||!window.turnstile||widgetId.current)return;widgetId.current=window.turnstile.render(host.current,{sitekey:siteKey,callback:(token:string)=>onToken(token),'expired-callback':()=>onToken(''),'error-callback':()=>onToken(''),theme:'light'});};
