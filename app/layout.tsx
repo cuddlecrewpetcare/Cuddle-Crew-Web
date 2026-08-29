@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.cuddlecrewpetcare.com'),
   title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
   description: 'Warm, attentive pet sitting and dog walking in Sacramento and surrounding communities.',
+  alternates: { canonical: '/' },
   openGraph: {
     title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
     description: 'Thoughtful pet sitting and dog walking in Sacramento and surrounding communities.',
@@ -54,6 +55,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'LocalBusiness',
+            '@id': 'https://www.cuddlecrewpetcare.com/#business',
+            description: 'Professional in-home pet sitting and dog walking serving Sacramento and surrounding communities.',
             name: business.name,
             url: 'https://www.cuddlecrewpetcare.com',
             email: business.email,
