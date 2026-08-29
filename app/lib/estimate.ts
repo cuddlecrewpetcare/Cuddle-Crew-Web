@@ -1,14 +1,14 @@
 import {business} from '../config/business.ts';
-import {daysBetween,holidayForDate,shortNoticeKind,zoneForZip} from './business-rules.ts';
+import {businessDate,daysBetween,holidayForDate,shortNoticeKind,zoneForZip} from './business-rules.ts';
 
 export type PetType='dog'|'cat'|'rabbit'|'bird'|'fish'|'small';
 export type EstimatePet={type:PetType;complex?:boolean};
 export type EstimateService='drop30'|'drop60'|'walk30'|'walk60'|'overnight';
 export type EstimateInput={pets:EstimatePet[];service:EstimateService;start:string;end:string;blocks:number[];midday:'none'|'30'|'60';zip:string;now:Date};
-export type EstimateIssue='dates'|'zip'|'windows'|'walk-household';
+export type EstimateIssue='dates'|'past-date'|'zip'|'windows'|'walk-household';
 export type EstimateResult={total:number;base:number;petFee:number;units:number;holidays:{date:string;name:string}[];holidayFee:number;shortFee:number;shortCount:number;sameDayCount:number;zone:number;outside:boolean;addOn:number;addOnUnits:number;complex:boolean};
 
-export function validateEstimate(input:EstimateInput):EstimateIssue[]{const issues:EstimateIssue[]=[];if(!input.start||!input.end||input.end<input.start)issues.push('dates');if(zoneForZip(input.zip).state==='incomplete')issues.push('zip');if(input.service!=='overnight'&&!input.blocks.length)issues.push('windows');if(input.service.startsWith('walk')&&input.pets.some(p=>p.type!=='dog'))issues.push('walk-household');return issues;}
+export function validateEstimate(input:EstimateInput):EstimateIssue[]{const issues:EstimateIssue[]=[];if(!input.start||!input.end||input.end<input.start)issues.push('dates');else if(input.start<businessDate(input.now))issues.push('past-date');if(zoneForZip(input.zip).state==='incomplete')issues.push('zip');if(input.service!=='overnight'&&!input.blocks.length)issues.push('windows');if(input.service.startsWith('walk')&&input.pets.some(p=>p.type!=='dog'))issues.push('walk-household');return issues;}
 
 export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];result:EstimateResult|null}{
  const issues=validateEstimate(input);if(issues.length)return{issues,result:null};

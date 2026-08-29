@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {applyAvailabilityOverrides,daysBetween,easterDate,holidayForDate,possibleGapRange,shortNoticeKind,zoneForZip} from '../app/lib/business-rules.ts';
+import {applyAvailabilityOverrides,businessDate,businessYear,carePlanGap,daysBetween,easterDate,holidayForDate,possibleGapRange,shortNoticeKind,zoneForZip} from '../app/lib/business-rules.ts';
 import {calculateEstimate} from '../app/lib/estimate.ts';import type {EstimateInput,EstimatePet} from '../app/lib/estimate.ts';
 import {parsePlannerPrefill} from '../app/lib/planner-prefill.ts';
 import {turnstileMode} from '../app/lib/turnstile-config.ts';
@@ -16,6 +16,8 @@ test('possible gap range models one flexible service window',()=>{assert.deepEqu
 test('possible gap range models multiple windows and day wrap',()=>{assert.deepEqual(possibleGapRange([0,2],30),{minimum:15,maximum:20,overnightMaximum:20});assert.deepEqual(possibleGapRange([0,2],60),{minimum:15,maximum:19,overnightMaximum:19});});
 test('possible gap range models overnight care',()=>{assert.deepEqual(possibleGapRange([],30,true),{minimum:10,maximum:10,overnightMaximum:10});assert.deepEqual(possibleGapRange([0],30,true),{minimum:6,maximum:8.5,overnightMaximum:3.5});});
 test('possible gap range returns null for empty schedule',()=>assert.equal(possibleGapRange([],30,false),null));
+test('overnight care plan ignores hidden daytime window state',()=>assert.deepEqual(carePlanGap([0,2],30,true),possibleGapRange([],30,true)));
+test('business date and year follow Sacramento around New Year',()=>{const instant=new Date('2027-01-01T06:30:00Z');assert.equal(businessDate(instant),'2026-12-31');assert.equal(businessYear(instant),2026)});
 
 test('short notice uses under-48 excluding separate same-day tier',()=>{const now=new Date('2026-08-29T11:00:00');assert.equal(shortNoticeKind('2026-08-29',15,now),'same-day');assert.equal(shortNoticeKind('2026-08-30',9,now),'under-48');assert.equal(shortNoticeKind('2026-09-02',9,now),'standard');assert.equal(shortNoticeKind('2026-08-28',9,now),'past');});
 
@@ -26,6 +28,7 @@ test('overnight pricing and add-ons',()=>{assert.equal(total({service:'overnight
 test('travel fees use listed ZIP zones and outside review state',()=>{assert.equal(total({zip:'95821'}).total,30);assert.equal(total({zip:'95610'}).total,30);assert.equal(total({zip:'95660'}).total,35);assert.equal(total({zip:'95630'}).total,40);const outside=total({zip:'99999'});assert.equal(outside.total,30);assert.equal(outside.outside,true);});
 test('holiday pricing supports daytime, overnight, and multiple dates',()=>{assert.equal(total({start:'2026-12-24',end:'2026-12-24'}).total,45);assert.equal(total({service:'overnight',start:'2026-12-24',end:'2026-12-25'}).total,115);assert.equal(total({start:'2026-12-24',end:'2026-12-25'}).total,90);assert.equal(total().holidayFee,0);});
 test('invalid estimate states are explicit',()=>{assert.deepEqual(calculateEstimate(input({start:''})).issues,['dates']);assert.deepEqual(calculateEstimate(input({end:'2026-09-09'})).issues,['dates']);assert.deepEqual(calculateEstimate(input({zip:''})).issues,['zip']);assert.deepEqual(calculateEstimate(input({blocks:[]})).issues,['windows']);assert.deepEqual(calculateEstimate(input({service:'walk30',pets:pets('cat')})).issues,['walk-household']);});
+test('past dates are rejected in the business timezone while today and future remain valid',()=>{const now=new Date('2026-08-29T19:00:00Z');assert.deepEqual(calculateEstimate(input({start:'2026-08-28',end:'2026-08-28',now})).issues,['past-date']);assert.deepEqual(calculateEstimate(input({start:'2026-08-29',end:'2026-08-29',now})).issues,[]);assert.deepEqual(calculateEstimate(input({start:'2026-08-30',end:'2026-08-30',now})).issues,[])});
 test('short-notice pricing distinguishes tomorrow and same day',()=>{assert.equal(total({start:'2026-08-30',end:'2026-08-30',now:new Date('2026-08-29T11:00:00')}).shortFee,10);assert.equal(total({start:'2026-08-29',end:'2026-08-29',blocks:[2],now:new Date('2026-08-29T11:00:00')}).shortFee,20);});
 
 test('availability overrides only make status more restrictive',()=>{const overrides=[{start:'2026-12-20',end:'2026-12-28',status:'Very Limited' as const},{start:'2026-12-24',end:'2026-12-24',status:'Contact for Availability' as const}];assert.equal(applyAvailabilityOverrides('2026-12-21','Good Availability',overrides),'Very Limited');assert.equal(applyAvailabilityOverrides('2026-12-24','Limited Availability',overrides),'Contact for Availability');assert.equal(applyAvailabilityOverrides('2026-12-21','Contact for Availability',overrides),'Contact for Availability');assert.equal(applyAvailabilityOverrides('2026-12-30','Good Availability',overrides),'Good Availability');});

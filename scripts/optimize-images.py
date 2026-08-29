@@ -4,7 +4,26 @@ from PIL import Image, ImageOps
 
 
 PUBLIC = Path(__file__).resolve().parents[1] / "public"
-TARGETS = tuple(PUBLIC.glob("*.jpeg")) + tuple(PUBLIC.glob("*.jpg"))
+PHOTO_NAMES = (
+    "bambi-closeup.jpeg",
+    "bambi-portrait.jpeg",
+    "blu-walk.jpeg",
+    "cats-window.jpeg",
+    "gallery-aussie.jpeg",
+    "gallery-black-dog.jpeg",
+    "gallery-cat-closeup.jpeg",
+    "gallery-gray-cat.jpeg",
+    "gallery-sunny-dog.jpeg",
+    "gallery-tan-dog.jpeg",
+    "hero-dog.jpeg",
+    "lauren-cat-closeup.jpg",
+    "lauren-kittens.jpg",
+    "lauren-portrait.jpeg",
+    "loki-portrait.jpeg",
+    "skylar-profile.jpeg",
+    "skylar-smile.jpeg",
+)
+TARGETS = tuple(PUBLIC / name for name in PHOTO_NAMES)
 
 for path in TARGETS:
     with Image.open(path) as source:

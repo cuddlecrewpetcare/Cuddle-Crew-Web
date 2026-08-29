@@ -1,14 +1,14 @@
 'use client';
 import {useMemo,useState} from 'react';
 import {business} from '../config/business';
-import {possibleGapRange} from '../lib/business-rules';
+import {carePlanGap} from '../lib/business-rules';
 
 const tasks=['Feeding and fresh water','Potty break or dog walk','Play and enrichment','Litter or habitat care','Medication','Multiple habitats or detailed preparation'];
 const households=['Dog','Cat','Dogs and cats','Rabbit, bird, fish, or small animal','Mixed-pet household'] as const;
 const behaviors=[['none','No special handling needs known'],['fear','Fearful or slow-to-warm behavior'],['reactivity','Leash reactivity or animal triggers'],['escape','Door-dashing or escape risk'],['bite','Known bite risk or handling sensitivity']] as const;
 export default function CarePlanner(){
  const[count,setCount]=useState(1),[types,setTypes]=useState<(typeof households)[number]>('Dog'),[taskList,setTaskList]=useState<string[]>(tasks.slice(0,2)),[alone,setAlone]=useState(8),[blocks,setBlocks]=useState<number[]>([0,2]),[overnight,setOvernight]=useState(false),[meds,setMeds]=useState('none'),[behavior,setBehavior]=useState('none');
- const result=useMemo(()=>{const habitat=/Rabbit|Mixed/.test(types),cats=types==='Cat',workload=count*2+taskList.length+(habitat?2:0)+(cats&&taskList.includes('Litter or habitat care')?1:0)+(meds==='routine'?1:meds==='complex'?4:0);const duration=workload>=9?60:30,gap=possibleGapRange(blocks,duration,overnight),review=meds==='complex'||meds==='injection'||behavior!=='none',adequate=gap!==null&&gap.maximum<=alone;return{duration,gap,review,adequate};},[count,types,taskList,alone,blocks,overnight,meds,behavior]);
+ const result=useMemo(()=>{const habitat=/Rabbit|Mixed/.test(types),cats=types==='Cat',workload=count*2+taskList.length+(habitat?2:0)+(cats&&taskList.includes('Litter or habitat care')?1:0)+(meds==='routine'?1:meds==='complex'?4:0);const duration=workload>=9?60:30,gap=carePlanGap(blocks,duration,overnight),review=meds==='complex'||meds==='injection'||behavior!=='none',adequate=gap!==null&&gap.maximum<=alone;return{duration,gap,review,adequate};},[count,types,taskList,alone,blocks,overnight,meds,behavior]);
  const toggle=(task:string)=>setTaskList(x=>x.includes(task)?x.filter(y=>y!==task):[...x,task]);
  const estimateParams=new URLSearchParams({planner:'1',pets:String(count),household:types,duration:String(result.duration)}); if(blocks.length)estimateParams.set('windows',blocks.join(',')); if(overnight)estimateParams.set('overnight','1');
  return <div className="planner-grid"><div className="planner-form">
