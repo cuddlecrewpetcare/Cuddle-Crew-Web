@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import type {Metadata} from 'next';import SiteHeader from '../SiteHeader';import {business} from '../config/business';import {publicHolidays} from '../lib/business-rules';
 export const metadata:Metadata={title:'Holiday Pet Care Calendar | Cuddle Crew Pet Care',description:'Current and upcoming holiday pet-care dates and transparent holiday surcharges.',alternates:{canonical:'/holidays'}};
 const date=(value:string)=>new Date(`${value}T12:00:00`).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});

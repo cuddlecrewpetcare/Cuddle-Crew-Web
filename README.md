@@ -25,6 +25,8 @@ Server-only environment variables:
 
 - `RESEND_API_KEY` sends contact-form messages.
 - `PRIVATE_CALENDAR_ICS_URL` powers the privacy-preserving availability summary. Never expose this calendar URL to the browser.
+- `GOOGLE_MAPS_SERVER_KEY` powers the optional server-proxied Places Autocomplete (New), Address Validation, and Routes requests.
+- `PRIVATE_SERVICE_ORIGIN` is the private route origin used only by the server. Never expose or commit it.
 - `TURNSTILE_SECRET_KEY` enables server-side bot verification only when paired with the public site key.
 
 Public configuration:
@@ -32,10 +34,12 @@ Public configuration:
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY` displays Cloudflare Turnstile only when the server secret is also configured. Configure both Turnstile values or leave both blank; partial configuration returns a clear administrative error rather than silently rejecting visitors.
 - `SITE_INDEXING_ENABLED=true` opts the site into search indexing and the sitemap. It defaults to unlisted/noindex.
 
+The address integration does not use a browser key. In Google Cloud, enable Places API (New), Address Validation API, and Routes API. Restrict the server key to those APIs and, where the hosting platform permits, to the deployment’s server-side network or service identity. Suggestions use a public Sacramento-region location bias; this is distinct from the private route origin. Places suggestions displayed outside a Google map retain visible Google Maps attribution. The public privacy page references Google’s privacy policy and Maps terms.
+
 ## Deployment
 
 The production site is hosted through OpenAI Sites. Push the exact reviewed commit to the Sites source remote, package the build, save a new Sites version, then deploy that version. The GitHub mirror is at `cuddlecrewpetcare/Cuddle-Crew-Web`.
 
 ## Privacy and security
 
-The public estimate and care-planning tools do not require contact information. Private medical, behavioral, access, and household details belong in the secure client portal. Security headers are configured in `next.config.ts`; contact and availability APIs must retain input validation, rate limiting, safe error messages, and secret-only server integrations.
+The public estimate and care-planning tools do not require contact information. Private medical, behavioral, access, and household details belong in the secure client portal. Runtime security headers are configured in `proxy.ts`; contact, availability, and address APIs must retain input validation, rate limiting, safe error messages, and secret-only server integrations. Exact lookup addresses are used only for the immediate Google request and are not saved in care-plan session state or planning URLs.
