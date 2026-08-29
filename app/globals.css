@@ -41,3 +41,16 @@
     justify-content: center;
   }
 }
+.address-actions input {
+  color: #3b241a;
+  background: #fffdf8;
+}
+
+.address-actions input::placeholder {
+  color: #7a6c64;
+  opacity: 1;
+}
+.address-checker h3,
+.address-checker > label {
+  color: #3b241a;
+}
