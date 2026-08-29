@@ -3,6 +3,12 @@ export const business = {
   phoneDisplay: '916-252-3550', phoneHref: 'tel:+19162523550', timezone: 'America/Los_Angeles',
   replyWindow: 'within 1–2 business days',
   portal: { register: 'https://cuddlecrewpetcare.petssl.com/account', login: 'https://cuddlecrewpetcare.petssl.com/login' },
+  social: {
+    google: 'https://share.google/O3aya8JQkApZ4prHu',
+    facebook: 'https://www.facebook.com/profile.php?id=61593543881861',
+    yelp: 'https://www.yelp.com/biz/cuddle-crew-pet-care-carmichael-2',
+    instagram: 'https://www.instagram.com/cuddlecrewpetcare/',
+  },
   windows: [
     {id:'morning',label:'9 AM–12 PM',startHour:9,endHour:12},
     {id:'midday',label:'12–3 PM',startHour:12,endHour:15},

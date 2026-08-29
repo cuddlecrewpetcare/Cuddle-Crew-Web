@@ -18,6 +18,7 @@
 .social-button.facebook .social-icon { background: #1877f2; color: #fff; }
 .social-button.yelp .social-icon { background: #d32323; color: #fff; }
 .social-button.google .social-icon { background: #fff; border: 1px solid #eee; }
+.social-button.instagram .social-icon { background: linear-gradient(135deg,#833ab4 0%,#c13584 38%,#e1306c 62%,#f77737 82%,#fcaf45 100%); color: #fff; }
 .social-links-compact { display: inline-flex; margin: 0; gap: 7px; vertical-align: middle; }
 .social-links-compact .social-button { padding: 5px; border: 0; background: transparent; }
 .social-links-compact .social-button:hover { box-shadow: none; background: #fff0f7; }

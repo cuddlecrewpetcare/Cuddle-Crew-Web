@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {applyAvailabilityOverrides,businessDate,businessYear,carePlanGap,daysBetween,easterDate,holidayForDate,possibleGapRange,shortNoticeKind,zoneForZip} from '../app/lib/business-rules.ts';
+import {applyAvailabilityOverrides,businessDate,businessYear,daysBetween,easterDate,estimatorCarePlanGap,holidayForDate,plannerCareGap,possibleGapRange,shortNoticeKind,zoneForZip} from '../app/lib/business-rules.ts';
 import {calculateEstimate} from '../app/lib/estimate.ts';import type {EstimateInput,EstimatePet} from '../app/lib/estimate.ts';
 import {parsePlannerPrefill} from '../app/lib/planner-prefill.ts';
 import {turnstileMode} from '../app/lib/turnstile-config.ts';
@@ -16,7 +16,9 @@ test('possible gap range models one flexible service window',()=>{assert.deepEqu
 test('possible gap range models multiple windows and day wrap',()=>{assert.deepEqual(possibleGapRange([0,2],30),{minimum:15,maximum:20,overnightMaximum:20});assert.deepEqual(possibleGapRange([0,2],60),{minimum:15,maximum:19,overnightMaximum:19});});
 test('possible gap range models overnight care',()=>{assert.deepEqual(possibleGapRange([],30,true),{minimum:10,maximum:10,overnightMaximum:10});assert.deepEqual(possibleGapRange([0],30,true),{minimum:6,maximum:8.5,overnightMaximum:3.5});});
 test('possible gap range returns null for empty schedule',()=>assert.equal(possibleGapRange([],30,false),null));
-test('overnight care plan ignores hidden daytime window state',()=>assert.deepEqual(carePlanGap([0,2],30,true),possibleGapRange([],30,true)));
+test('estimator overnight ignores hidden daytime window state',()=>assert.deepEqual(estimatorCarePlanGap([0,2],30,true),possibleGapRange([],30,true)));
+test('planner overnight includes intentionally selected daytime windows',()=>assert.deepEqual(plannerCareGap([0,2],30,true),possibleGapRange([0,2],30,true)));
+test('plain overnight still models the overnight period',()=>assert.deepEqual(plannerCareGap([],30,true),possibleGapRange([],30,true)));
 test('business date and year follow Sacramento around New Year',()=>{const instant=new Date('2027-01-01T06:30:00Z');assert.equal(businessDate(instant),'2026-12-31');assert.equal(businessYear(instant),2026)});
 
 test('short notice uses under-48 excluding separate same-day tier',()=>{const now=new Date('2026-08-29T11:00:00');assert.equal(shortNoticeKind('2026-08-29',15,now),'same-day');assert.equal(shortNoticeKind('2026-08-30',9,now),'under-48');assert.equal(shortNoticeKind('2026-09-02',9,now),'standard');assert.equal(shortNoticeKind('2026-08-28',9,now),'past');});

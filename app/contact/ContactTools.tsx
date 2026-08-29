@@ -1,6 +1,7 @@
 'use client';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import TurnstileWidget from './TurnstileWidget';
+import {trackPublicEvent} from '../lib/public-analytics';
 
 const email = 'lauren@cuddlecrewpetcare.com';
 
@@ -28,7 +29,7 @@ export default function ContactTools({turnstileSiteKey=''}:{turnstileSiteKey?:st
     try{
       const response=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,replyTo,phone,zip,topic,message,website:data.get('website'),startedAt:startedAt.current,turnstileToken})});
       const payload=(await response.json().catch(()=>({}))) as {error?:unknown};if(!response.ok) throw new Error(typeof payload.error==='string'?payload.error:'The message could not be sent right now.');
-      setStatus('sent'); setName(''); setReplyTo(''); setPhone(''); setZip(''); setMessage(''); startedAt.current=Date.now();setTurnstileReset(x=>x+1);
+      trackPublicEvent('contact_submitted',{status:'success'});setStatus('sent'); setName(''); setReplyTo(''); setPhone(''); setZip(''); setMessage(''); startedAt.current=Date.now();setTurnstileReset(x=>x+1);
     }catch(error){setStatus('error');setErrorMessage(error instanceof Error?error.message:'The message could not be sent right now.');if(siteKey)setTurnstileReset(x=>x+1);}
   };
   return <div className="contact-tools">
