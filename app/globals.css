@@ -29,3 +29,15 @@
 .start-page{padding-bottom:64px}.start-hero{padding-bottom:32px}.start-service-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}.start-service-grid span,.start-steps li{background:rgba(255,255,255,.68);border:1px solid var(--line);border-radius:14px;padding:14px}.start-steps{display:grid;gap:10px;padding-left:28px}.start-cta{border-radius:24px;margin-top:28px;text-align:center;padding:36px 24px}.button.secondary{background:var(--cream);color:var(--ink)!important;border:1px solid #8d776b}.button.secondary:hover{background:#fff0df}.button.secondary:focus-visible{outline:3px solid #3075ff;outline-offset:3px}
 @media(max-width:600px){.start-service-grid{grid-template-columns:1fr}.start-hero .actions,.start-cta .actions{flex-direction:column;align-items:stretch}.start-hero .actions a,.start-cta .actions a{width:100%;text-align:center}}
 @media(max-width:800px){.mobile-contact{bottom:max(12px,env(safe-area-inset-bottom))}}
+@media (max-width:600px) {
+  .fallback-page .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fallback-page .actions > * {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
