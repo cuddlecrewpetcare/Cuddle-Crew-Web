@@ -27,3 +27,13 @@ test('mobile navigation remains visible until JavaScript enhances it',()=>{
   assert.match(styles,/\.nav\.is-enhanced \.nav-links\{display:none;position:absolute/);
   assert.match(styles,/\.nav\.is-enhanced \.nav-links\.is-open\{display:flex\}/);
 });
+
+test('start page keeps one primary first step and clear planning pathways',()=>{
+  const start=readFileSync(resolve('app/start/page.tsx'),'utf8');
+  assert.match(start,/Start with service area/);assert.match(start,/Check preliminary availability/);assert.match(start,/Open your client portal/);assert.match(start,/Online tools provide planning guidance only/);assert.match(start,/aria-label="Choose your next step"/);
+});
+
+test('service-area map has a visible unavailable fallback',()=>{
+  const map=readFileSync(resolve('app/ServiceAreaMap.tsx'),'utf8');
+  assert.match(map,/setUnavailable\(true\)/);assert.match(map,/The interactive map is unavailable right now/);assert.match(map,/role="status"/);
+});

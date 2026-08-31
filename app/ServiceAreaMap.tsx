@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { GeoJsonObject } from 'geojson';
 import type { GeoJSON as LeafletGeoJSON, Map, Path } from 'leaflet';
 import {business} from './config/business';
@@ -13,10 +13,12 @@ export default function ServiceAreaMap({ selectedZip, onSelect }: { selectedZip:
   const mapRef = useRef<Map | null>(null);
   const geoRef = useRef<LeafletGeoJSON | null>(null);
   const zipLayers = useRef<Record<string, Path>>({});
+  const [unavailable,setUnavailable]=useState(false);
 
   useEffect(() => {
     if (!mapEl.current) return;
     let disposed = false;
+    setUnavailable(false);
     (async () => {
       const L = (await import('leaflet')).default;
       if (disposed || !mapEl.current) return;
@@ -40,7 +42,7 @@ export default function ServiceAreaMap({ selectedZip, onSelect }: { selectedZip:
       }).addTo(map);
       geoRef.current = layer;
       map.fitBounds(layer.getBounds(), { padding: [18, 18] });
-    })().catch(() => undefined);
+    })().catch(() => {if(!disposed)setUnavailable(true)});
     return () => { disposed = true; mapRef.current?.remove(); mapRef.current = null; geoRef.current = null; zipLayers.current = {}; };
   }, [onSelect]);
 
@@ -57,5 +59,5 @@ export default function ServiceAreaMap({ selectedZip, onSelect }: { selectedZip:
     else map.fitBounds(fullLayer.getBounds(), { padding: [18, 18] });
   }, [selectedZip]);
 
-  return <div className="territory-map" ref={mapEl} role="img" aria-label="Interactive map of Cuddle Crew Pet Care ZIP-code service zones. Select a ZIP area to check its travel fee." />;
+  return <div className="territory-map" ref={mapEl} role="img" aria-label="Interactive map of Cuddle Crew Pet Care ZIP-code service zones. Select a ZIP area to check its travel fee.">{unavailable&&<div className="map-unavailable" role="status"><strong>The interactive map is unavailable right now.</strong><span>Use the ZIP checker beside this map for the same published service-area result.</span></div>}</div>;
 }
