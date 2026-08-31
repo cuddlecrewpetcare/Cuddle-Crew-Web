@@ -16,9 +16,8 @@ export const business = {
     {id:'evening',label:'6–9 PM',startHour:18,endHour:21},
   ],
   overnight: {startHour:18,endHour:8,label:'approximately 6 PM–8 AM'},
-  pricing: { drop30:{dog:30,other:25}, drop60:{dog:45,other:40}, walk30:30, walk60:45,
-    overnight:{dog:85,cat:80}, additionalDog:10, additionalOther:5, overnightAddOn30:20,
-    overnightAddOn60:35, holidayVisit:15, holidayOvernight:30, shortNoticeVisit:10,
+  pricing: { drop30:{dog:30,other:30}, drop60:{dog:48,other:48}, walk30:32, walk60:50, overnight:{dog:105,cat:105}, additionalDog:10, additionalOther:5, overnightMidday:30, overnightAddOn30:30, overnightAddOn60:30,
+    holidayVisit:15, holidayOvernight:30, shortNoticeVisit:10,
     sameDayVisit:20, shortNoticeOvernight:25 },
   shortNotice: {
     daytimeRule: 'under 48 hours, excluding same-day requests',
