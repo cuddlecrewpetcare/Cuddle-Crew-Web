@@ -37,3 +37,8 @@ test('service-area map has a visible unavailable fallback',()=>{
   const map=readFileSync(resolve('app/ServiceAreaMap.tsx'),'utf8');
   assert.match(map,/setUnavailable\(true\)/);assert.match(map,/The interactive map is unavailable right now/);assert.match(map,/role="status"/);
 });
+
+test('contact errors receive focus while preserving entered values for recovery',()=>{
+  const contact=readFileSync(resolve('app/contact/ContactTools.tsx'),'utf8');
+  assert.match(contact,/errorRef\.current\?\.focus\(\)/);assert.match(contact,/ref=\{errorRef\}/);assert.match(contact,/tabIndex=\{-1\}/);
+});
