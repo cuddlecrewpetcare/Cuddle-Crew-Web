@@ -13,8 +13,9 @@ const securityHeaders={
   'Referrer-Policy':'strict-origin-when-cross-origin',
   'X-Frame-Options':'DENY',
   'Permissions-Policy':'camera=(), microphone=(), geolocation=()',
+  'Cross-Origin-Opener-Policy':'same-origin-allow-popups',
   'Strict-Transport-Security':'max-age=31536000; includeSubDomains',
-  'Content-Security-Policy':"default-src 'self'; img-src 'self' data: https://*.tile.openstreetmap.org; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://api.resend.com https://challenges.cloudflare.com; font-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+  'Content-Security-Policy':"default-src 'self'; img-src 'self' data: https://*.tile.openstreetmap.org; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; font-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
 };
 
 const withSecurityHeaders=(response:NextResponse)=>{

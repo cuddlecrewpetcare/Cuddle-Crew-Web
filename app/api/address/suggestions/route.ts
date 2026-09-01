@@ -1,9 +1,9 @@
-import {rateLimit,clientKey} from '../../../lib/rate-limit';
-import {parseAutocomplete} from '../../../lib/address';
-const clean=(value:unknown)=>typeof value==='string'?value.trim().slice(0,180):'';
+import {clientKey,rateLimit} from '../../../lib/rate-limit.ts';
+import {parseAutocomplete} from '../../../lib/address.ts';
+import {fetchWithTimeout,readJsonObject} from '../../../lib/server-security.ts';
 export async function POST(request:Request){
- const limit=rateLimit(`address-suggest:${clientKey(request)}`,25,5*60_000);if(!limit.allowed)return Response.json({error:'Please wait and try again.'},{status:429});
- const key=process.env.GOOGLE_MAPS_SERVER_KEY;if(!key)return Response.json({available:false,suggestions:[]},{status:503});
- const body=await request.json().catch(()=>({})) as Record<string,unknown>;const input=clean(body.input);if(input.length<4)return Response.json({available:true,suggestions:[]});
- try{const response=await fetch('https://places.googleapis.com/v1/places:autocomplete',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':key,'X-Goog-FieldMask':'suggestions.placePrediction.placeId,suggestions.placePrediction.text.text'},body:JSON.stringify({input,includedRegionCodes:['us'],locationBias:{circle:{center:{latitude:38.5816,longitude:-121.4944},radius:50000}}})});if(!response.ok)throw new Error();return Response.json({available:true,suggestions:parseAutocomplete(await response.json())},{headers:{'Cache-Control':'no-store'}})}catch{return Response.json({available:false,suggestions:[]},{status:503})}
+ const limit=rateLimit(`address-suggest:${clientKey(request)}`,25,5*60_000);if(!limit.allowed)return Response.json({error:'Please wait and try again.'},{status:429,headers:{'Cache-Control':'no-store','Retry-After':String(limit.retryAfter)}});
+ const key=process.env.GOOGLE_MAPS_SERVER_KEY;if(!key)return Response.json({available:false,suggestions:[]},{status:503,headers:{'Cache-Control':'no-store'}});
+ const parsed=await readJsonObject(request,1024,['input']);if(!parsed.ok)return Response.json({error:parsed.error},{status:parsed.status,headers:{'Cache-Control':'no-store'}});const input=typeof parsed.value.input==='string'?parsed.value.input.trim():'';if(input.length>180)return Response.json({error:'Address search is too long.'},{status:400,headers:{'Cache-Control':'no-store'}});if(input.length<4)return Response.json({available:true,suggestions:[]},{headers:{'Cache-Control':'no-store'}});
+ try{const response=await fetchWithTimeout('https://places.googleapis.com/v1/places:autocomplete',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':key,'X-Goog-FieldMask':'suggestions.placePrediction.placeId,suggestions.placePrediction.text.text'},body:JSON.stringify({input,includedRegionCodes:['us'],locationBias:{circle:{center:{latitude:38.5816,longitude:-121.4944},radius:50000}}})},5000);if(!response.ok)throw new Error();return Response.json({available:true,suggestions:parseAutocomplete(await response.json())},{headers:{'Cache-Control':'no-store'}})}catch{return Response.json({available:false,suggestions:[]},{status:503,headers:{'Cache-Control':'no-store'}})}
 }
