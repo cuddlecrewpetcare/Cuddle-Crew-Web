@@ -5,13 +5,17 @@
 - [ ] Production domain resolves to the reviewed deployment.
 - [ ] HTTPS is active and renews automatically.
 - [ ] Production environment variables are configured without exposing server secrets.
-- [ ] The reviewed `master` commit is saved as a private Sites version before production deployment.
+- [ ] The reviewed `main` commit is saved as a private Sites version before production deployment.
 
 ## Search
 
 - [ ] Set `SITE_INDEXING_ENABLED=true` only when the owner is ready to be listed.
 - [ ] Verify the production `robots.txt`, sitemap, and canonical URLs.
 - [ ] Confirm no private street address appears in metadata, schema, HTML, or source-visible config.
+- [ ] Add and verify the `https://www.cuddlecrewpetcare.com/` property in Google Search Console using an owner-approved verification method.
+- [ ] Submit `https://www.cuddlecrewpetcare.com/sitemap.xml` after the production site is stable and indexing is enabled.
+- [ ] Inspect the home page, `/start`, `/plan`, `/contact`, `/credentials`, and `/faq`; request indexing only after each resolves on canonical HTTPS URLs.
+- [ ] Search the exact business name and domain after indexing begins to confirm the visible result uses the canonical hostname; record any follow-up rather than assuming indexing is complete.
 
 ## Google Maps Platform
 

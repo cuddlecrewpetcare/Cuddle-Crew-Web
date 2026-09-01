@@ -20,7 +20,7 @@ const indexing=process.env.SITE_INDEXING_ENABLED==='true';
 export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   robots: { index: indexing, follow: indexing, googleBot: { index: indexing, follow: indexing } },
-  metadataBase: new URL('https://www.cuddlecrewpetcare.com'),
+  metadataBase: new URL(business.website),
   title: 'Cuddle Crew Pet Care | Sacramento Pet Sitting',
   description: 'Warm, attentive pet sitting and dog walking in Sacramento and surrounding communities.',
   alternates: { canonical: '/' },
@@ -54,22 +54,23 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'LocalBusiness',
-            '@id': 'https://www.cuddlecrewpetcare.com/#business',
-            description: 'Professional in-home pet sitting and dog walking serving Sacramento and surrounding communities.',
-            name: business.name,
-            url: 'https://www.cuddlecrewpetcare.com',
-            email: business.email,
-            telephone: '+1-916-252-3550',
-            image: 'https://www.cuddlecrewpetcare.com/og.png',
-            areaServed: 'Sacramento and surrounding communities, California',
-            priceRange: '$$',
-            makesOffer: {'@type':'OfferCatalog',name:'Pet care services',itemListElement:[{'@type':'Offer','name':'Drop-in pet visits'},{'@type':'Offer','name':'Dog walks'},{'@type':'Offer','name':'Overnight pet sitting'}]},
-            sameAs: [
-              business.social.google,
-              business.social.facebook,
-              business.social.yelp,
-              business.social.instagram,
+            '@graph': [
+              {
+                '@type': 'LocalBusiness',
+                '@id': `${business.website}/#business`,
+                description: 'Owner-operated professional in-home pet sitting, dog walking, drop-ins, and overnight care serving Sacramento and surrounding communities.',
+                name: business.name,
+                url: business.website,
+                email: business.email,
+                telephone: business.phoneE164,
+                image: `${business.website}/og.png`,
+                address: { '@type': 'PostalAddress', addressLocality: business.location.city, addressRegion: business.location.region, addressCountry: 'US' },
+                areaServed: business.location.territory,
+                priceRange: '$$',
+                makesOffer: {'@type':'OfferCatalog',name:'Pet care services',itemListElement:[{'@type':'Offer','name':'Drop-in pet visits'},{'@type':'Offer','name':'Dog walks'},{'@type':'Offer','name':'Overnight pet sitting'}]},
+                sameAs: [business.social.google,business.social.facebook,business.social.yelp,business.social.instagram],
+              },
+              { '@type': 'WebSite', '@id': `${business.website}/#website`, name: business.name, url: business.website },
             ],
           }) }}
         />

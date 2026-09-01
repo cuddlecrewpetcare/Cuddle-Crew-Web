@@ -1,6 +1,8 @@
 export const business = {
   name: 'Cuddle Crew Pet Care', owner: 'Lauren Blalock', email: 'lauren@cuddlecrewpetcare.com',
   phoneDisplay: '916-252-3550', phoneHref: 'tel:+19162523550', timezone: 'America/Los_Angeles',
+  website: 'https://www.cuddlecrewpetcare.com', phoneE164: '+1-916-252-3550',
+  location: { city: 'Carmichael', region: 'CA', territory: 'Sacramento and surrounding communities, California' },
   replyWindow: 'within 1–2 business days',
   portal: { register: 'https://cuddlecrewpetcare.petssl.com/account', login: 'https://cuddlecrewpetcare.petssl.com/login' },
   social: {

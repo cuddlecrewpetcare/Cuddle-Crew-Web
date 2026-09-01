@@ -42,3 +42,34 @@ test('contact errors receive focus while preserving entered values for recovery'
   const contact=readFileSync(resolve('app/contact/ContactTools.tsx'),'utf8');
   assert.match(contact,/errorRef\.current\?\.focus\(\)/);assert.match(contact,/ref=\{errorRef\}/);assert.match(contact,/tabIndex=\{-1\}/);
 });
+
+test('SEO metadata and schema use the verified business profile without unsupported review claims',()=>{
+  const layout=readFileSync(resolve('app/layout.tsx'),'utf8');
+  const business=readFileSync(resolve('app/config/business.ts'),'utf8');
+
+  assert.match(business,/website: 'https:\/\/www\.cuddlecrewpetcare\.com'/);
+  assert.match(business,/city: 'Carmichael'/);
+  assert.match(layout,/'@type': 'LocalBusiness'/);
+  assert.match(layout,/'@type': 'WebSite'/);
+  assert.match(layout,/telephone: business\.phoneE164/);
+  assert.match(layout,/areaServed: business\.location\.territory/);
+  assert.doesNotMatch(layout,/AggregateRating|Review/);
+});
+
+test('public index routes retain canonical and social metadata while retired routes redirect',()=>{
+  const sitemap=readFileSync(resolve('app/sitemap.ts'),'utf8');
+  const robots=readFileSync(resolve('app/robots.ts'),'utf8');
+  const proxy=readFileSync(resolve('proxy.ts'),'utf8');
+  const routes=['start','choosing-care','holidays','privacy','terms'];
+
+  assert.match(sitemap,/SITE_INDEXING_ENABLED/);
+  assert.match(sitemap,/\/choosing-care/);
+  assert.match(robots,/SITE_INDEXING_ENABLED/);
+  assert.match(proxy,/['\"]\/services['\"]:\s*['\"]\/#services['\"]/);
+  assert.match(proxy,/['\"]\/rates['\"]:\s*['\"]\/#estimate['\"]/);
+  for(const route of routes){
+    const source=readFileSync(resolve(`app/${route}/page.tsx`),'utf8');
+    assert.match(source,/alternates:\{canonical:/);
+    assert.match(source,/openGraph:/);
+  }
+});

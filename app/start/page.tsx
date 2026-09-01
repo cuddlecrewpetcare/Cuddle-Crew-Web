@@ -4,7 +4,7 @@ import SiteHeader from '../SiteHeader';
 import SocialLinks from '../SocialLinks';
 import {business} from '../config/business';
 
-export const metadata:Metadata={title:'Start Here | Cuddle Crew Pet Care',description:'Choose a clear next step for personalized Sacramento pet care: service area, care planning, pricing, availability, or a conversation with Lauren.',alternates:{canonical:'/start'}};
+export const metadata:Metadata={title:'Start Here | Cuddle Crew Pet Care',description:'Choose a clear next step for personalized Sacramento pet care: service area, care planning, pricing, availability, or a conversation with Lauren.',alternates:{canonical:'/start'},openGraph:{title:'Start Here | Cuddle Crew Pet Care',description:'Choose a clear next step for personalized Sacramento pet care.',url:'/start'}};
 const pathways=[
  {step:'1',title:'Check service area',body:'Confirm whether your ZIP is in a listed zone and see any published travel fee.',href:'/#area',label:'Check service area'},
  {step:'2',title:'Plan care',body:'Use a short, anonymous guide to find a sensible visit-length and schedule starting point.',href:'/plan',label:'Plan care'},
