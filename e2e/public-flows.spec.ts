@@ -57,3 +57,32 @@ test('start and contact flows do not send a real inquiry in browser tests',async
   await page.getByRole('button',{name:'Send inquiry'}).click();
   await expect(page.getByText('Thanks—your inquiry was sent to Lauren.')).toBeVisible();
 });
+
+test('anonymous progress survives refresh without retaining dates or safety details and can be deleted',async({page})=>{
+  await page.goto('/');
+  await page.getByLabel('Service ZIP').fill('95821');
+  await page.getByLabel('9 AM–12 PM').check();
+  await page.getByLabel('First service date').fill(futureDate());
+  await page.getByLabel('Last service date').fill(futureDate());
+  await page.reload();
+  await expect(page.getByLabel('Service ZIP')).toHaveValue('95821');
+  await expect(page.getByLabel('9 AM–12 PM')).toBeChecked();
+  await expect(page.getByLabel('First service date')).toHaveValue('');
+  await expect(page.getByLabel('Last service date')).toHaveValue('');
+  await page.getByRole('button',{name:'Clear saved estimate and reset'}).click();
+  await expect(page.getByText('Saved estimate cleared.')).toBeVisible();
+  await expect.poll(()=>page.evaluate(()=>sessionStorage.getItem('cuddlecrew-care-plan-v1'))).toBeNull();
+
+  await page.goto('/plan');
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(sessionStorage.getItem('cuddlecrew-care-planner-v1')||'{}').dogs)).toBe(1);
+  await page.getByLabel('Dogs').fill('2');
+  await page.getByLabel('Behavior or safety consideration').selectOption('reactive');
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(sessionStorage.getItem('cuddlecrew-care-planner-v1')||'{}').dogs)).toBe(2);
+  await page.reload();
+  await expect(page.getByLabel('Dogs')).toHaveValue('2');
+  await expect(page.getByLabel('Behavior or safety consideration')).toHaveValue('none');
+  await expect(page.getByRole('heading',{name:'Possible service timing across a day'})).toBeVisible();
+  await page.getByRole('button',{name:'Clear saved planner progress and reset'}).click();
+  await expect(page.getByText('Saved planner progress cleared.')).toBeVisible();
+  await expect.poll(()=>page.evaluate(()=>sessionStorage.getItem('cuddlecrew-care-planner-v1'))).toBeNull();
+});

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import './contact-form.css';
 import './estimator-enhancements.css';
+import './smart-features.css';
 import {business} from './config/business';
 import PublicAttribution from './PublicAttribution';
 
