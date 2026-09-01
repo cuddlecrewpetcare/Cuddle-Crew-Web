@@ -16,6 +16,7 @@ test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=
 
   const zip=page.locator('#zip');
   await expect(zip).toBeEditable();
+  await page.waitForTimeout(2_000);
   await zip.fill('95821');
   await zip.press('Enter');
   await expect(page.locator('.checker .result')).toContainText('Core zone');
