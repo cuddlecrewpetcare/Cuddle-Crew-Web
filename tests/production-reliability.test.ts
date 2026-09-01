@@ -73,3 +73,17 @@ test('public index routes retain canonical and social metadata while retired rou
     assert.match(source,/openGraph:/);
   }
 });
+
+test('home defers below-fold interactive tools and keeps public prices sourced from business rules',()=>{
+  const home=readFileSync(resolve('app/page.tsx'),'utf8');
+
+  assert.match(home,/dynamic\(\(\)=>import\('\.\/QuoteEstimator'\),\{ssr:false/);
+  assert.match(home,/dynamic\(\(\)=>import\('\.\/AddressChecker'\),\{ssr:false/);
+  assert.match(home,/dynamic\(\(\)=>import\('\.\/ServiceAreaMap'\),\{ssr:false/);
+  assert.match(home,/Loading the planning estimator/);
+  assert.match(home,/Use the ZIP checker for the same published service-area result/);
+  assert.match(home,/\$\{business\.pricing\.drop30\.dog\}/);
+  assert.match(home,/\$\{business\.pricing\.walk60\}/);
+  assert.match(home,/\$\{business\.pricing\.overnightMidday\}/);
+  assert.doesNotMatch(home,/\$85|\$80|\$45 dog|\$25 cat/);
+});
