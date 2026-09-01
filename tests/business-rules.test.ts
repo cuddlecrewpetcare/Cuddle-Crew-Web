@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {applyAvailabilityOverrides,businessDate,businessYear,daysBetween,easterDate,estimatorCarePlanGap,holidayForDate,plannerCareGap,possibleGapRange,shortNoticeKind,zoneForZip} from '../app/lib/business-rules.ts';
+import {applyAvailabilityOverrides,businessDate,businessYear,daysBetween,easterDate,estimatorCarePlanGap,holidayForDate,plannerCareGap,possibleGapRange,shortNoticeKind,zoneForDriveSeconds,zoneForZip} from '../app/lib/business-rules.ts';
 import {calculateEstimate} from '../app/lib/estimate.ts';import type {EstimateInput,EstimatePet} from '../app/lib/estimate.ts';
 import {parsePlannerPrefill} from '../app/lib/planner-prefill.ts';
 import {turnstileMode} from '../app/lib/turnstile-config.ts';
@@ -23,14 +23,52 @@ test('business date and year follow Sacramento around New Year',()=>{const insta
 
 test('short notice uses under-48 excluding separate same-day tier',()=>{const now=new Date('2026-08-29T11:00:00');assert.equal(shortNoticeKind('2026-08-29',15,now),'same-day');assert.equal(shortNoticeKind('2026-08-30',9,now),'under-48');assert.equal(shortNoticeKind('2026-09-02',9,now),'standard');assert.equal(shortNoticeKind('2026-08-28',9,now),'past');});
 
-test('authoritative launch base pricing',()=>{assert.equal(total().total,30);assert.equal(total({pets:pets('cat')}).total,30);assert.equal(total({service:'drop60'}).total,48);assert.equal(total({service:'walk30'}).total,32);assert.equal(total({service:'walk60'}).total,50);});
-test('additional-pet modifiers apply to daytime services',()=>{assert.equal(total({pets:pets('dog','dog')}).total,40);assert.equal(total({pets:pets('dog','cat')}).total,35);assert.equal(total({pets:pets('cat','cat','cat')}).total,40);});
-test('overnight uses the approved base and routes multi-pet pricing to review',()=>{assert.equal(total({service:'overnight',end:'2026-09-11'}).total,105);assert.equal(total({service:'overnight',end:'2026-09-11',midday:'30'}).total,135);assert.equal(total({service:'overnight',end:'2026-09-11',midday:'60'}).total,135);const review=total({service:'overnight',end:'2026-09-11',pets:pets('dog','cat')});assert.equal(review.overnightPetReview,true);assert.equal(review.petFee,0);});
-test('travel fees use listed ZIP zones and outside review state',()=>{assert.equal(total({zip:'95821'}).total,30);assert.equal(total({zip:'95610'}).total,30);assert.equal(total({zip:'95660'}).total,35);assert.equal(total({zip:'95630'}).total,40);const outside=total({zip:'99999'});assert.equal(outside.total,30);assert.equal(outside.outside,true);});
-test('holiday pricing supports daytime, overnight, and multiple dates',()=>{assert.equal(total({start:'2026-12-24',end:'2026-12-24'}).total,45);assert.equal(total({service:'overnight',start:'2026-12-24',end:'2026-12-25'}).total,135);assert.equal(total({start:'2026-12-24',end:'2026-12-25'}).total,90);assert.equal(total().holidayFee,0);});
+test('authoritative species-aware drop-in and dog-walk rates',()=>{
+ assert.equal(total().total,30); // A
+ assert.equal(total({service:'drop60',zip:'95610'}).total,48); // B
+ assert.equal(total({pets:pets('cat')}).total,28); // C
+ assert.equal(total({service:'drop60',pets:pets('cat'),zip:'95610'}).total,45); // D
+ assert.equal(total({pets:pets('small')}).total,28); // E
+ assert.equal(total({service:'walk30'}).total,32); // F
+ assert.equal(total({service:'walk60'}).total,50); // G
+});
+test('overnight rates and separately booked midday visits follow household composition',()=>{
+ assert.equal(total({service:'overnight',end:'2026-09-11'}).total,85); // H
+ assert.equal(total({service:'overnight',end:'2026-09-11',pets:pets('cat')}).total,80); // I
+ assert.equal(total({service:'overnight',end:'2026-09-11',midday:'30'}).total,110); // J
+ assert.equal(total({service:'overnight',end:'2026-09-11',midday:'30',pets:pets('cat')}).total,103); // K
+ assert.equal(total({service:'overnight',end:'2026-09-11',pets:pets('dog','cat')}).total,90);
+});
+test('additional-pet modifiers apply only after the household base pet',()=>{
+ assert.equal(total({pets:pets('dog','dog')}).total,40); // L
+ assert.equal(total({pets:pets('cat','cat')}).total,33); // M
+ assert.equal(total({pets:pets('dog','cat')}).total,35);
+ assert.equal(total({pets:pets('cat','small','small')}).total,38);
+});
+test('travel fees use drive-time bands with ZIPs as preliminary mappings',()=>{
+ assert.equal(total({zip:'95821'}).total,30);
+ assert.equal(total({zip:'95610'}).total,30);
+ assert.equal(total({zip:'95660'}).total,40); // N
+ assert.equal(total({zip:'95630'}).total,50); // O
+ const outside=total({zip:'99999'});assert.equal(outside.total,null);assert.equal(outside.manualReview,true);assert(outside.manualReviewReasons.includes('beyond-travel-area')); // P
+ assert.equal(zoneForDriveSeconds(600).key,'core');
+ assert.equal(zoneForDriveSeconds(601).key,'standard');
+ assert.equal(zoneForDriveSeconds(1200).key,'standard');
+ assert.equal(zoneForDriveSeconds(1201).key,'extended');
+ assert.equal(zoneForDriveSeconds(1800).key,'extended');
+ assert.equal(zoneForDriveSeconds(1801).key,'farExtended');
+ assert.equal(zoneForDriveSeconds(2700).key,'farExtended');
+ assert.equal(zoneForDriveSeconds(2701).state,'outside');
+});
+test('manual-review combinations do not present an automatic total',()=>{
+ const smallOvernight=total({service:'overnight',end:'2026-09-11',pets:pets('small')});assert.equal(smallOvernight.total,null);assert(smallOvernight.manualReviewReasons.includes('small-animal-overnight')); // Q
+ const complex=total({pets:[{type:'dog',complex:true}]});assert.equal(complex.total,null);assert(complex.manualReviewReasons.includes('complex-care')); // R
+ const extendedOvernight=total({service:'overnight',end:'2026-09-11',zip:'95660'});assert.equal(extendedOvernight.total,null);assert(extendedOvernight.manualReviewReasons.includes('extended-area-overnight'));
+});
+test('holiday pricing supports daytime, overnight, and multiple dates',()=>{assert.equal(total({start:'2026-12-24',end:'2026-12-24'}).total,45);assert.equal(total({service:'overnight',start:'2026-12-24',end:'2026-12-25'}).total,115);assert.equal(total({start:'2026-12-24',end:'2026-12-25'}).total,90);assert.equal(total().holidayFee,0);});
 test('invalid estimate states are explicit',()=>{assert.deepEqual(calculateEstimate(input({start:''})).issues,['dates']);assert.deepEqual(calculateEstimate(input({end:'2026-09-09'})).issues,['dates']);assert.deepEqual(calculateEstimate(input({zip:''})).issues,['zip']);assert.deepEqual(calculateEstimate(input({blocks:[]})).issues,['windows']);assert.deepEqual(calculateEstimate(input({service:'walk30',pets:pets('cat')})).issues,['walk-household']);});
 test('past dates are rejected in the business timezone while today and future remain valid',()=>{const now=new Date('2026-08-29T19:00:00Z');assert.deepEqual(calculateEstimate(input({start:'2026-08-28',end:'2026-08-28',now})).issues,['past-date']);assert.deepEqual(calculateEstimate(input({start:'2026-08-29',end:'2026-08-29',now})).issues,[]);assert.deepEqual(calculateEstimate(input({start:'2026-08-30',end:'2026-08-30',now})).issues,[])});
-test('short-notice pricing distinguishes tomorrow and same day',()=>{assert.equal(total({start:'2026-08-30',end:'2026-08-30',now:new Date('2026-08-29T11:00:00')}).shortFee,10);assert.equal(total({start:'2026-08-29',end:'2026-08-29',blocks:[2],now:new Date('2026-08-29T11:00:00')}).shortFee,20);});
+test('less-than-48-hour pricing uses the authoritative visit fee including same day',()=>{assert.equal(total({start:'2026-08-30',end:'2026-08-30',now:new Date('2026-08-29T11:00:00')}).shortFee,10);assert.equal(total({start:'2026-08-29',end:'2026-08-29',blocks:[2],now:new Date('2026-08-29T11:00:00')}).shortFee,10);});
 
 test('availability overrides only make status more restrictive',()=>{const overrides=[{start:'2026-12-20',end:'2026-12-28',status:'Very Limited' as const},{start:'2026-12-24',end:'2026-12-24',status:'Contact for Availability' as const}];assert.equal(applyAvailabilityOverrides('2026-12-21','Good Availability',overrides),'Very Limited');assert.equal(applyAvailabilityOverrides('2026-12-24','Limited Availability',overrides),'Contact for Availability');assert.equal(applyAvailabilityOverrides('2026-12-21','Contact for Availability',overrides),'Contact for Availability');assert.equal(applyAvailabilityOverrides('2026-12-30','Good Availability',overrides),'Good Availability');});
 

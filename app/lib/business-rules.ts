@@ -1,6 +1,7 @@
 import {business} from '../config/business.ts';
 export type ServiceZoneKey=keyof typeof business.zones;
 export const zoneForZip=(zip:string)=>{if(!/^\d{5}$/.test(zip))return{state:'incomplete' as const};const entry=Object.entries(business.zones).find(([,zone])=>(zone.zips as readonly string[]).includes(zip));return entry?{state:'listed' as const,key:entry[0] as ServiceZoneKey,...entry[1]}:{state:'outside' as const};};
+export const zoneForDriveSeconds=(seconds:number)=>{if(!Number.isFinite(seconds)||seconds<0)return{state:'incomplete' as const};const minutes=seconds/60;const entry=Object.entries(business.zones).find(([,zone])=>minutes<=zone.maxMinutesInclusive);return entry?{state:'listed' as const,key:entry[0] as ServiceZoneKey,...entry[1],minutes}:{state:'outside' as const,minutes};};
 const isoLocal=(date:Date)=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 export const businessDate=(date:Date=new Date(),timezone=business.timezone)=>new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
 export const businessYear=(date:Date=new Date(),timezone=business.timezone)=>Number(new Intl.DateTimeFormat('en-US',{timeZone:timezone,year:'numeric'}).format(date));

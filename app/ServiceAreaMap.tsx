@@ -6,7 +6,7 @@ import type { GeoJSON as LeafletGeoJSON, Map, Path } from 'leaflet';
 import {business} from './config/business';
 
 const zoneByZip: Record<string, { name: string; color: string; fee: string }> = {};
-for(const zone of Object.values(business.zones))for(const zip of zone.zips)zoneByZip[zip]={name:zone.name,color:zone.color,fee:zone.fee?`$${zone.fee} per visit`:'No travel fee'};
+for(const zone of Object.values(business.zones))for(const zip of zone.zips)zoneByZip[zip]={name:zone.name,color:zone.color,fee:zone.feePerVisit?`Approximately $${zone.feePerVisit} per standalone visit`:'Travel included'};
 
 export default function ServiceAreaMap({ selectedZip, onSelect }: { selectedZip: string; onSelect: (zip: string) => void }) {
   const mapEl = useRef<HTMLDivElement>(null);

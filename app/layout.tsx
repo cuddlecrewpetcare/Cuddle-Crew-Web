@@ -67,7 +67,7 @@ export default function RootLayout({
                 image: `${business.website}/og.png`,
                 address: { '@type': 'PostalAddress', addressLocality: business.location.city, addressRegion: business.location.region, addressCountry: 'US' },
                 areaServed: business.location.territory,
-                priceRange: '$$',
+                priceRange: `Pet care from $${business.pricing.dropIn.cat[30]}`,
                 makesOffer: {'@type':'OfferCatalog',name:'Pet care services',itemListElement:[{'@type':'Offer','name':'Drop-in pet visits'},{'@type':'Offer','name':'Dog walks'},{'@type':'Offer','name':'Overnight pet sitting'}]},
                 sameAs: [business.social.google,business.social.facebook,business.social.yelp,business.social.instagram],
               },

@@ -82,17 +82,19 @@ test('home defers below-fold interactive tools and keeps public prices sourced f
   assert.match(home,/dynamic\(\(\)=>import\('\.\/ServiceAreaMap'\),\{ssr:false/);
   assert.match(home,/Loading the planning estimator/);
   assert.match(home,/Use the ZIP checker for the same published service-area result/);
-  assert.match(home,/\$\{business\.pricing\.drop30\.dog\}/);
-  assert.match(home,/\$\{business\.pricing\.walk60\}/);
-  assert.match(home,/\$\{business\.pricing\.overnightMidday\}/);
-  assert.match(home,/Drop-ins from \$\{business\.pricing\.drop30\.other\}/);
-  assert.doesNotMatch(home,/\$85|\$80|\$45 dog|\$25 cat|Drop-ins from \$25/);
+  assert.match(home,/\$\{business\.pricing\.dropIn\.dog\[30\]\}/);
+  assert.match(home,/\$\{business\.pricing\.dropIn\.cat\[60\]\}/);
+  assert.match(home,/\$\{business\.pricing\.dogWalk\[60\]\}/);
+  assert.match(home,/\$\{business\.pricing\.overnight\.dogHousehold\}/);
+  assert.match(home,/\$\{business\.pricing\.overnightMidday\.catOnly\}/);
+  assert.match(home,/Pet care starting at \$\{business\.pricing\.dropIn\.cat\[30\]\}/);
+  assert.doesNotMatch(home,/Drop-ins from \$25|Same day instead|complimentary meet-and-greet/);
 });
 
 test('FAQ pricing is derived from authoritative business configuration',()=>{
   const faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8');
-  for(const key of ['shortNoticeVisit','sameDayVisit','shortNoticeOvernight','holidayVisit','holidayOvernight','overnightMidday','drop30.other','drop60.other','additionalOther'])assert.match(faq,new RegExp(`business\\.pricing\\.${key.replace('.','\\.')}`));
-  assert.doesNotMatch(faq,/30-minute drop-in is \$20|60-minute drop-in is \$35|starts at \$25|at \$40/);
+  for(const expression of ['shortNotice.visit','shortNotice.overnight','holiday.visit','holiday.overnight','overnightMidday.dogHousehold','dropIn.smallAnimal[30]','dropIn.smallAnimal[60]','additionalPet.smallAnimal'])assert.match(faq,new RegExp(`business\\.pricing\\.${expression.replaceAll('.','\\.').replace('[','\\[').replace(']','\\]')}`));
+  assert.doesNotMatch(faq,/30-minute drop-in is \$20|60-minute drop-in is \$35|starts at \$25|at \$40|same-day daytime requests include|complimentary/);
 });
 
 test('fallback pages remain safe and actionable without exposing internals',()=>{

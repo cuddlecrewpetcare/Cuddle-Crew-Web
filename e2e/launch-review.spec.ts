@@ -23,7 +23,8 @@ test('launch pages retain landmarks, headings, links, and progressive public con
   await expect(page.getByText('$48').first()).toBeVisible();
   await expect(page.getByText('$32').first()).toBeVisible();
   await expect(page.getByText('$50').first()).toBeVisible();
-  await expect(page.getByText('$105').first()).toBeVisible();
+  await expect(page.getByText('$85 per night').first()).toBeVisible();
+  await expect(page.getByText('$80 per night').first()).toBeVisible();
 });
 
 test('mobile, 200 percent zoom, keyboard, and reduced-motion paths avoid horizontal overflow',async({page})=>{
