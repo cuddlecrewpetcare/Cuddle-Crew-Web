@@ -85,5 +85,18 @@ test('home defers below-fold interactive tools and keeps public prices sourced f
   assert.match(home,/\$\{business\.pricing\.drop30\.dog\}/);
   assert.match(home,/\$\{business\.pricing\.walk60\}/);
   assert.match(home,/\$\{business\.pricing\.overnightMidday\}/);
-  assert.doesNotMatch(home,/\$85|\$80|\$45 dog|\$25 cat/);
+  assert.match(home,/Drop-ins from \$\{business\.pricing\.drop30\.other\}/);
+  assert.doesNotMatch(home,/\$85|\$80|\$45 dog|\$25 cat|Drop-ins from \$25/);
+});
+
+test('FAQ pricing is derived from authoritative business configuration',()=>{
+  const faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8');
+  for(const key of ['shortNoticeVisit','sameDayVisit','shortNoticeOvernight','holidayVisit','holidayOvernight','overnightMidday','drop30.other','drop60.other','additionalOther'])assert.match(faq,new RegExp(`business\\.pricing\\.${key.replace('.','\\.')}`));
+  assert.doesNotMatch(faq,/30-minute drop-in is \$20|60-minute drop-in is \$35|starts at \$25|at \$40/);
+});
+
+test('fallback pages remain safe and actionable without exposing internals',()=>{
+  const error=readFileSync(resolve('app/error.tsx'),'utf8'),notFound=readFileSync(resolve('app/not-found.tsx'),'utf8');
+  assert.match(error,/Something went wrong/);assert.match(error,/Try again/);assert.match(error,/Contact Lauren/);assert.doesNotMatch(error,/error\.message|error\.stack|JSON\.stringify\(error\)/);
+  assert.match(notFound,/Page not found/);assert.match(notFound,/View Services/);assert.match(notFound,/Contact Lauren/);
 });
