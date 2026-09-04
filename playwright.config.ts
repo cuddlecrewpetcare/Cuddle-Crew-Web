@@ -3,6 +3,8 @@ import {defineConfig} from '@playwright/test';
 export default defineConfig({
   testDir: './e2e',
   timeout: 30_000,
-  use: {baseURL: 'http://localhost:3000', trace: 'retain-on-failure'},
-  webServer: {command: 'npm run dev', url: 'http://localhost:3000', reuseExistingServer: true},
+  workers: process.env.CI ? 2 : 1,
+  outputDir: '.cache/local-dev/playwright/test-results',
+  reporter: [['line'],['html',{outputFolder:'.cache/local-dev/playwright/report',open:'never'}]],
+  use: {baseURL: 'http://127.0.0.1:3100', screenshot: 'only-on-failure', trace: 'retain-on-failure', video: 'off'},
 });

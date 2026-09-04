@@ -4,18 +4,7 @@ Public marketing and planning website for Cuddle Crew Pet Care, a solo Sacrament
 
 ## Local development
 
-1. Use Node.js 22.13 or newer.
-2. Run `npm install`.
-3. Copy `.env.example` to `.env.local` and add local secrets. Never commit `.env.local`.
-4. Run `npm run dev`.
-
-Quality commands:
-
-- `npm test` — business-rule regression tests.
-- `npm run lint` — ESLint.
-- `npm run build` — production build.
-- `npm run typecheck` — explicit TypeScript validation.
-- `npm run check` — tests, typecheck, lint, and build.
+Use the persistent Windows-first workflow in [`docs/local-development.md`](docs/local-development.md). For normal daily work, read `AGENTS.md`, run `npm run doctor`, and install nothing when it passes. First-time or evidence-based repair uses `npm run setup:local`.
 
 ## Configuration
 

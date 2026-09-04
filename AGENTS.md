@@ -108,3 +108,26 @@ Prefer centralized configuration or data sources over duplicating rules across u
 ## Public Claims
 
 Never make a public claim about credentials, certifications, insurance, memberships, service area, transportation availability, medical-care capabilities, safety procedures, or other regulated/professional matters unless a CURRENT / APPROVED business-reference source supports it.
+
+## Local Development Environment Reuse
+
+Future Codex sessions operating on this local repository must:
+
+1. Use the existing repository workspace and read this file first.
+2. Run `npm run doctor` before environment setup or task work.
+3. If the doctor passes, install nothing and reuse `node_modules`, the npm cache, Playwright browser binaries, and valid framework/test caches.
+4. Treat a new chat, model, reasoning level, or continued implementation phase as continuity of the same local environment—not a reason to bootstrap again.
+5. Run `npm run setup:local` only for first-time setup or when the doctor reports missing, stale, or incompatible dependencies or browser binaries.
+6. Never delete `node_modules`, clear package-manager caches, clear Playwright browser caches, or broadly clear framework caches as a routine first troubleshooting step.
+7. Reinstall only when dependencies are missing, the dependency-relevant manifest or lockfile changed, the local fingerprint is stale, integrity checks fail, the Playwright version/browser requirement changed, or the task intentionally changes dependencies.
+8. Use the repository-selected npm version and `package-lock.json`; do not substitute a package manager, delete the lockfile, or regenerate it casually.
+9. Prefer repository-defined scripts, targeted tests while editing, `npm run validate` for standard validation, and `npm run validate:full` before completing a meaningful phase that requires browser coverage.
+10. Do not repeatedly run full builds or E2E checks when nothing relevant changed.
+11. Run `npm run env:summary` when a concise, non-secret environment snapshot would help troubleshooting.
+12. Check port/process state before starting duplicate servers. Never kill broad Node process groups or unrelated processes.
+13. Preserve unrelated tracked and untracked files. Do not run `git clean`, hard reset, destructive checkout, or broad cache deletion without explicit justified need.
+14. Never expose or commit local secrets. `.env.local` stays local and ignored.
+15. Do not incidentally upgrade Node, npm, the framework, Playwright, build tooling, or application dependencies during unrelated feature work.
+16. Keep all business-reference authority, privacy, safety, legal, and service-scope rules above fully controlling.
+
+The default local startup sequence is: confirm the repository, read `AGENTS.md`, run `npm run doctor`, install nothing when it passes, implement the task, run targeted tests, then run the required final validation. See `docs/local-development.md` for the complete Windows workflow.

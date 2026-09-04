@@ -12,6 +12,7 @@
 /coverage
 /playwright-report/
 /test-results/
+/.cache/local-dev/
 
 # next.js
 /.next/
@@ -40,3 +41,4 @@ next-env.d.ts
 /outputs/
 /work/
 *.tsbuildinfo
+*.log

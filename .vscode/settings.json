@@ -1,0 +1,23 @@
+{
+  "eslint.workingDirectories": [
+    { "mode": "auto" }
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "files.exclude": {
+    "**/.cache/local-dev": true,
+    "**/.next": true,
+    "**/.vinext": true,
+    "**/dist": true,
+    "**/test-results": true,
+    "**/playwright-report": true
+  },
+  "search.exclude": {
+    "**/.cache/local-dev": true,
+    "**/.next": true,
+    "**/.vinext": true,
+    "**/dist": true,
+    "**/test-results": true,
+    "**/playwright-report": true
+  }
+}

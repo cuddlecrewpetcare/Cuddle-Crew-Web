@@ -2,6 +2,7 @@
   "name": "sites-project",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@10.9.2",
   "engines": {
     "node": ">=22.13.0"
   },
@@ -9,11 +10,21 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "vinext start",
+    "start:e2e": "vinext start --port=3100",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "test:e2e": "playwright test",
-    "check": "npm run test && npm run typecheck && npm run lint && npm run build"
+    "e2e": "npm run build && playwright test",
+    "e2e:run": "node scripts/run-e2e.mjs",
+    "test:e2e": "npm run e2e",
+    "doctor": "node scripts/local-env.mjs doctor",
+    "env:summary": "node scripts/local-env.mjs summary",
+    "setup:local": "node scripts/local-env.mjs setup",
+    "validate": "npm run test && npm run typecheck && npm run lint && npm run build",
+    "validate:full": "npm run validate && npm run e2e:run",
+    "check": "npm run validate",
+    "clean:generated": "node scripts/clean-generated.mjs",
+    "audit:dependencies": "npm audit --omit=dev"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.20",
