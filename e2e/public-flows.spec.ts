@@ -46,17 +46,54 @@ test('start and contact flows do not send a real inquiry in browser tests',async
   await expect(page.getByRole('heading',{name:'Find your next pet-care step.'})).toBeVisible();
   await expect(page.getByRole('link',{name:'Open your client portal'})).toHaveAttribute('href','https://cuddlecrewpetcare.petssl.com/login');
 
-  await page.route('**/api/contact',route=>route.fulfill({contentType:'application/json',body:'{}'}));
+  let submitted:Record<string,unknown>|undefined;
+  await page.route('**/api/contact',route=>{submitted=route.request().postDataJSON() as Record<string,unknown>;return route.fulfill({contentType:'application/json',body:'{}'})});
   await page.goto('/contact');
+  const phone=page.getByLabel(/Phone/);
   const smsConsent=page.getByRole('checkbox',{name:'Yes, I agree to service-related text messages.'});
+  await expect(phone).toHaveAttribute('type','tel');
+  await expect(phone).toHaveAttribute('autocomplete','tel');
+  await expect(phone).toHaveAttribute('name','phone');
+  await expect(smsConsent).toHaveAttribute('name','smsConsent');
+  await expect(smsConsent).not.toHaveAttribute('required','');
   await expect(smsConsent).not.toBeChecked();
-  await expect(page.getByText(/Message frequency varies/)).toBeVisible();
-  await expect(page.getByRole('link',{name:'Privacy Policy'})).toHaveAttribute('href','/privacy');
+  const disclosure=page.locator('#sms-disclosure');
+  for(const phrase of ['Cuddle Crew Pet Care','service inquiries','appointment confirmations and reminders','Message frequency varies','Message and data rates may apply','STOP','HELP'])await expect(disclosure).toContainText(phrase);
+  const privacyLink=page.getByRole('link',{name:'Privacy Policy'});
+  await expect(privacyLink).toHaveAttribute('href','/privacy');
+  await phone.focus();await page.keyboard.press('Tab');await page.keyboard.press('Tab');await expect(smsConsent).toBeFocused();await page.keyboard.press('Tab');await expect(privacyLink).toBeFocused();
   await page.getByLabel(/Your name/).fill('Test Visitor');
   await page.getByLabel(/Your email/).fill('test@example.com');
+  await phone.fill('916-555-1212');
   await page.getByLabel(/What would you like to ask/).fill('Could you explain the service-area review process?');
   await page.getByRole('button',{name:'Send inquiry'}).click();
   await expect(page.getByText('Thanks—your inquiry was sent to Lauren.')).toBeVisible();
+  expect(submitted?.phone).toBe('916-555-1212');expect(submitted?.smsConsent).toBe(false);
+});
+
+test('contact form transmits affirmative SMS consent only when checked',async({page})=>{
+  let submitted:Record<string,unknown>|undefined;
+  await page.route('**/api/contact',route=>{submitted=route.request().postDataJSON() as Record<string,unknown>;return route.fulfill({contentType:'application/json',body:'{}'})});
+  await page.goto('/contact');
+  const phone=page.getByLabel(/Phone/);
+  const smsConsent=page.getByRole('checkbox',{name:'Yes, I agree to service-related text messages.'});
+  await expect(async()=>{await smsConsent.uncheck();await smsConsent.check();await expect(phone).toHaveAttribute('required','',{timeout:250})}).toPass({timeout:5000});
+  await page.getByLabel(/Your name/).fill('SMS Test Visitor');
+  await page.getByLabel(/Your email/).fill('sms-test@example.com');
+  await phone.fill('916-555-3434');
+  await page.getByLabel(/What would you like to ask/).fill('Please explain how service-related text updates work.');
+  await page.getByRole('button',{name:'Send inquiry'}).click();
+  await expect(page.getByText('Thanks—your inquiry was sent to Lauren.')).toBeVisible();
+  expect(submitted?.phone).toBe('916-555-3434');expect(submitted?.smsConsent).toBe(true);expect(submitted).not.toHaveProperty('smsConsentTimestamp');expect(submitted).not.toHaveProperty('smsConsentSource');
+});
+
+test('contact SMS controls and disclosure are scanner-readable in initial public HTML',async({request})=>{
+  const response=await request.get('/contact');expect(response.status()).toBe(200);const html=await response.text();
+  for(const fragment of ['type="tel"','autoComplete="tel"','name="phone"','type="checkbox"','name="smsConsent"','Cuddle Crew Pet Care','service inquiries','appointment confirmations and reminders','Message frequency varies','Message and data rates may apply','STOP','HELP','href="/privacy"','Privacy Policy'])expect(html).toContain(fragment);
+});
+
+test('contact SMS consent remains readable without horizontal overflow across responsive sizes',async({page})=>{
+  for(const width of [320,390,768,1280]){await page.setViewportSize({width,height:800});await page.goto('/contact');await expect(page.getByLabel(/Phone/)).toBeVisible();await expect(page.getByRole('checkbox',{name:'Yes, I agree to service-related text messages.'})).toBeVisible();await expect(page.locator('#sms-disclosure')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true)}
 });
 
 test('anonymous progress survives refresh without retaining dates or safety details and can be deleted',async({page})=>{
