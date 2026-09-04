@@ -45,3 +45,17 @@ next-env.d.ts
 /work/
 *.tsbuildinfo
 *.log
+
+# local databases, backups, and private exports
+*.local.db
+*.local.sqlite
+*.local.sqlite3
+*.dump
+*.bak
+*.backup
+*.sql.gz
+/.private/
+/private/
+/backups/
+/database-dumps/
+/private-exports/

@@ -150,3 +150,28 @@ Future Codex sessions must:
 12. Report findings only by safe path/location, detector or provider type, confidence, commit reference when applicable, and required remediation—never by matched value.
 
 If exposure is suspected: identify the provider/type without revealing the value; revoke it; create a replacement; store the replacement only in `.env.local` or an approved secret store; remove the tracked value; determine whether history cleanup is needed; and rerun both secret scans. History rewriting requires a separate explicitly authorized task.
+
+## Repository and History Safety Contract
+
+Future Codex sessions must:
+
+1. Run `npm run check:git-safety` and inspect `git status --short --branch` before staging, committing, or pushing.
+2. Confirm the repository root, current branch, source commit, upstream, and exact fetch/push remote; use the `github` remote for GitHub work and never confuse it with the `sites` deployment remote.
+3. Implement on a purpose-named `codex/*` branch, not directly on `main` or legacy `master`; use `main` only during an explicitly authorized merge-only phase.
+4. Stage exact reviewed paths. Inspect both the staged file list and staged diff, and run `git diff --cached --check` before commit.
+5. Keep commits single-purpose and intent-named. Do not mix feature, dependency, formatting, generated-output, policy, or deployment work.
+6. Use the proven review and normal `--no-ff` merge workflow unless the user explicitly approves another method. Do not automatically squash, rebase, amend, or delete the source branch.
+7. Never force-push, rewrite shared history, run `git reset --hard`, run `git clean`, perform broad restore/checkout, delete branches, prune, or run repository cleanup without explicit authorization and exact-target verification.
+8. Preserve unrelated tracked and untracked changes. Do not treat a dirty worktree as permission to discard, stage, or relocate user work.
+9. Follow `.gitattributes`; do not perform repository-wide renormalization or line-ending conversion during unrelated work.
+10. Treat files at or above 1 MiB as requiring intentional review and files at or above 10 MiB as blocked by default. Re-evaluate Git LFS in a dedicated task rather than adopting it incidentally.
+11. Never commit local databases, dumps, backups, private exports, credentials, real client data, logs, caches, dependency trees, build artifacts, or test reports. Ignore rules do not make private content safe.
+12. Permit schemas, migrations, and synthetic fixtures only after confirming that they contain no private or credential-derived data.
+13. Treat `package-lock.json` changes as valid only for intentional dependency work and inspect them with `package.json`.
+14. Run `npm run scan:secrets:history` for legacy consolidation, suspected exposure, or public-release preparation; rotate exposed credentials before any history remediation.
+15. Preserve evidence before recovery. Prefer exact-path unstaging, additive commits, `git revert`, branches created from recoverable commits, and `git reflog` over destructive repair.
+16. Resolve conflicts deliberately using both sides, surrounding history, tests, and the business-reference hierarchy. Report material approved-policy conflicts instead of choosing silently.
+17. Keep deployment separate from GitHub contribution work. A commit, branch push, or merge does not authorize Sites packaging, pushing, version creation, or production activation.
+18. Verify the remote branch resolves to local `HEAD` after push and report the commit identifier.
+19. Follow `CONTRIBUTING.md` for the complete merge, migration, archive, recovery, and public-release procedures.
+20. Keep pre-commit hooks optional unless a separately approved managed-hook task installs one that invokes the repository checks with clear failure behavior.

@@ -16,7 +16,7 @@ The active repository folder contains source, `node_modules`, `.env.local` when 
 
 ## What GitHub Stores
 
-GitHub stores `package.json`, `package-lock.json`, `.nvmrc`, `.env.example`, repository scripts, test configuration, VS Code recommendations, `AGENTS.md`, and this guide. Those files describe how to reproduce the environment. The computer stores reusable installations and caches.
+GitHub stores `package.json`, `package-lock.json`, `.nvmrc`, `.env.example`, `.gitattributes`, repository scripts, test configuration, VS Code recommendations, `AGENTS.md`, `CONTRIBUTING.md`, and this guide. Those files describe how to reproduce the environment and contribute safely. The computer stores reusable installations and caches.
 
 ## Prerequisites
 
@@ -63,6 +63,7 @@ Do not replace the pinned version with an unverified “latest” download. A ve
 
 ```powershell
 npm run doctor
+npm run check:git-safety
 npm run dev
 ```
 
@@ -97,6 +98,18 @@ npm run env:summary
 ```
 
 The summary reports repository identity, branch/commit, tool versions, dependency/fingerprint state, Playwright browser availability, Gitleaks readiness and scan integration, expected port status, disk space, and the test baseline. It reports only environment-variable names/counts, never values, and is safe to paste into a future Codex troubleshooting session.
+
+## Repository Safety
+
+Run:
+
+```powershell
+npm run check:git-safety
+```
+
+This read-only check verifies the repository root, branch context, exact GitHub fetch/push destination, `github/main` default, tracking branch, line-ending policy, forbidden tracked or staged content, tracked-file size limits, working/staging state, and unexpected lockfile changes. It does not stage, restore, switch, fetch, push, clean, or otherwise modify the repository. A warning requires review; a failure blocks commit/push until corrected.
+
+The command warns about intentional tracked files at 1 MiB and rejects tracked files at 10 MiB. The existing 1.75 MiB `public/og.png` is expected and still requires visible review. Git LFS is not currently needed. See `CONTRIBUTING.md` for branch, commit, merge, conflict, recovery, migration, archive, line-ending, and public-release policy.
 
 ## Environment Variables
 
@@ -219,7 +232,7 @@ Use the narrowest relevant check while editing. Do not repeatedly run a full bui
 npm run validate
 ```
 
-This runs the redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
+This runs the read-only repository safety check, redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
 
 ## Full Validation
 
@@ -362,6 +375,7 @@ No committed GitHub Actions or other CI workflow currently exists. Local command
 
 | Local command | Intended CI-equivalent check |
 | --- | --- |
+| `npm run check:git-safety` | Repository identity, remote, branch, line-ending, private/generated-file, size, and staging guard |
 | `npm test` | Unit/integration/security/business-rule tests |
 | `npm run typecheck` | TypeScript validation |
 | `npm run lint` | ESLint |
