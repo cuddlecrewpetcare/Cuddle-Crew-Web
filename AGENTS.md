@@ -10,6 +10,29 @@ These files are the authoritative business-reference source for Cuddle Crew Pet 
 
 Existing website code, copy, comments, tests, configuration, or previous Codex-generated implementation is not authoritative when it conflicts with a current approved business-reference document.
 
+## Mandatory Business-Rule Preflight
+
+This preflight is required before modifying code, configuration, tests, metadata, structured data, forms, or public copy involving:
+
+- pricing, rates, durations, pet-count logic, additional-pet pricing, travel, service area, holidays, short notice, or same-day behavior;
+- payment, reservation payments, cancellation, refunds, booking acceptance, estimates, quotes, scheduling, capacity, or availability;
+- care-frequency recommendations, welfare, medication, behavior, safety, shared care, Overnight Care, Adventure Walks, transportation, custom quotes, or Service scope;
+- credentials, certifications, insurance-dependent capabilities, or other Client-facing claims; and
+- SMS/text messaging, communications consent, phone-number collection, notification preferences, opt-outs, HELP handling, mobile/SMS Privacy Policy language, or marketing communications.
+
+Before changing any of those subjects:
+
+1. Read `docs/business-reference/README.md`.
+2. Read `docs/business-reference/guidance/source-of-truth-document-hierarchy.md`.
+3. Locate and read the most specific applicable `CURRENT / APPROVED` reference.
+4. Treat current website and application behavior as implementation only, not authority.
+5. If implementation conflicts with authority, flag the conflict and correct the implementation when the task authorizes that correction.
+6. Never preserve stale behavior solely because it already exists.
+7. Never use `PLACEHOLDER`, `DRAFT`, or `SUPERSEDED` content as authority.
+8. Never invent an unresolved business rule.
+9. Never weaken safety, welfare, legal, insurance, training, or Service-scope rules to preserve automation.
+10. When internal logic requires review, prefer the neutral Client-facing result `Personalized review required` rather than exposing private reasoning.
+
 ## Document Status
 
 Business-reference files may use statuses including:
@@ -25,13 +48,18 @@ Only CURRENT / APPROVED content may be treated as authoritative business policy.
 
 When sources differ, use this hierarchy:
 
-1. Current approved client-facing agreements and policies in docs/business-reference/core/ control the client-facing contractual subjects they address.
-2. Current approved internal business rules and review logic in docs/business-reference/logic/ control internal decision logic, review triggers, suitability, booking eligibility, and when automated website behavior must stop for human review.
-3. Current approved operating and governance references in docs/business-reference/operations/.
-4. Current approved internal guidance in docs/business-reference/guidance/.
-5. Precise Petcare is the operational source of truth for individual client records, current bookings, pet profiles, care instructions, access details, schedules, and client-specific approved service plans.
-6. Existing website implementation is subordinate to current approved business-reference documents.
-7. If two current approved sources materially conflict, STOP and report the conflict for human review. Do not silently choose one.
+1. Safety, animal welfare, applicable law, insurance, current training/competence, and approved Service scope.
+2. Current signed Client-facing agreements and policies for the contractual subjects they address.
+3. Current approved Client-specific Precise Petcare records, subject to the limits above.
+4. `CURRENT / APPROVED` core references.
+5. `CURRENT / APPROVED` logic references.
+6. `CURRENT / APPROVED` operations references.
+7. `CURRENT / APPROVED` guidance references.
+8. Website/application implementation.
+9. Software defaults and platform behavior.
+10. Historical material, old messages, examples, drafts, placeholders, and superseded content.
+
+The complete hierarchy and conflict process are defined in `docs/business-reference/guidance/source-of-truth-document-hierarchy.md`; do not duplicate or reinterpret it. If two applicable `CURRENT / APPROVED` sources materially conflict, STOP and report the conflict for human review rather than silently choosing or inventing a hybrid rule.
 
 ## Required Codex Behavior
 
@@ -80,4 +108,3 @@ Prefer centralized configuration or data sources over duplicating rules across u
 ## Public Claims
 
 Never make a public claim about credentials, certifications, insurance, memberships, service area, transportation availability, medical-care capabilities, safety procedures, or other regulated/professional matters unless a CURRENT / APPROVED business-reference source supports it.
-
