@@ -131,3 +131,22 @@ Future Codex sessions operating on this local repository must:
 16. Keep all business-reference authority, privacy, safety, legal, and service-scope rules above fully controlling.
 
 The default local startup sequence is: confirm the repository, read `AGENTS.md`, run `npm run doctor`, install nothing when it passes, implement the task, run targeted tests, then run the required final validation. See `docs/local-development.md` for the complete Windows workflow.
+
+## Secret-Handling and Scanning Contract
+
+Future Codex sessions must:
+
+1. Never print, summarize, quote, or include secret values from `.env.local`, credential stores, scanner findings, logs, test output, Playwright artifacts, doctor output, environment summaries, or final reports.
+2. Never paste secrets into README files, documentation, tests, examples, fixtures, screenshots, reports, or application source.
+3. Use server-side environment variables for secret configuration. Never convert a server-only secret into a browser-public variable such as `NEXT_PUBLIC_*`.
+4. Keep `.env.local`, equivalent secret files, private keys, credential exports, and secret-bearing certificates ignored and uncommitted.
+5. Run `npm run scan:secrets` before completing every meaningful task; it is also required by `npm run validate`.
+6. Run `npm run scan:secrets:history` for legacy-repository cleanup, project consolidation, suspected exposure, or preparation of formerly private source for public release.
+7. Treat a plausibly exposed or committed credential as compromised until the provider credential has been revoked or disabled and replaced.
+8. Never claim that deleting a credential from the current file makes it safe when it remains in Git history.
+9. Never weaken or bypass secret scanning merely to make validation pass.
+10. Investigate every scanner match before suppressing it. Prefer changing unrealistic fake data, then a narrow rule/path suppression, and only then a documented exact suppression.
+11. Never add broad scanner allowlists, disable detector categories, or suppress an unknown finding.
+12. Report findings only by safe path/location, detector or provider type, confidence, commit reference when applicable, and required remediation—never by matched value.
+
+If exposure is suspected: identify the provider/type without revealing the value; revoke it; create a replacement; store the replacement only in `.env.local` or an approved secret store; remove the tracked value; determine whether history cleanup is needed; and rerun both secret scans. History rewriting requires a separate explicitly authorized task.

@@ -3,6 +3,7 @@ import {existsSync,readFileSync,realpathSync,statfsSync,writeFileSync,mkdirSync}
 import {dirname,join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
+import {expectedGitleaksVersion,findGitleaks} from './gitleaks-tool.mjs';
 
 const scriptDir=dirname(fileURLToPath(import.meta.url));
 const root=resolve(scriptDir,'..');
@@ -117,7 +118,7 @@ function disk(){
 
 async function collect(){
   const dependencies=checkDependencies();
-  return{root:checkRoot(),runtime:checkRuntime(),lock:checkLock(),dependencies,tree:dependencies.ok?checkTreeIntegrity():{ok:false,problems:dependencies.problems},fingerprint:readFingerprint(),playwright:await checkPlaywright(),ports:[portStatus(3000),portStatus(3100)],env:envNames(),git:gitInfo(),disk:disk()};
+  return{root:checkRoot(),runtime:checkRuntime(),lock:checkLock(),dependencies,tree:dependencies.ok?checkTreeIntegrity():{ok:false,problems:dependencies.problems},fingerprint:readFingerprint(),playwright:await checkPlaywright(),gitleaks:findGitleaks(),ports:[portStatus(3000),portStatus(3100)],env:envNames(),git:gitInfo(),disk:disk()};
 }
 
 const line=(kind,label,detail='')=>console.log(`${kind.padEnd(7)} ${label}${detail?` — ${detail}`:''}`);
@@ -133,6 +134,7 @@ async function doctor(){
   if(state.tree.ok)pass('Dependency tree','npm reports no missing or invalid packages');else fail('Dependency tree',state.tree.problems.join('; ')||'npm dependency tree validation failed');
   if(state.fingerprint.state==='current')pass('Environment fingerprint','current');else if(state.fingerprint.state==='missing')warn('Environment fingerprint','missing; run npm run setup:local once');else fail('Environment fingerprint',`${state.fingerprint.state}; run npm run setup:local`);
   if(state.playwright.ok)pass('Playwright browser',`${state.playwright.version} Chromium available`);else fail('Playwright browser','Chromium unavailable; run npm run setup:local');
+  if(state.gitleaks.available&&state.gitleaks.compatible)pass('Secret scanner',`Gitleaks ${state.gitleaks.version} available`);else if(state.gitleaks.available)fail('Secret scanner',`Gitleaks ${state.gitleaks.version}; expected ${expectedGitleaksVersion}`);else fail('Secret scanner',`Gitleaks ${expectedGitleaksVersion} unavailable; follow docs/local-development.md`);
   for(const port of state.ports){if(port.available)pass(`Port ${port.port}`,'available');else if(port.port===3000)warn('Port 3000',`occupied by PID ${port.pid} (${port.name}); ownership unknown, inspect before starting dev`);else fail('Port 3100',`occupied by PID ${port.pid} (${port.name}); Playwright will not reuse it`)}
   if(state.env.exists)info('.env.local',`${state.env.names.length} recognized or custom variable names present; values hidden`);else info('.env.local','not present; optional integrations use safe fallbacks');
   const missingTemplate=expectedEnv.filter(name=>!readFileSync(join(root,'.env.example'),'utf8').includes(`${name}=`));
@@ -155,6 +157,8 @@ async function summary(){
   console.log(`Dependencies: ${state.dependencies.ok&&state.tree.ok?'healthy':'repair needed'}`);
   console.log(`Fingerprint: ${state.fingerprint.state}`);
   console.log(`Playwright Chromium: ${state.playwright.ok?'available':'missing'} (${state.playwright.executable})`);
+  console.log(`Gitleaks: ${state.gitleaks.available?(state.gitleaks.compatible?`available (${state.gitleaks.version})`:`incompatible (${state.gitleaks.version}; expected ${expectedGitleaksVersion})`):`missing (expected ${expectedGitleaksVersion})`}`);
+  console.log('Secret scan integration: enabled in npm run validate; history scan is separate.');
   for(const port of state.ports)console.log(`Port ${port.port}: ${port.available?'available':`occupied by PID ${port.pid} (${port.name}); ownership unknown`}`);
   console.log(`.env.local: ${state.env.exists?`${state.env.names.length} variable names detected; values hidden`:'not present'}`);
   console.log(`Disk free: ${state.disk.freeGb.toFixed(1)} GiB`);
@@ -165,6 +169,8 @@ async function summary(){
 async function setup(){
   const rootState=checkRoot(),runtime=checkRuntime(),lockState=checkLock();
   if(!rootState.ok||!runtime.nodeOk||!runtime.npmOk||!lockState.ok){console.error('Environment prerequisites do not match the repository. Run npm run doctor for details.');process.exitCode=1;return}
+  const gitleaks=findGitleaks();
+  if(!gitleaks.available||!gitleaks.compatible){console.error(`Gitleaks ${expectedGitleaksVersion} must be installed once as documented in docs/local-development.md. Setup does not download it automatically.`);process.exitCode=1;return}
   let dependencies=checkDependencies(),tree=dependencies.ok?checkTreeIntegrity():{ok:false,problems:dependencies.problems,extraneous:[]};
   if(!dependencies.ok||!tree.ok){
     console.log('Dependency evidence is stale or incomplete; running npm install without deleting caches or node_modules.');

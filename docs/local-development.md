@@ -23,6 +23,7 @@ GitHub stores `package.json`, `package-lock.json`, `.nvmrc`, `.env.example`, rep
 - Windows 10 or 11 with PowerShell and Git
 - Node.js 22.17.1, pinned by `.nvmrc`; `package.json` also requires Node 22.13 or newer
 - npm 10.9.2, selected by the `packageManager` field
+- Gitleaks 8.30.0, installed once as a shared Windows development tool
 - VS Code is recommended but not required
 
 This repository uses npm only. Keep `package-lock.json`; do not introduce pnpm, Yarn, or another lockfile. Corepack is not required for npm.
@@ -46,6 +47,17 @@ Copy-Item .env.example .env.local
 ```
 
 Keep unused integrations blank and keep `SITE_INDEXING_ENABLED=false` for ordinary local work.
+
+Install Gitleaks once per Windows machine at `C:\Tools\gitleaks\gitleaks.exe`, add another verified installation to `PATH`, or set `GITLEAKS_PATH` to its executable. Use version 8.30.0. The repository does not download or reinstall this shared tool automatically.
+
+Safe shared installation procedure:
+
+1. Download `gitleaks_8.30.0_windows_x64.zip` and `gitleaks_8.30.0_checksums.txt` from the official Gitleaks v8.30.0 GitHub release.
+2. Use PowerShell `Get-FileHash -Algorithm SHA256` and require the result to equal the asset's entry in the published checksum file.
+3. Only after that comparison succeeds, expand the archive and copy `gitleaks.exe` to the shared location.
+4. Run `npm run doctor` from this repository and require `Gitleaks 8.30.0 available`.
+
+Do not replace the pinned version with an unverified “latest” download. A version change is a dedicated maintenance task.
 
 ## Normal Daily Startup
 
@@ -72,7 +84,7 @@ Run:
 npm run doctor
 ```
 
-The doctor is read-only and non-destructive. It checks the repository root, branch, pinned Node/npm versions, lockfile-to-manifest compatibility, required installed package versions, fingerprint state, Playwright/Chromium availability, ports 3000 and 3100, `.env.example` names, `.env.local` presence without values, and disk space. It never installs, fetches, switches branches, kills processes, cleans files, or changes the fingerprint.
+The doctor is read-only and non-destructive. It checks the repository root, branch, pinned Node/npm versions, lockfile-to-manifest compatibility, required installed package versions, fingerprint state, Playwright/Chromium availability, Gitleaks availability/version, ports 3000 and 3100, `.env.example` names, `.env.local` presence without values, and disk space. It never installs, fetches, switches branches, kills processes, cleans files, runs a secret scan, or changes the fingerprint.
 
 `PASS` means healthy. `WARNING` is actionable context that does not necessarily block work. `FAIL` exits non-zero and should be repaired before development. Running on `main` is reported as information; the doctor never creates or switches branches.
 
@@ -84,7 +96,7 @@ Run:
 npm run env:summary
 ```
 
-The summary reports repository identity, branch/commit, tool versions, dependency/fingerprint state, Playwright browser availability, expected port status, disk space, and the test baseline. It reports only environment-variable names/counts, never values, and is safe to paste into a future Codex troubleshooting session.
+The summary reports repository identity, branch/commit, tool versions, dependency/fingerprint state, Playwright browser availability, Gitleaks readiness and scan integration, expected port status, disk space, and the test baseline. It reports only environment-variable names/counts, never values, and is safe to paste into a future Codex troubleshooting session.
 
 ## Environment Variables
 
@@ -101,6 +113,57 @@ The summary reports repository identity, branch/commit, tool versions, dependenc
 | `PRIVATE_SERVICE_ORIGIN` | Optional local, server-only | Required only with the Maps server key. |
 
 Never place a server secret in a `NEXT_PUBLIC_` variable. Never print `.env.local`, commit it, or store a plaintext backup in the repository.
+
+## Secret Handling
+
+`.env.example` contains names and safe empty/default values only. `.env.local` may contain real development credentials, is intentionally ignored, and must be rebuilt from an approved password manager or secret-management source. Do not copy its values into source, tests, documentation, reports, screenshots, logs, or browser-public variables. Private keys and credential-export formats are also ignored, but ignore rules are not a substitute for scanning tracked content.
+
+Treat intentionally public values and secrets as different security classes. A `NEXT_PUBLIC_*` value is included in browser code and must never contain a server credential. Resend, private calendar, Turnstile secret, Maps server key, and the private service origin remain server-only.
+
+## Secret Scanning
+
+Gitleaks 8.30.0 is the required baseline scanner. The executable is shared across repositories; this repository owns `.gitleaks.toml`, the redacting wrapper, commands, and policy. Scanner output is captured and reduced to finding count, detector ID, safe file/line, and commit reference. Matched values are never echoed, and temporary redacted reports/snapshots are removed after each run.
+
+Routine current-tree scan, including tracked files and non-ignored untracked files:
+
+```powershell
+npm run scan:secrets
+```
+
+Deeper scan across Git history and refs:
+
+```powershell
+npm run scan:secrets:history
+```
+
+The current scan is part of `npm run validate`. The history scan remains separate because it is intended for initial audits, legacy consolidation, suspected exposure, and public-release preparation.
+
+For a suspected false positive, first determine why it matched and whether it could be usable. Prefer making fake data less credential-like. If suppression is still justified, use the narrowest rule/path or exact suppression and document why. Do not add broad allowlists or disable detectors.
+
+Pre-commit hook classification: **OPTIONAL, NOT INSTALLED**. A committed hook is not activated automatically by Git, and silently bypassing commits when the shared scanner is missing would weaken protection. Required validation provides a reliable cross-session gate without changing local Git configuration. Teams may add an explicitly managed hook later that calls the same scanner and fails with a clear recovery message.
+
+TruffleHog classification: **RECOMMENDED FOR DEEP/LEGACY AUDITS**, not installed by default. Use it as a separately approved second opinion for suspected historical exposure, old private repositories, backup archaeology, or migration investigations; Gitleaks remains the routine required scanner.
+
+## Exposed Credential Response
+
+If a finding plausibly represents a real credential:
+
+1. Do not print or paste it.
+2. Identify its provider/type and revoke or disable it.
+3. Generate a replacement and store it only in `.env.local` or an approved secret store.
+4. Remove the hardcoded value and use a server-side environment variable.
+5. Determine whether Git-history cleanup is required; deleting it from HEAD is not sufficient.
+6. Rerun the current-tree and history scans.
+
+History rewriting is disruptive and requires a separately authorized remediation task, coordination with every clone, and provider rotation first.
+
+## Legacy Project Audits
+
+Before old code or data enters a new public canonical repository: scan the current tree and full history; inspect old environment/config files, backups, logs, and database dumps; identify hardcoded credentials; rotate exposed credentials; migrate only sanitized code/config; and keep private source material and data outside the public repository.
+
+## Reusable Project-Foundation Standard
+
+A future project foundation is incomplete until it has runtime and package-manager pinning, a safe `.env.example`, ignored `.env.local`, a non-destructive doctor, a standard secret scanner, routine and history scan commands, an `AGENTS.md` secret-handling contract, scan-integrated validation, and recorded test/type/lint/build baselines. This is development infrastructure guidance, not application business policy.
 
 ## Development Modes
 
@@ -156,7 +219,7 @@ Use the narrowest relevant check while editing. Do not repeatedly run a full bui
 npm run validate
 ```
 
-This runs Node tests, typecheck, lint, and the production build.
+This runs the redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
 
 ## Full Validation
 
@@ -303,10 +366,12 @@ No committed GitHub Actions or other CI workflow currently exists. Local command
 | `npm run typecheck` | TypeScript validation |
 | `npm run lint` | ESLint |
 | `npm run build` | Production build |
+| `npm run scan:secrets` | Required current-tree secret scan |
+| `npm run scan:secrets:history` | Periodic or incident-driven history audit |
 | `npm run e2e` | Browser E2E/smoke |
 | `npm run validate:full` | Complete pre-merge gate |
 
-The material difference is that no hosted workflow currently enforces these checks. Adding CI should be a separate task; it should call the same scripts rather than duplicate their logic.
+The material difference is that no hosted workflow currently enforces these checks. Adding CI should be a separate task; it should call the same scripts rather than duplicate their logic. Native GitHub secret-scanning availability and repository settings must be verified separately rather than assumed.
 
 ## Periodic Maintenance
 
