@@ -51,6 +51,10 @@ test('start and contact flows do not send a real inquiry in browser tests',async
 
   await page.route('**/api/contact',route=>route.fulfill({contentType:'application/json',body:'{}'}));
   await page.goto('/contact');
+  const smsConsent=page.getByRole('checkbox',{name:'Yes, I agree to service-related text messages.'});
+  await expect(smsConsent).not.toBeChecked();
+  await expect(page.getByText(/Message frequency varies/)).toBeVisible();
+  await expect(page.getByRole('link',{name:'Privacy Policy'})).toHaveAttribute('href','/privacy');
   await page.getByLabel(/Your name/).fill('Test Visitor');
   await page.getByLabel(/Your email/).fill('test@example.com');
   await page.getByLabel(/What would you like to ask/).fill('Could you explain the service-area review process?');

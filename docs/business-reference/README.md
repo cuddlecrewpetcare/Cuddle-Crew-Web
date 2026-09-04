@@ -42,6 +42,20 @@ When refining or implementing the website:
 7. Safety, animal welfare, applicable law, insurance limitations, and approved service scope must not be overridden merely because an automated website feature can technically accept or calculate a request.
 8. If CURRENT / APPROVED materials materially conflict, stop and flag the conflict for human review.
 
+The complete precedence and conflict-resolution rules live in `guidance/source-of-truth-document-hierarchy.md`.
+
+## Subject Routing
+
+Use the most specific applicable `CURRENT / APPROVED` file. In particular:
+
+- SMS consent, A2P/10DLC website behavior, canonical disclosure, consent records, STOP/HELP handling, mobile-information privacy, and marketing-SMS boundaries → `guidance/sms-communications-consent-compliance.md`.
+- Source precedence and conflict resolution → `guidance/source-of-truth-document-hierarchy.md`.
+- Exact rates, fees, and pricing modifiers → `core/03-pricing-fees-surcharge-policy.md`.
+- Cancellation, refund, and booking-change terms → `core/02-cancellation-booking-change-refund-policy.md`.
+- Internal booking, scope, safety, capacity, and suitability decisions → the applicable `logic/` reference.
+
+SMS-specific implementation must read the canonical SMS reference before changing phone-number collection, communications consent, disclosure text, notification preferences, opt-out or HELP behavior, SMS Privacy Policy language, or marketing-SMS behavior. Existing website behavior, form fields, CRM data, or possession of a phone number does not override that reference or establish consent. Higher-authority signed contractual or legal requirements still control where applicable.
+
 ## Codex Rules
 
 - Never invent a policy to fill a gap.
@@ -64,6 +78,8 @@ When refining or implementing the website:
 - Do not hardcode business rules in multiple unrelated components where a centralized configuration or data source can reduce inconsistency.
 - Never make a public credential, insurance, certification, membership, service-area, or safety claim unless a CURRENT / APPROVED reference supports it.
 - When business rules may change over time, design implementation so the rule can be updated without rewriting unrelated website code.
+- Never infer SMS consent from a phone number, inquiry, quote, purchase, booking, account, or Terms acceptance.
+- Use the canonical SMS disclosure and consent rules in `guidance/sms-communications-consent-compliance.md`; do not create divergent disclosure variants.
 
 ## Intended Future Uses
 
@@ -105,4 +121,3 @@ Do not place:
 inside this business-reference library.
 
 Use only blank templates, approved business policies, and generalized internal operating guidance.
-

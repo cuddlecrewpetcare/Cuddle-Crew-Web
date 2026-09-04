@@ -512,6 +512,28 @@ Only collect, retain, display, or share information reasonably needed for legiti
 
 Access details must not appear in public website systems or browser-visible URLs/logs.
 
+## 18A. SMS / A2P Communications Compliance
+
+Use `guidance/sms-communications-consent-compliance.md` for this review.
+
+- [ ] Website SMS opt-in remains optional and unchecked by default.
+- [ ] Phone-number submission alone does not create SMS consent.
+- [ ] SMS consent remains separate from Terms acceptance and Service purchase.
+- [ ] The canonical disclosure is complete, visible, accessible, scanner-readable, and links to the Privacy Policy.
+- [ ] Consent status, source, timestamp, and relevant contact identifier are recorded where technically supported without fabrication.
+- [ ] Approved consent sources remain limited to website opt-in, Client-initiated SMS, and verbal consent unless a later approved source changes the program.
+- [ ] STOP and equivalent clear opt-outs are respected promptly and are not silently re-enabled.
+- [ ] HELP produces appropriate assistance or contact information.
+- [ ] Service-related messages remain within the consented scope.
+- [ ] Inquiry, booking, billing, scheduling, Service, or support numbers are not reused for unrelated marketing without an appropriate consent basis.
+- [ ] Mobile information and SMS consent are not sold, rented, or shared with third parties for their marketing or promotional purposes.
+- [ ] Necessary service-provider/processor disclosures remain accurate.
+- [ ] Privacy Policy and website Terms SMS language remain aligned with the canonical reference.
+- [ ] Messaging vendors, phone numbers, A2P/10DLC registrations, use cases, and campaign details remain current where applicable.
+- [ ] Public forms and APIs avoid unnecessary logging or exposure of phone numbers, consent records, and full payloads.
+
+Repeat this review whenever the messaging vendor, number, campaign, registration, consent source, message type, marketing use case, form, privacy terms, or applicable legal/carrier requirements materially change.
+
 ## 19. Payment & Billing Operations
 
 Review actual payment practices against approved policies.

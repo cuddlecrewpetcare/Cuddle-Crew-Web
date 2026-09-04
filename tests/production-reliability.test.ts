@@ -43,6 +43,17 @@ test('contact errors receive focus while preserving entered values for recovery'
   assert.match(contact,/errorRef\.current\?\.focus\(\)/);assert.match(contact,/ref=\{errorRef\}/);assert.match(contact,/tabIndex=\{-1\}/);
 });
 
+test('contact form presents separate optional SMS consent with visible privacy linkage',()=>{
+  const contact=readFileSync(resolve('app/contact/ContactTools.tsx'),'utf8');
+  const sms=readFileSync(resolve('app/config/sms.ts'),'utf8');
+  const privacy=readFileSync(resolve('app/privacy/page.tsx'),'utf8');
+  const terms=readFileSync(resolve('app/terms/page.tsx'),'utf8');
+  assert.match(contact,/useState\(false\)/);assert.match(contact,/type="checkbox"/);assert.match(contact,/href="\/privacy"/);assert.match(contact,/required=\{smsConsent\}/);
+  for(const phrase of ['Cuddle Crew Pet Care','Message frequency varies','Message and data rates may apply','Reply STOP','HELP for assistance','Privacy Policy'])assert.match(sms,new RegExp(phrase));
+  assert.match(privacy,/Mobile information and SMS consent will not be sold, rented, or shared with third parties for their marketing or promotional purposes/);
+  assert.match(terms,/SMS consent is not required to purchase Services/);
+});
+
 test('SEO metadata and schema use the verified business profile without unsupported review claims',()=>{
   const layout=readFileSync(resolve('app/layout.tsx'),'utf8');
   const business=readFileSync(resolve('app/config/business.ts'),'utf8');

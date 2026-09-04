@@ -19,7 +19,9 @@ Quality commands:
 
 ## Configuration
 
-Published rates, visit windows, service zones, and credential facts live in `app/config/business.ts`. Reusable date, holiday, ZIP-zone, short-notice, and schedule-gap logic lives in `app/lib/business-rules.ts`.
+The authoritative business rules live in `docs/business-reference/` according to its status and source hierarchy. `app/config/business.ts` and `app/lib/business-rules.ts` are implementation mirrors only; they must be reconciled to the most specific applicable `CURRENT / APPROVED` reference before rates, visit windows, service zones, credentials, holidays, short-notice behavior, or related public behavior changes.
+
+SMS consent, disclosure, opt-out, HELP, privacy, and marketing boundaries are governed by `docs/business-reference/guidance/sms-communications-consent-compliance.md`.
 
 Server-only environment variables:
 

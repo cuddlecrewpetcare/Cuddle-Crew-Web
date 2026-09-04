@@ -858,6 +858,12 @@ Use `guidance/pricing-care-standards-manual.md`.
 
 Use `guidance/client-explanation-library.md`.
 
+## SMS Communications / Consent / A2P Compliance
+
+Use `guidance/sms-communications-consent-compliance.md` for SMS consent, approved website disclosure, consent records, STOP and HELP handling, service-related messaging scope, marketing-SMS restrictions, mobile-information privacy, and scanner-readable website requirements.
+
+This SMS reference is the most specific `CURRENT / APPROVED` internal implementation reference for those subjects. It does not override higher-authority signed contractual or legal requirements where applicable.
+
 ## Hierarchy / Conflict
 
 Use this document.
@@ -899,6 +905,9 @@ Codex should flag cases such as:
 - holiday dates are hardcoded despite Holiday Calendar remaining unresolved;
 - estimator auto-quotes a Custom Quote review case;
 - calendar displays availability that conflicts with capacity rules.
+- phone-number collection or website submission is treated as SMS consent;
+- SMS disclosure differs from the canonical SMS reference;
+- opt-out, HELP, privacy, or marketing-SMS behavior conflicts with the canonical SMS reference.
 
 ### Preferred Conflict Output
 
@@ -981,6 +990,8 @@ When modifying website code:
 5. flag conflicts;
 6. avoid silently reconciling contradictory rules.
 
+For SMS-specific implementation, include `guidance/sms-communications-consent-compliance.md` in this preflight. Old form behavior, CRM data, contact records, or software defaults do not establish SMS consent.
+
 ### PLACEHOLDER Handling
 
 If a relevant reference remains `PLACEHOLDER`:
@@ -1044,3 +1055,5 @@ If website behavior conflicts with this CURRENT / APPROVED hierarchy:
 - Preserve safety, welfare, law, insurance, and Service-scope limits above all lower-level implementation sources.
 - When authority remains unclear, stop and require human review.
 - When Client-facing review is required, prefer "Personalized review required" rather than exposing internal conflict reasoning.
+- Do not infer SMS consent from possession of a phone number, an inquiry, a purchase, a booking, an account, or Terms acceptance.
+- Use the canonical SMS reference for consent and messaging behavior unless a higher-authority signed contractual or legal requirement controls.
