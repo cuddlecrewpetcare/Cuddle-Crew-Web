@@ -48,10 +48,11 @@ test('contact form presents separate optional SMS consent with visible privacy l
   const sms=readFileSync(resolve('app/config/sms.ts'),'utf8');
   const privacy=readFileSync(resolve('app/privacy/page.tsx'),'utf8');
   const terms=readFileSync(resolve('app/terms/page.tsx'),'utf8');
-  assert.match(contact,/useState\(false\)/);assert.match(contact,/type="checkbox"/);assert.match(contact,/href="\/privacy"/);assert.match(contact,/required=\{smsConsent\}/);
+  assert.match(contact,/useState\(false\)/);assert.match(contact,/id="contact-phone" name="phone"/);assert.match(contact,/autoComplete="tel" type="tel"/);assert.match(contact,/id="sms-consent" name="smsConsent" type="checkbox"/);assert.match(contact,/href="\/privacy"/);assert.match(contact,/required=\{smsConsent\}/);
   for(const phrase of ['Cuddle Crew Pet Care','Message frequency varies','Message and data rates may apply','Reply STOP','HELP for assistance','Privacy Policy'])assert.match(sms,new RegExp(phrase));
+  for(const purpose of ['service inquiries','scheduling','appointment confirmations and reminders','pet-care updates','billing','customer support'])assert.match(privacy,new RegExp(purpose));
   assert.match(privacy,/Mobile information and SMS consent will not be sold, rented, or shared with third parties for their marketing or promotional purposes/);
-  assert.match(terms,/SMS consent is not required to purchase Services/);
+  for(const phrase of ['SMS is optional','Message frequency varies','Message and data rates may apply','Reply STOP','HELP for assistance','SMS consent is not required to purchase Services','separate from accepting these Terms'])assert.match(terms,new RegExp(phrase));
 });
 
 test('SEO metadata and schema use the verified business profile without unsupported review claims',()=>{
