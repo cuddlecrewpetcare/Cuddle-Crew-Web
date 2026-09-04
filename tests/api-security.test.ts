@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import {dateRange,MAX_ICS_BYTES,MAX_ICS_EVENTS,publicAvailability,validIsoDate} from '../app/lib/availability.ts';
 import {contactFingerprint,escapeHtml,validateContact} from '../app/lib/contact.ts';
 import {assertSafePublicAnalyticsPayload,sanitizePublicEventProperties} from '../app/lib/public-analytics.ts';
-import {clientKey,rateLimit,resetRateLimitsForTests} from '../app/lib/rate-limit.ts';
+import {clientKey,pruneExpiredRateLimits,rateLimit,resetRateLimitsForTests} from '../app/lib/rate-limit.ts';
 import {fetchWithTimeout,readJsonObject,safeCalendarUrl} from '../app/lib/server-security.ts';
+import * as availabilityRoute from '../app/api/availability/route.ts';
 import * as contactRoute from '../app/api/contact/route.ts';
 import * as estimateRoute from '../app/api/estimate/route.ts';
 import {approvedSmsDisclosureText,smsConsentSource} from '../app/config/sms.ts';
@@ -22,7 +23,7 @@ test('only a syntactically valid Cloudflare client IP is trusted',()=>{
  assert.equal(clientKey(new Request('https://example.test',{headers:{'cf-connecting-ip':'not an ip'}})),'unknown');
 });
 
-test('rate limits fail closed after the configured allowance',()=>{resetRateLimitsForTests();assert.equal(rateLimit('test',2,60_000).allowed,true);assert.equal(rateLimit('test',2,60_000).allowed,true);assert.equal(rateLimit('test',2,60_000).allowed,false)});
+test('rate limits fail closed and expired identifiers are pruned',()=>{resetRateLimitsForTests();assert.equal(rateLimit('test',2,60_000,1_000).allowed,true);assert.equal(rateLimit('test',2,60_000,1_001).allowed,true);assert.equal(rateLimit('test',2,60_000,1_002).allowed,false);assert.equal(pruneExpiredRateLimits(61_000),1);assert.equal(pruneExpiredRateLimits(61_001),0)});
 
 test('bounded fetch aborts a stalled provider',async()=>{
  const original=globalThis.fetch;globalThis.fetch=((_input:RequestInfo|URL,init?:RequestInit)=>new Promise((_resolve,reject)=>init?.signal?.addEventListener('abort',()=>reject(new DOMException('Aborted','AbortError'))))) as typeof fetch;
@@ -31,7 +32,7 @@ test('bounded fetch aborts a stalled provider',async()=>{
 
 test('calendar URL validation permits public HTTPS and blocks local targets',()=>{assert.equal(safeCalendarUrl('webcal://calendar.example.com/feed'),'https://calendar.example.com/feed');assert.equal(safeCalendarUrl('http://calendar.example.com/feed'),undefined);assert.equal(safeCalendarUrl('https://127.0.0.1/feed'),undefined)});
 
-test('calendar dates are real and ranges cross midnight safely',()=>{assert.equal(validIsoDate('2028-02-29'),true);assert.equal(validIsoDate('2027-02-29'),false);assert.deepEqual(dateRange('2026-12-31','2027-01-01'),['2026-12-31','2027-01-01'])});
+test('calendar dates are real and availability dates stay in a no-store POST body',async()=>{assert.equal(validIsoDate('2028-02-29'),true);assert.equal(validIsoDate('2027-02-29'),false);assert.deepEqual(dateRange('2026-12-31','2027-01-01'),['2026-12-31','2027-01-01']);resetRateLimitsForTests();const previous=process.env.PRIVATE_CALENDAR_ICS_URL;delete process.env.PRIVATE_CALENDAR_ICS_URL;try{const response=await availabilityRoute.POST(new Request('https://example.test/api/availability',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({start:'2026-12-31',end:'2027-01-01'})}));assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');const payload=await response.json() as {days:{date:string;status:string}[]};assert.deepEqual(payload.days,[{date:'2026-12-31',status:'Request for Review'},{date:'2027-01-01',status:'Request for Review'}]);assert.equal('GET' in availabilityRoute,false)}finally{if(previous===undefined)delete process.env.PRIVATE_CALENDAR_ICS_URL;else process.env.PRIVATE_CALENDAR_ICS_URL=previous}});
 
 test('calendar output is coarse and never exposes private event content',()=>{
  const secret='CLIENT: Private Person\nLOCATION: Home address';const result=publicAvailability(`BEGIN:VCALENDAR\nBEGIN:VEVENT\nDTSTART:20260901T230000Z\nDTEND:20260902T010000Z\nSUMMARY:${secret}\nEND:VEVENT\nEND:VCALENDAR`,['2026-09-01','2026-09-02']);

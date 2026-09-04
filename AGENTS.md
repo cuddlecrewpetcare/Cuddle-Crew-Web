@@ -175,3 +175,28 @@ Future Codex sessions must:
 18. Verify the remote branch resolves to local `HEAD` after push and report the commit identifier.
 19. Follow `CONTRIBUTING.md` for the complete merge, migration, archive, recovery, and public-release procedures.
 20. Keep pre-commit hooks optional unless a separately approved managed-hook task installs one that invokes the repository checks with clear failure behavior.
+
+## Data and Privacy Engineering Contract
+
+Future Codex sessions must:
+
+1. Read `docs/data-privacy.md` before changing persistence, forms, API payloads, browser storage, logging, analytics, backups, imports, exports, schemas, migrations, or third-party data flows.
+2. Classify new persistent data before storing it and apply both a confidentiality class and a retention class.
+3. Minimize collection and duplication; do not turn this website into a competing Client-record system when Precise Petcare is already authoritative.
+4. Never commit real Client records, contact submissions, consent records, addresses, access instructions, medical details, travel schedules, payment metadata, private exports, or production backups.
+5. Use only clearly synthetic test records. Never derive fixtures, snapshots, screenshots, or examples from production or Client data.
+6. Distinguish versionable schemas, migrations, validation definitions, and synthetic seed structure from non-versionable real database contents.
+7. Keep secrets and private service configuration server-only. Treat every `NEXT_PUBLIC_*` value as browser-public.
+8. Keep private data out of URLs, path segments, fragments, analytics, browser-persistent storage, static assets, client bundles, and public API responses unless an approved design specifically requires a minimized safe representation.
+9. Never log raw credentials, tokens, complete contact submissions, private addresses, access details, medical instructions, travel schedules, or other sensitive payloads. Use request IDs, categories, status, and redacted identifiers.
+10. Treat browser input, query parameters, API payloads, webhooks, uploads, and imported records as untrusted. Server-side validation controls server processing.
+11. Give each component, route, service, and developer only the least data needed for its responsibility; authentication alone never establishes authorization.
+12. Keep local development and automated tests free of production/Client data by default. Exceptional use requires explicit authorization, minimization or anonymization, temporary handling, and reviewed cleanup outside Git.
+13. Define retention before adding durable storage. Do not invent legal or business retention periods; mark unresolved decisions for owner/legal review.
+14. Before destructive data or schema migration, verify the exact source/version, recoverable pre-state, disposable rehearsal, invariants, compatibility, rollback limits, and post-migration validation. Never infer success from exit code alone.
+15. Inspect legacy databases, dumps, backups, and exports read-only first. Record hashes, schema/version, counts, timestamps, references, and provenance without assuming the newest or largest file is canonical.
+16. Use `ANALYZE → VALIDATE → PREVIEW → APPROVE → WRITE` for imports. Define explicit export fields and never include secrets or unrelated private data.
+17. Keep private exports and backups outside public Git, browser-served folders, logs, and shared temporary directories. Never create plaintext credential backups.
+18. Treat ambiguous content as `PRIVATE / MANUAL REVIEW`; preserve evidence and stop before irreversible cleanup when exposure or authority is uncertain.
+19. Redact reports, tool output, issue text, screenshots, and commit messages; never reproduce private values merely to document a finding.
+20. Preserve the business-reference hierarchy. Data architecture documents describe handling and provenance; they do not create competing business, privacy, consent, or legal policy.

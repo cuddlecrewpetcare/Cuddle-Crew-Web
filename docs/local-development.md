@@ -180,6 +180,8 @@ A future project foundation is incomplete until it has runtime and package-manag
 
 ## Development Modes
 
+The complete data-handling and retention contract is in [`data-privacy.md`](data-privacy.md). Local development and automated tests must use synthetic data only; do not copy production/Client exports, provider payloads, private calendars, contact submissions, or screenshots into this checkout. Safe schemas and migrations may be versioned after review, but real database contents, backups, and exports remain private and untracked.
+
 - Local development (`npm run dev`): live integrations are disabled when their variables are blank. Supplying real values can enable real provider calls, so use deliberate development credentials and actions.
 - Automated Node tests (`npm test`): provider requests are stubbed or validated without sending real client messages, creating bookings, or mutating production data.
 - Playwright (`npm run e2e`): contact submission is intercepted by the test before network delivery. Tests do not create a Precise Petcare booking or send real email/SMS.

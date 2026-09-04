@@ -79,6 +79,8 @@ Binary files are allowed only when they are intentional, legally usable project 
 
 ## Private, Generated, and Database Content
 
+Use [`docs/data-privacy.md`](docs/data-privacy.md) for the project data inventory, classifications, retention states, provider boundaries, and migration/restore rules. New persistence work must classify the data and resolve ownership, access, retention, backup, correction, and deletion behavior before implementation.
+
 Do not commit local environment files, credentials, private keys, client records, home/access details, real medical or travel data, logs, caches, reports, backups, database dumps, local databases, exports, or generated dependency/build/test directories. Ignore rules are a convenience, not a security boundary; run both safety and secret checks.
 
 Reviewed source-controlled schemas, migrations, and synthetic fixtures may be appropriate when they contain no private data or credentials. Production snapshots, realistic client-derived fixtures, and sanitized-by-assumption exports are not appropriate for this public repository.

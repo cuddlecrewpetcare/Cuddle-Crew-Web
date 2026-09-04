@@ -58,3 +58,5 @@ The following are not live and should not be described as current features: live
 ## Privacy and security
 
 The public estimate and care-planning tools do not require contact information. Private medical, behavioral, access, and household details belong in the secure client portal. Runtime security headers are configured in `proxy.ts`; contact, availability, and address APIs must retain input validation, rate limiting, safe error messages, and secret-only server integrations. Exact lookup addresses are used only for the immediate Google request and are not saved in care-plan session state or planning URLs.
+
+The technical data inventory, classifications, browser/server boundaries, retention states, provider flows, backup rules, and future migration process are maintained in [`docs/data-privacy.md`](docs/data-privacy.md). The current application has no database, object store, file-upload feature, authentication system, external analytics backend, or direct Precise Petcare, Dialpad, or payment API integration.
