@@ -38,6 +38,11 @@ test('calendar output is coarse and never exposes private event content',()=>{
  assert.deepEqual(Object.keys(result.days[0]).sort(),['date','status']);assert.equal(JSON.stringify(result).includes('Private Person'),false);assert.equal(result.days.length,2);
 });
 
+test('public availability remains Request for Review with empty or busy calendars',()=>{
+ const empty=publicAvailability('',['2026-09-01']),busy=publicAvailability('BEGIN:VEVENT\nDTSTART:20260901T180000Z\nDTEND:20260901T190000Z\nEND:VEVENT',['2026-09-01']);
+ for(const result of [empty,busy]){assert.equal(result.state,'Request for Review');assert.equal(result.days[0].status,'Request for Review')}
+});
+
 test('calendar resource limits reject oversized feeds and event floods',()=>{assert.throws(()=>publicAvailability('x'.repeat(MAX_ICS_BYTES+1),['2026-09-01']),/calendar-too-large/);assert.throws(()=>publicAvailability('BEGIN:VEVENT\nEND:VEVENT\n'.repeat(MAX_ICS_EVENTS+1),['2026-09-01']),/calendar-too-many-events/)});
 test('calendar processing has a bounded deadline',()=>{let tick=0;assert.throws(()=>publicAvailability('BEGIN:VEVENT\nEND:VEVENT\n'.repeat(60),['2026-09-01'],()=>tick++*101),/calendar-processing-time/)});
 

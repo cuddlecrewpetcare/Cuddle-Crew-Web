@@ -104,6 +104,14 @@ test('FAQ pricing is derived from authoritative business configuration',()=>{
   assert.doesNotMatch(faq,/30-minute drop-in is \$20|60-minute drop-in is \$35|starts at \$25|at \$40/);
 });
 
+test('FAQ cancellation summary preserves each approved booking category and policy boundary',()=>{
+  const faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8');
+  assert.match(faq,/Daytime service: 24 hours or more/);
+  assert.match(faq,/Overnight or vacation care under seven nights uses 72-hour and 24-hour thresholds/);
+  assert.match(faq,/Bookings of seven or more nights and approved holiday periods have longer rules/);
+  assert.match(faq,/The signed policy and booking details control/);
+});
+
 test('fallback pages remain safe and actionable without exposing internals',()=>{
   const error=readFileSync(resolve('app/error.tsx'),'utf8'),notFound=readFileSync(resolve('app/not-found.tsx'),'utf8');
   assert.match(error,/Something went wrong/);assert.match(error,/Try again/);assert.match(error,/Contact Lauren/);assert.doesNotMatch(error,/error\.message|error\.stack|JSON\.stringify\(error\)/);
