@@ -6,6 +6,7 @@ import {assertSafePublicAnalyticsPayload,sanitizePublicEventProperties} from '..
 import {clientKey,rateLimit,resetRateLimitsForTests} from '../app/lib/rate-limit.ts';
 import {fetchWithTimeout,readJsonObject,safeCalendarUrl} from '../app/lib/server-security.ts';
 import * as contactRoute from '../app/api/contact/route.ts';
+import * as estimateRoute from '../app/api/estimate/route.ts';
 import {approvedSmsDisclosureText,smsConsentSource} from '../app/config/sms.ts';
 
 test('strict JSON reader accepts known fields and rejects unknown or oversized bodies',async()=>{
@@ -62,3 +63,13 @@ test('contact endpoint accepts valid requests, suppresses duplicates, and expose
 test('contact endpoint returns a safe schema error without reflecting submitted data',async()=>{resetRateLimitsForTests();const previous=process.env.RESEND_API_KEY;process.env.RESEND_API_KEY='test-key';try{const response=await contactRoute.POST(new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({secretPayload:'do not reflect'})}));assert.equal(response.status,400);assert.equal((await response.text()).includes('do not reflect'),false)}finally{if(previous===undefined)delete process.env.RESEND_API_KEY;else process.env.RESEND_API_KEY=previous}});
 
 test('analytics keeps only bounded public dimensions and asserts on sensitive fields in development',()=>{assert.deepEqual(sanitizePublicEventProperties({status:'available',email:'person@example.com',duration:Infinity}),{status:'available'});assert.throws(()=>assertSafePublicAnalyticsPayload({homeAddress:'secret'}),/Prohibited analytics property/)});
+
+test('estimate API returns a neutral review outcome without private trigger reasons',async()=>{
+ resetRateLimitsForTests();const response=await estimateRoute.POST(new Request('https://example.test/api/estimate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({pets:[{type:'dog'},{type:'dog'},{type:'dog'},{type:'dog'}],service:'drop30',start:'2099-01-02',end:'2099-01-02',blocks:[0],midday:'none',zip:'95821',travelTier:'standard'})}));
+ assert.equal(response.status,200);const payload=await response.json() as {result:Record<string,unknown>};assert.equal(payload.result.reviewRequired,true);assert.equal(payload.result.total,null);assert.equal('reviewReasons' in payload.result,false);
+});
+
+test('estimate API rejects unbounded or malformed planning inputs',async()=>{
+ resetRateLimitsForTests();const request=(change:Record<string,unknown>)=>estimateRoute.POST(new Request('https://example.test/api/estimate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({pets:[{type:'dog'}],service:'drop30',start:'2099-01-02',end:'2099-01-02',blocks:[0],midday:'none',zip:'95821',travelTier:'standard',...change})}));
+ assert.equal((await request({end:'2199-01-02'})).status,400);assert.equal((await request({start:'not-a-date'})).status,400);assert.equal((await request({zip:'9582'})).status,400);assert.equal((await request({service:'boarding'})).status,400);
+});

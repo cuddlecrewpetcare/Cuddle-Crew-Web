@@ -1,5 +1,5 @@
 import {business} from '../config/business.ts';
-import type {EstimateService,PetType} from './estimate.ts';
+import type {EstimateService,PetType} from './estimate-types.ts';
 export type PlannerPrefill={count:number;types:PetType[];service:EstimateService;blocks:number[];overnight:boolean};
 export function parsePlannerPrefill(search:string):PlannerPrefill|null{
  const params=new URLSearchParams(search);if(params.get('planner')!=='1')return null;

@@ -1,4 +1,4 @@
-import type {EstimateService,PetType} from './estimate.ts';
+import type {EstimateService,PetType} from './estimate-types.ts';
 
 export type PlanningState={petTypes:PetType[];service?:EstimateService;blocks:number[];midday?:'none'|'drop30'|'drop60'|'drop90'|'walk30'|'walk60'|'walk90';zip?:string;zone?:string;availability?:string};
 const petTypes=new Set<PetType>(['dog','cat','rabbit','bird','fish','small']);
