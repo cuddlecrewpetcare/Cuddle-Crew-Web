@@ -6,7 +6,7 @@ export type MedicationNeed='none'|'routine'|'timed'|'complex'|'procedure';
 export type BehaviorNeed='none'|'fear'|'reactive'|'aggressive'|'escape';
 export type RoutineComplexity='simple'|'moderate'|'complex'|'unclear';
 export type SeparationNeed='none'|'feeding'|'handling'|'unclear';
-export type VisitFit='30'|'60'|'neither'|'unknown';
+export type VisitFit='30'|'60'|'90'|'neither'|'unknown';
 
 export type CarePlannerInput={
   dogs:number;cats:number;otherPets:number;lifeStage:LifeStage;
@@ -17,8 +17,8 @@ export type CarePlannerInput={
 };
 
 export type CarePlanAssessment={
-  durationMinutes:30|60;
-  suitability:'starting-point'|'consultation-required'|'refer';
+  durationMinutes:30|60|90|null;
+  suitability:'starting-point'|'consultation-required';
   longestPlausibleGapHours:number|null;
   gapWithinEnteredLimits:boolean|null;
   timezone:string;
@@ -31,9 +31,8 @@ const petTotal=(input:CarePlannerInput)=>input.dogs+input.cats+input.otherPets;
 
 export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   const total=petTotal(input),reviewReasons:string[]=[],warnings:string[]=[],factors:string[]=[],reasons:string[]=[];
-  const workload=input.taskCount+total+(input.routineComplexity==='moderate'?2:input.routineComplexity==='complex'?4:0)+(input.separation==='none'?0:2);
-  const durationMinutes:30|60=input.visitFit==='60'||input.visitFit==='neither'||workload>=9?60:30;
-  const gap=plannerCareGap(input.windowIndexes,durationMinutes,input.overnight);
+  const durationMinutes:30|60|90|null=input.visitFit==='30'?30:input.visitFit==='60'?60:input.visitFit==='90'?90:null;
+  const gap=plannerCareGap(input.windowIndexes,durationMinutes??30,input.overnight);
   const effectiveLimit=Math.min(input.comfortableAloneHours,input.bathroomIntervalHours);
   const gapWithinEnteredLimits=gap?gap.maximum<=effectiveLimit:null;
 
@@ -44,13 +43,13 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
 
   if(input.visitFit==='30')reasons.push('You indicated the complete routine fits safely within 30 minutes.');
   else if(input.visitFit==='60')reasons.push('You indicated the routine needs up to 60 minutes.');
-  else if(input.visitFit==='neither')reviewReasons.push('The routine does not fit within a 60-minute service and needs a custom discussion or referral.');
+  else if(input.visitFit==='90')reasons.push('You indicated the routine needs up to 90 minutes.');
+  else if(input.visitFit==='neither')reviewReasons.push('The routine does not fit within a standard 90-minute service and needs a personalized review.');
   else reviewReasons.push('Visit duration is uncertain and should be confirmed before a service length is selected.');
-  if(workload>=9){reasons.push('The household size, tasks, separation, or routine complexity point to a 60-minute starting point.');if(input.visitFit==='30')reviewReasons.push('The stated 30-minute fit conflicts with the routine workload.');}
 
   if(input.medication==='timed')reviewReasons.push('Time-sensitive medication cannot be matched to flexible arrival windows automatically.');
   if(input.medication==='complex')reviewReasons.push('Medication refusal risk or specialized handling requires private review.');
-  if(input.medication==='procedure')reviewReasons.push('Injections and veterinary procedures are not offered and require an appropriate referral.');
+  if(input.medication==='procedure')reviewReasons.push('This medication or procedure request requires scope, training, safety, and suitability review before Cuddle Crew can say whether it is available.');
   if(input.behavior==='fear')reviewReasons.push('Fearful or slow-to-warm handling needs a private fit and safety review.');
   if(input.behavior==='reactive')reviewReasons.push('Reactive behavior and trigger management require private review.');
   if(input.behavior==='aggressive')reviewReasons.push('Aggression, bite risk, or handling sensitivity requires private safety review and may not be accepted.');
@@ -70,11 +69,12 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
 
   warnings.push('Service windows are flexible arrival ranges, not exact appointment times.');
   warnings.push(`Gap calculations use repeating local wall-clock windows in ${business.timezone}; daylight-saving transitions can change elapsed time and are confirmed during scheduling.`);
+  warnings.push('Feeding frequency is a scheduling input, not a substitute for the household’s welfare, bathroom, medication, or supervision requirements.');
   warnings.push('This educational starting point does not diagnose, prescribe, provide treatment, guarantee acceptance, reserve inventory, or create a booking.');
   warnings.push('Final suitability, timing, availability, and service acceptance are determined through consultation.');
 
-  const suitability=input.medication==='procedure'?'refer':reviewReasons.length?'consultation-required':'starting-point';
-  const suggestedStartingPoint=suitability==='refer'?'Ask the veterinary team about an appropriate care arrangement.':suitability==='consultation-required'?`Begin with a ${durationMinutes}-minute planning option and review it with Lauren before relying on it.`:`A ${durationMinutes}-minute visit schedule is a reasonable educational starting point for consultation.`;
+  const suitability=reviewReasons.length?'consultation-required':'starting-point';
+  const suggestedStartingPoint=durationMinutes===null?'A standard duration cannot be selected from these answers. Lauren will need to review the requested routine.':suitability==='consultation-required'?`Use the ${durationMinutes}-minute option only as a discussion starting point; Lauren must review the complete routine.`:`A ${durationMinutes}-minute visit may be a useful starting point for consultation.`;
   if(gap)reasons.push(`The selected flexible windows produce a longest plausible care gap of approximately ${gap.maximum} hours.`);
 
   return{durationMinutes,suitability,longestPlausibleGapHours:gap?.maximum??null,gapWithinEnteredLimits,timezone:business.timezone,suggestedStartingPoint,reasons:unique(reasons),assumptions:[

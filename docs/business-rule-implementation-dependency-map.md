@@ -22,7 +22,7 @@ Before changing an implementation area:
 | --- | --- | --- | --- |
 | Overall Service and booking framework | `core/01-master-service-agreement.md` (`CURRENT / APPROVED`) | `app/page.tsx`; `app/start/page.tsx`; `app/terms/page.tsx`; `app/safety/page.tsx`; `app/layout.tsx`; `app/SiteHeader.tsx` | Inquiry, estimate, registration, request, confirmation, invoice, payment, and Service readiness are distinct states. |
 | Cancellation, refunds, booking changes, early return, extensions | `core/02-cancellation-booking-change-refund-policy.md` (`CURRENT / APPROVED`) | `app/faq/FAQSearch.tsx`; `app/safety/page.tsx`; future booking/change workflows; tests | Do not reuse one generic deadline across daytime, short vacation/Overnight, extended, and holiday bookings. |
-| Rates, additional pets, travel fees, short notice, same day, payment, quotes | `core/03-pricing-fees-surcharge-policy.md` (`CURRENT / APPROVED`) | `app/config/business.ts`; `app/lib/business-rules.ts`; `app/lib/estimate.ts`; `app/QuoteEstimator.tsx`; `app/page.tsx`; `app/faq/FAQSearch.tsx`; `app/holidays/page.tsx`; `app/AddressChecker.tsx`; `app/ServiceAreaMap.tsx`; pricing and E2E tests | Central configuration is an implementation mirror, not authority. “May add” fees must not silently become unconditional where discretion applies. |
+| Rates, additional pets, travel fees, short notice, same day, payment, quotes | `core/03-pricing-fees-surcharge-policy.md` (`CURRENT / APPROVED`) | `app/config/business.ts`; `app/lib/business-rules.ts`; `app/lib/estimate.ts`; `app/QuoteEstimator.tsx`; `app/page.tsx`; `app/faq/FAQSearch.tsx`; `app/holidays/page.tsx`; `app/AddressChecker.tsx`; pricing and E2E tests | Central configuration is an implementation mirror, not authority. “May add” fees must not silently become unconditional where discretion applies. |
 | Access, keys, alarms, cameras, home security | `core/04-access-key-home-security-agreement.md` (`PLACEHOLDER`); general constraints in `core/01` and applicable current logic | `app/safety/page.tsx`; `app/faq/FAQSearch.tsx`; `app/contact/page.tsx`; `app/contact/ContactTools.tsx` | Contractual detail requires owner/legal approval. Keep private credentials in Precise Petcare; website submission never proves successful access testing. |
 | Emergency veterinary authority | `core/05-emergency-veterinary-authorization.md` (`PLACEHOLDER`); `core/01` defers to it | `app/safety/page.tsx`; `app/faq/FAQSearch.tsx`; onboarding/portal handoff | Do not invent treatment, transport, or spending authority. Human/legal review required. |
 | Medication consent | `core/06-medication-administration-consent.md` (`PLACEHOLDER`) | Public medication copy; future onboarding/portal handoff | Do not treat a form, demonstration, or payment as Client consent or scope approval. |
@@ -45,7 +45,7 @@ Before changing an implementation area:
 | Service-window capacity | `logic/37-service-window-capacity-planner.md` (`CURRENT / APPROVED`) | `app/lib/availability.ts`; `app/api/availability/route.ts`; `app/QuoteEstimator.tsx`; calendar tests | True load includes care, drive, journal/admin, and buffer. A blank calendar or event count does not prove availability. |
 | Annual audit | `operations/35-annual-business-policy-audit.md` (`CURRENT / APPROVED`) | `LAUNCH_CHECKLIST.md`; documentation review; future scheduled governance | Complete at least annually and after material changes, including SMS program changes. |
 | Continuity / backup | `operations/38-continuity-backup-provider-plan.md` (`CURRENT / APPROVED`) | `app/page.tsx`; `app/safety/page.tsx`; `app/config/provider-guide.ts`; `app/choosing-care/page.tsx` | Lauren is ordinarily primary; approved continuity is possible but never guaranteed. Do not expose provider identity or access details. |
-| Training, certification, insurance, Service scope | `operations/40-training-certification-service-scope-matrix.md` (`PLACEHOLDER`) | `app/config/business.ts`; `app/credentials/page.tsx`; `app/config/provider-guide.ts`; `app/page.tsx`; `app/layout.tsx`; `public/manifest.webmanifest` | No current public credential/capability fact may be inferred until evidence is verified and the matrix approved. |
+| Training, certification, insurance, Service scope | `operations/40-training-certification-service-scope-matrix.md` (`PLACEHOLDER`) | `app/credentials/page.tsx`; `app/config/provider-guide.ts`; public claims and metadata | Public specifics are neutralized pending evidence verification and approval. No credential/capability fact may be inferred until the matrix is approved. |
 | Client-friendly explanations | `guidance/client-explanation-library.md` (`CURRENT / APPROVED`) | `app/faq/FAQSearch.tsx`; help text in estimator/planner/pages | Explanations do not create policy and must defer to the specific current policy. |
 | Broad pricing/care manual | `guidance/pricing-care-standards-manual.md` (`PLACEHOLDER`) | Historical context across pricing/planner/copy | Not production authority despite containing detailed material. Use dedicated current references. |
 | SMS consent and A2P/10DLC | `guidance/sms-communications-consent-compliance.md` (`CURRENT / APPROVED`) | `app/config/sms.ts`; `app/contact/ContactTools.tsx`; `app/lib/contact.ts`; `app/api/contact/route.ts`; `app/privacy/page.tsx`; `app/terms/page.tsx`; tests | Website checkbox is optional and unchecked. Source/timestamp exist only after affirmative consent. STOP/HELP/vendor operations still require operational verification. |
@@ -60,21 +60,20 @@ Before changing an implementation area:
 - home-page pricing and claims;
 - estimate calculations;
 - FAQ pricing;
-- service-area ZIPs and fees;
-- map labels;
+- ordinary one-way travel tiers and fees;
 - public metadata and structured data;
-- credentials pages and comparison copy;
+- neutralized business-information and comparison copy;
 - portal/social links; and
 - Service windows and Overnight display.
 
-Because the file mixes verified-looking contact/URL data with stale or unsupported business rules, future correction should separate stable public identity/contact values from policy-controlled pricing, geography, credentials, and capability facts. Each policy-controlled value should carry a traceable source reference internally without exposing private governance metadata publicly.
+Phase 12B removed credential specifics and ZIP allocations from this configuration. It now mirrors stable identity/contact values, active approved public rates, service windows, travel-time tiers, and explicit unresolved-policy status flags. The business-reference files remain authoritative.
 
 ### Shared Business Logic
 
 `app/lib/business-rules.ts` currently owns:
 
-- ZIP lookup;
-- generated holiday dates;
+- conservative ZIP-only review routing;
+- disabled holiday-date lookup pending an approved calendar;
 - short-notice classification;
 - Service-window/care-gap calculations; and
 - availability override helpers.

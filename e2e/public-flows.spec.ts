@@ -10,38 +10,35 @@ test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=
   await page.goto('/');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link',{name:'Skip to main content'})).toBeFocused();
-  await expect(page.getByRole('heading',{name:'Services for their real routine.'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Care for the time the routine needs.'})).toBeVisible();
   await expect(page.getByText('$30').first()).toBeVisible();
   await expect(page.getByRole('link',{name:'New client registration'}).first()).toHaveAttribute('href','https://cuddlecrewpetcare.petssl.com/account');
 
-  const zip=page.locator('#zip');
+  const zip=page.locator('.checker').getByLabel('Service ZIP');
   await expect(zip).toBeEditable();
-  await page.waitForTimeout(2_000);
+  await page.waitForTimeout(500);
   await zip.fill('95821');
-  await zip.press('Enter');
-  await expect(page.locator('.checker .result')).toContainText('Core zone');
+  await page.getByRole('button',{name:'Check ZIP'}).click();
+  await expect(page.locator('.checker .result')).toContainText('Personalized travel review required');
   await zip.fill('95660');
-  await zip.press('Enter');
-  await expect(page.locator('.checker .result')).toContainText('Extended zone');
-  await zip.fill('99999');
-  await zip.press('Enter');
-  await expect(page.locator('.checker .result')).toContainText('Outside our listed zones');
+  await expect(page.locator('.checker .result')).toContainText('ZIP 95660 cannot determine an approved travel tier');
 });
 
 test('estimator and planner retain preliminary, non-booking boundaries',async({page})=>{
   await page.route('**/api/availability?*',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({state:'Limited Availability'})}));
   await page.goto('/');
+  await expect(page.locator('.estimate-fields')).toBeVisible();
   await page.getByLabel('First service date').fill(futureDate());
   await page.getByLabel('Last service date').fill(futureDate());
-  await page.getByLabel('Service ZIP').fill('95821');
   await page.getByLabel('9 AM–12 PM').check();
-  await expect(page.getByText('Planning estimate').first()).toBeVisible();
-  await expect(page.getByText("Final pricing, timing, safety, and availability require Lauren’s approval.")).toBeVisible();
+  await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
+  await expect(page.getByText('Personalized review required').first()).toBeVisible();
+  await expect(page.locator('.estimate-result').getByText(/Payment does not guarantee acceptance/)).toBeVisible();
 
   await page.goto('/plan');
   await expect(page.getByRole('heading',{name:'Turn a routine into a sensible starting plan.'})).toBeVisible();
   await page.getByLabel('Behavior or safety consideration').selectOption('reactive');
-  await expect(page.getByText('Human review is needed')).toBeVisible();
+  await expect(page.getByText('Personalized review required')).toBeVisible();
 });
 
 test('start and contact flows do not send a real inquiry in browser tests',async({page})=>{
@@ -64,17 +61,18 @@ test('start and contact flows do not send a real inquiry in browser tests',async
 
 test('anonymous progress survives refresh without retaining dates or safety details and can be deleted',async({page})=>{
   await page.goto('/');
-  await page.getByLabel('Service ZIP').fill('95821');
+  await expect(page.locator('.estimate-fields')).toBeVisible();
+  await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
   await page.getByLabel('9 AM–12 PM').check();
   await page.getByLabel('First service date').fill(futureDate());
   await page.getByLabel('Last service date').fill(futureDate());
   await page.reload();
-  await expect(page.getByLabel('Service ZIP')).toHaveValue('95821');
+  await expect(page.locator('.estimate-fields').getByLabel('Service ZIP')).toHaveValue('95821');
   await expect(page.getByLabel('9 AM–12 PM')).toBeChecked();
   await expect(page.getByLabel('First service date')).toHaveValue('');
   await expect(page.getByLabel('Last service date')).toHaveValue('');
   await page.getByRole('button',{name:'Clear saved estimate and reset'}).click();
-  await expect(page.getByText('Saved estimate cleared.')).toBeVisible();
+  await expect(page.locator('.estimate-fields').getByLabel('Service ZIP')).toHaveValue('');
   await expect.poll(()=>page.evaluate(()=>sessionStorage.getItem('cuddlecrew-care-plan-v1'))).toBeNull();
 
   await page.goto('/plan');

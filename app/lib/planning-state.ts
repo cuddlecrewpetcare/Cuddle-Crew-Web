@@ -1,13 +1,13 @@
 import type {EstimateService,PetType} from './estimate.ts';
 
-export type PlanningState={petTypes:PetType[];service?:EstimateService;blocks:number[];midday?:'none'|'30'|'60';zip?:string;zone?:string;availability?:string};
+export type PlanningState={petTypes:PetType[];service?:EstimateService;blocks:number[];midday?:'none'|'drop30'|'drop60'|'drop90'|'walk30'|'walk60'|'walk90';zip?:string;zone?:string;availability?:string};
 const petTypes=new Set<PetType>(['dog','cat','rabbit','bird','fish','small']);
-const services=new Set<EstimateService>(['drop30','drop60','walk30','walk60','overnight']);
+const services=new Set<EstimateService>(['drop30','drop60','drop90','walk30','walk60','walk90','overnight']);
 export const sanitizePlanningState=(input:Record<string,unknown>):PlanningState=>({
  petTypes:Array.isArray(input.petTypes)?input.petTypes.filter((x):x is PetType=>typeof x==='string'&&petTypes.has(x as PetType)).slice(0,8):[],
  service:typeof input.service==='string'&&services.has(input.service as EstimateService)?input.service as EstimateService:undefined,
  blocks:Array.isArray(input.blocks)?[...new Set(input.blocks.filter((x):x is number=>Number.isInteger(x)&&Number(x)>=0&&Number(x)<4))]:[],
- midday:input.midday==='30'||input.midday==='60'||input.midday==='none'?input.midday:undefined,
+ midday:typeof input.midday==='string'&&new Set(['none','drop30','drop60','drop90','walk30','walk60','walk90']).has(input.midday)?input.midday as PlanningState['midday']:undefined,
  zip:typeof input.zip==='string'&&/^\d{5}$/.test(input.zip)?input.zip:undefined,
  zone:typeof input.zone==='string'?input.zone.slice(0,40):undefined,availability:typeof input.availability==='string'?input.availability.slice(0,50):undefined,
 });

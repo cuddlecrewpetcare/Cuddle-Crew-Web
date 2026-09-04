@@ -1,7 +1,7 @@
 import type {CarePlannerInput,LifeStage,VisitFit} from './care-planner.ts';
 
 export type CarePlannerProgress=Pick<CarePlannerInput,'dogs'|'cats'|'otherPets'|'lifeStage'|'feedingFrequency'|'bathroomIntervalHours'|'comfortableAloneHours'|'windowIndexes'|'overnight'|'visitFit'>;
-const stages=new Set<LifeStage>(['puppy','adult','senior','mixed']),fits=new Set<VisitFit>(['30','60','neither','unknown']);
+const stages=new Set<LifeStage>(['puppy','adult','senior','mixed']),fits=new Set<VisitFit>(['30','60','90','neither','unknown']);
 const bounded=(value:unknown,min:number,max:number,fallback:number)=>Number.isInteger(value)&&Number(value)>=min&&Number(value)<=max?Number(value):fallback;
 export const CARE_PLANNER_PROGRESS_KEY='cuddlecrew-care-planner-v1';
 export const sanitizeCarePlannerProgress=(input:Record<string,unknown>):CarePlannerProgress=>({

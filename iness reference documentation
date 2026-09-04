@@ -1,0 +1,22 @@
+ .../core/01-master-service-agreement.md            |  291 [32m+++[m[31m-[m
+ ...02-cancellation-booking-change-refund-policy.md |  321 [32m+++[m[31m-[m
+ .../core/03-pricing-fees-surcharge-policy.md       |  637 [32m+++++++[m[31m-[m
+ .../guidance/client-explanation-library.md         |  892 [32m++++++++++[m[31m-[m
+ .../guidance/pricing-care-standards-manual.md      | 1590 [32m++++++++++++++++++++[m
+ .../guidance/source-of-truth-document-hierarchy.md | 1049 [32m++++++++++++[m[31m-[m
+ .../logic/16-new-client-pre-service-checklist.md   |  435 [32m+++++[m[31m-[m
+ .../logic/17-meet-and-greet-checklist.md           |  523 [32m++++++[m[31m-[m
+ .../logic/18-booking-acceptance-risk-triage.md     |  784 [32m+++++++++[m[31m-[m
+ .../logic/19-adventure-walk-suitability.md         |  498 [32m+++++[m[31m-[m
+ .../logic/20-overnight-acceptance.md               |  653 [32m+++++++[m[31m-[m
+ .../logic/21-long-stay-review.md                   |  669 [32m+++++++[m[31m-[m
+ .../logic/22-medication-scope-review.md            |  723 [32m++++++++[m[31m-[m
+ .../logic/23-behavior-risk-review.md               |  796 [32m+++++++++[m[31m-[m
+ .../logic/24-shared-care-coordination.md           |  751 [32m++++++++[m[31m-[m
+ .../logic/33-custom-quote-scope-review.md          | 1011 [32m++++++++++++[m[31m-[m
+ .../logic/36-holiday-peak-date-calendar.md         |  479 [32m+++++[m[31m-[m
+ .../logic/37-service-window-capacity-planner.md    |  794 [32m+++++++++[m[31m-[m
+ .../operations/35-annual-business-policy-audit.md  |  956 [32m+++++++++++[m[31m-[m
+ .../38-continuity-backup-provider-plan.md          |  912 [32m++++++++++[m[31m-[m
+ ...-training-certification-service-scope-matrix.md |  820 [32m+++++++++[m[31m-[m
+ 21 files changed, 15281 insertions(+), 303 deletions(-)
