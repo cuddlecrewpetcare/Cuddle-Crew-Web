@@ -30,12 +30,12 @@ test('mobile navigation remains visible until JavaScript enhances it',()=>{
 
 test('start page keeps one primary first step and clear planning pathways',()=>{
   const start=readFileSync(resolve('app/start/page.tsx'),'utf8');
-  assert.match(start,/Start with service area/);assert.match(start,/Check preliminary availability/);assert.match(start,/Open your client portal/);assert.match(start,/Online tools provide planning guidance only/);assert.match(start,/aria-label="Choose your next step"/);
+  assert.match(start,/Start with typical travel/);assert.match(start,/Check preliminary availability/);assert.match(start,/Open your client portal/);assert.match(start,/Online tools provide planning guidance only/);assert.match(start,/aria-label="Choose your next step"/);
 });
 
-test('service-area map has a visible unavailable fallback',()=>{
-  const map=readFileSync(resolve('app/ServiceAreaMap.tsx'),'utf8');
-  assert.match(map,/setUnavailable\(true\)/);assert.match(map,/The interactive map is unavailable right now/);assert.match(map,/role="status"/);
+test('ZIP-only service-area UI cannot assign a fee',()=>{
+  const home=readFileSync(resolve('app/page.tsx'),'utf8');
+  assert.match(home,/ZIP alone/);assert.match(home,/Personalized travel review required/);assert.doesNotMatch(home,/ServiceAreaMap|Core ZIPs|Standard ZIPs/);
 });
 
 test('contact errors receive focus while preserving entered values for recovery',()=>{
@@ -90,20 +90,26 @@ test('home defers below-fold interactive tools and keeps public prices sourced f
 
   assert.match(home,/dynamic\(\(\)=>import\('\.\/QuoteEstimator'\),\{ssr:false/);
   assert.match(home,/dynamic\(\(\)=>import\('\.\/AddressChecker'\),\{ssr:false/);
-  assert.match(home,/dynamic\(\(\)=>import\('\.\/ServiceAreaMap'\),\{ssr:false/);
   assert.match(home,/Loading the planning estimator/);
-  assert.match(home,/Use the ZIP checker for the same published service-area result/);
   assert.match(home,/\$\{business\.pricing\.drop30\.dog\}/);
   assert.match(home,/\$\{business\.pricing\.walk60\}/);
-  assert.match(home,/\$\{business\.pricing\.overnightMidday\}/);
-  assert.match(home,/Drop-ins from \$\{business\.pricing\.drop30\.other\}/);
-  assert.doesNotMatch(home,/\$85|\$80|\$45 dog|\$25 cat|Drop-ins from \$25/);
+  assert.match(home,/\$\{business\.pricing\.drop90\.dog\}/);
+  assert.match(home,/\$\{business\.pricing\.overnightMidday30\.dog\}/);
+  assert.doesNotMatch(home,/Insured|bonded|GPS tracking|Stripe Climate|No sales tax|written permission/);
 });
 
 test('FAQ pricing is derived from authoritative business configuration',()=>{
   const faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8');
-  for(const key of ['shortNoticeVisit','sameDayVisit','shortNoticeOvernight','holidayVisit','holidayOvernight','overnightMidday','drop30.other','drop60.other','additionalOther'])assert.match(faq,new RegExp(`business\\.pricing\\.${key.replace('.','\\.')}`));
+  for(const key of ['shortNoticeVisit','sameDayVisit','shortNoticeOvernight','holidayVisit','holidayOvernight','overnightMidday30.dog','drop30.other','drop60.other','additionalOther'])assert.match(faq,new RegExp(`business\\.pricing\\.${key.replaceAll('.','\\.')}`));
   assert.doesNotMatch(faq,/30-minute drop-in is \$20|60-minute drop-in is \$35|starts at \$25|at \$40/);
+});
+
+test('FAQ cancellation summary preserves each approved booking category and policy boundary',()=>{
+  const faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8');
+  assert.match(faq,/Daytime service: 24 hours or more/);
+  assert.match(faq,/Overnight or vacation care under seven nights uses 72-hour and 24-hour thresholds/);
+  assert.match(faq,/Bookings of seven or more nights and approved holiday periods have longer rules/);
+  assert.match(faq,/The signed policy and booking details control/);
 });
 
 test('fallback pages remain safe and actionable without exposing internals',()=>{

@@ -1,21 +1,30 @@
-import {business} from '../config/business.ts';
-export type ServiceZoneKey=keyof typeof business.zones;
-export const zoneForZip=(zip:string)=>{if(!/^\d{5}$/.test(zip))return{state:'incomplete' as const};const entry=Object.entries(business.zones).find(([,zone])=>(zone.zips as readonly string[]).includes(zip));return entry?{state:'listed' as const,key:entry[0] as ServiceZoneKey,...entry[1]}:{state:'outside' as const};};
+import {business,type TravelTierKey} from '../config/business.ts';
+
 const isoLocal=(date:Date)=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 export const businessDate=(date:Date=new Date(),timezone=business.timezone)=>new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
 export const businessYear=(date:Date=new Date(),timezone=business.timezone)=>Number(new Intl.DateTimeFormat('en-US',{timeZone:timezone,year:'numeric'}).format(date));
-const nthWeekday=(year:number,month:number,weekday:number,n:number)=>{const first=new Date(year,month,1);return isoLocal(new Date(year,month,1+(7+weekday-first.getDay())%7+(n-1)*7));};
-export const easterDate=(year:number)=>{const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=(h+l-7*m+114)%31+1;return isoLocal(new Date(year,month-1,day));};
-export const holidayDates=(year:number):Record<string,string>=>({[`${year}-01-01`]:"New Year’s Day",[easterDate(year)]:'Easter',[nthWeekday(year,4,0,2)]:"Mother’s Day",[`${year}-07-04`]:'Independence Day',[nthWeekday(year,10,4,4)]:'Thanksgiving',[`${year}-12-24`]:'Christmas Eve',[`${year}-12-25`]:'Christmas Day',[`${year}-12-31`]:"New Year’s Eve"});
-export const holidayForDate=(date:string)=>holidayDates(Number(date.slice(0,4)))[date];
-export const publicHolidays=(year:number)=>Object.entries(holidayDates(year)).map(([date,name])=>({date,name})).sort((a,b)=>a.date.localeCompare(b.date));
+
+/** ZIP alone is not an approved source for travel-zone classification. */
+export const zoneForZip=(zip:string)=>/^[0-9]{5}$/.test(zip)?{state:'review' as const,name:'Personalized review required'}:{state:'incomplete' as const};
+
+export const travelTierForMinutes=(minutes:number)=>{
+  if(!Number.isFinite(minutes)||minutes<0)return null;
+  const entries=Object.entries(business.travel) as [TravelTierKey,(typeof business.travel)[TravelTierKey]][];
+  return entries.find(([,tier])=>tier.maximumMinutes===null||minutes<=tier.maximumMinutes)?.[0]??'beyond';
+};
+
+/** Exact qualifying dates remain unresolved until the holiday calendar is CURRENT / APPROVED. */
+export const publicHolidays=(year:number):readonly []=>{void year;return[]};
+export const holidayForDate=(date:string):undefined=>{void date;return undefined};
+
 export const daysBetween=(start:string,end:string,checkoutExclusive=false)=>{if(!start||!end||end<start)return[];const out:string[]=[],cursor=new Date(`${start}T12:00:00`),last=new Date(`${end}T12:00:00`);while(cursor<last||(!checkoutExclusive&&cursor.getTime()===last.getTime())){out.push(isoLocal(cursor));cursor.setDate(cursor.getDate()+1);}return out;};
 export const possibleGapRange=(windowIndexes:number[],durationMinutes:number,overnight=false)=>{const duration=durationMinutes/60;const periods=windowIndexes.map(i=>business.windows[i]).filter(Boolean).map(w=>({earliest:w.startHour,latest:Math.max(w.startHour,w.endHour-duration),duration}));if(overnight)periods.push({earliest:business.overnight.startHour,latest:business.overnight.startHour,duration:14});if(!periods.length)return null;periods.sort((a,b)=>a.earliest-b.earliest);const minimum:number[]=[],maximum:number[]=[];periods.forEach((current,index)=>{const next=periods[(index+1)%periods.length],wrap=index===periods.length-1?24:0;minimum.push(Math.max(0,next.earliest+wrap-(current.latest+current.duration)));maximum.push(Math.max(0,next.latest+wrap-(current.earliest+current.duration)));});return{minimum:Math.max(...minimum),maximum:Math.max(...maximum),overnightMaximum:maximum.at(-1)!};};
 export const estimatorCarePlanGap=(windowIndexes:number[],durationMinutes:number,overnight=false)=>possibleGapRange(overnight?[]:windowIndexes,durationMinutes,overnight);
 export const plannerCareGap=(windowIndexes:number[],durationMinutes:number,overnight=false)=>possibleGapRange(windowIndexes,durationMinutes,overnight);
-/** @deprecated Use possibleGapRange so public guidance reflects flexible arrival windows. */
-export const largestDailyGap=(windowIndexes:number[],overnight=false)=>possibleGapRange(windowIndexes,60,overnight)?.maximum??null;
-export const shortNoticeKind=(serviceDate:string,startHour:number,now:Date)=>{const service=new Date(`${serviceDate}T${String(startHour).padStart(2,'0')}:00:00`),diff=service.getTime()-now.getTime();if(diff<0)return'past' as const;if(isoLocal(now)===serviceDate)return'same-day' as const;if(diff<48*3_600_000)return'under-48' as const;return'standard' as const;};
-export type AvailabilityStatus='Good Availability'|'Limited Availability'|'Very Limited'|'Contact for Availability';
-const availabilityRank:Record<AvailabilityStatus,number>={'Good Availability':0,'Limited Availability':1,'Very Limited':2,'Contact for Availability':3};
-export const applyAvailabilityOverrides=(date:string,current:AvailabilityStatus,overrides:readonly {start:string;end:string;status:Exclude<AvailabilityStatus,'Good Availability'>}[])=>overrides.filter(x=>x.start<=date&&x.end>=date).reduce<AvailabilityStatus>((status,override)=>availabilityRank[override.status]>availabilityRank[status]?override.status:status,current);
+
+export type NoticeKind='past'|'same-day'|'short-notice'|'standard';
+export const shortNoticeKind=(serviceDate:string,startHour:number,now:Date,service:'daytime'|'overnight'='daytime'):NoticeKind=>{const serviceTime=new Date(`${serviceDate}T${String(startHour).padStart(2,'0')}:00:00`),diff=serviceTime.getTime()-now.getTime();if(diff<0)return'past';if(isoLocal(now)===serviceDate)return'same-day';if(diff<(service==='overnight'?48:24)*3_600_000)return'short-notice';return'standard';};
+
+export type AvailabilityStatus='Request for Review'|'Limited Availability'|'Very Limited'|'Contact for Availability';
+const availabilityRank:Record<AvailabilityStatus,number>={'Request for Review':0,'Limited Availability':1,'Very Limited':2,'Contact for Availability':3};
+export const applyAvailabilityOverrides=(date:string,current:AvailabilityStatus,overrides:readonly {start:string;end:string;status:Exclude<AvailabilityStatus,'Request for Review'>}[])=>overrides.filter(x=>x.start<=date&&x.end>=date).reduce<AvailabilityStatus>((status,override)=>availabilityRank[override.status]>availabilityRank[status]?override.status:status,current);

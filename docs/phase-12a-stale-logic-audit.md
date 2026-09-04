@@ -127,3 +127,7 @@ The following must not be inferred from filenames, TODOs, examples, existing cod
 ## Phase 12A Boundary
 
 This audit did not deploy, change DNS, change production environment variables, modify `.openai/hosting.json`, alter hosting configuration, merge to `main`, or broadly refactor the stale pricing/booking system.
+
+## Phase 12B Follow-up
+
+Phase 12B implementation dispositions for every Critical and High finding are recorded in `docs/phase-12b-critical-high-disposition.md`. That record documents corrective implementation and unresolved placeholder/owner/legal/training/insurance dependencies without changing this point-in-time Phase 12A audit.

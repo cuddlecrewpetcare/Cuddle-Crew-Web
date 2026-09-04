@@ -9,7 +9,7 @@ const baseline=(change:Partial<CarePlannerInput>={}):CarePlannerInput=>({
   windowIndexes:[0,2],overnight:false,...change,
 });
 
-const cases:{name:string;change:Partial<CarePlannerInput>;duration?:30|60;suitability?:ReturnType<typeof assessCarePlan>['suitability'];reviewIncludes?:string}[]=[
+const cases:{name:string;change:Partial<CarePlannerInput>;duration?:30|60|90|null;suitability?:ReturnType<typeof assessCarePlan>['suitability'];reviewIncludes?:string}[]=[
   {name:'ordinary dog',change:{},duration:30,suitability:'starting-point'},
   {name:'ordinary cat',change:{dogs:0,cats:1,bathroomIntervalHours:24},duration:30,suitability:'starting-point'},
   {name:'mixed household',change:{cats:1,otherPets:1,taskCount:4,routineComplexity:'moderate',visitFit:'60'},duration:60},
@@ -19,17 +19,18 @@ const cases:{name:string;change:Partial<CarePlannerInput>;duration?:30|60;suitab
   {name:'time-sensitive medication',change:{medication:'timed'},suitability:'consultation-required',reviewIncludes:'Time-sensitive'},
   {name:'30-minute fit',change:{visitFit:'30'},duration:30},
   {name:'60-minute fit',change:{visitFit:'60'},duration:60},
-  {name:'cannot-fit routine',change:{visitFit:'neither'},duration:60,suitability:'consultation-required',reviewIncludes:'does not fit'},
+  {name:'90-minute fit',change:{visitFit:'90'},duration:90},
+  {name:'cannot-fit routine',change:{visitFit:'neither'},duration:null,suitability:'consultation-required',reviewIncludes:'does not fit'},
   {name:'separation requirements',change:{separation:'handling'},suitability:'consultation-required',reviewIncludes:'separate handling'},
   {name:'aggressive or reactive',change:{behavior:'aggressive'},suitability:'consultation-required',reviewIncludes:'Aggression'},
   {name:'escape risk',change:{behavior:'escape'},suitability:'consultation-required',reviewIncludes:'Escape risk'},
   {name:'ambiguous routine',change:{routineComplexity:'unclear'},suitability:'consultation-required',reviewIncludes:'ambiguous'},
-  {name:'procedure referral',change:{medication:'procedure'},suitability:'refer',reviewIncludes:'not offered'},
+  {name:'procedure scope review',change:{medication:'procedure'},suitability:'consultation-required',reviewIncludes:'requires scope'},
 ];
 
 for(const scenario of cases)test(scenario.name,()=>{
   const result=assessCarePlan(baseline(scenario.change));
-  if(scenario.duration)assert.equal(result.durationMinutes,scenario.duration);
+  if(scenario.duration!==undefined)assert.equal(result.durationMinutes,scenario.duration);
   if(scenario.suitability)assert.equal(result.suitability,scenario.suitability);
   if(scenario.reviewIncludes)assert(result.reviewReasons.some(reason=>reason.includes(scenario.reviewIncludes!)));
 });
@@ -49,10 +50,10 @@ test('overnight only and overnight with midday coverage use actual coverage peri
   assert.equal(assessCarePlan(baseline({windowIndexes:[1],overnight:true})).longestPlausibleGapHours,6.5);
 });
 
-test('contradictory duration inputs require manual review',()=>{
+test('planner never overrides a stated duration using a hidden workload score',()=>{
   const result=assessCarePlan(baseline({dogs:4,cats:2,taskCount:6,routineComplexity:'complex',visitFit:'30'}));
-  assert.equal(result.durationMinutes,60);
-  assert(result.reviewReasons.some(reason=>reason.includes('conflicts')));
+  assert.equal(result.durationMinutes,30);
+  assert.equal(result.suitability,'consultation-required');
 });
 
 test('short entered tolerance conservatively controls the gap comparison',()=>{
@@ -70,5 +71,5 @@ test('DST and timezone limitations are explicit without collecting travel dates'
 
 test('outputs retain consultation and non-booking boundaries',()=>{
   const warnings=assessCarePlan(baseline()).warnings.join(' ');
-  for(const boundary of ['diagnose','prescribe','guarantee acceptance','reserve inventory','Final suitability'])assert(warnings.includes(boundary));
+  for(const boundary of ['diagnose','prescribe','guarantee acceptance','reserve inventory','Final suitability','Feeding frequency'])assert(warnings.includes(boundary));
 });

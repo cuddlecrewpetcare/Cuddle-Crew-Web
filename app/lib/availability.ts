@@ -13,9 +13,8 @@ export function publicAvailability(ics:string,days:string[],clock=()=>performanc
   if(new TextEncoder().encode(ics).byteLength>MAX_ICS_BYTES)throw new Error('calendar-too-large');
   const events=ics.replace(/\r?\n[ \t]/g,'').split('BEGIN:VEVENT').slice(1);
   if(events.length>MAX_ICS_EVENTS)throw new Error('calendar-too-many-events');
-  const load:Record<string,number>=Object.fromEntries(days.map(day=>[day,0]));
-  for(const [index,raw] of events.entries()){if(index%50===0&&clock()-started>MAX_ICS_PROCESSING_MS)throw new Error('calendar-processing-time');const event=raw.split('END:VEVENT')[0];if(/STATUS:CANCELLED/i.test(event)||/TRANSP:TRANSPARENT/i.test(event))continue;const startLine=event.match(/^DTSTART[^\r\n]*$/mi)?.[0],endLine=event.match(/^DTEND[^\r\n]*$/mi)?.[0];if(!startLine)continue;const begins=parseIcsDate(startLine),ends=endLine?parseIcsDate(endLine):null;if(!begins)continue;const first=iso(begins),last=iso(new Date(Math.max(begins.getTime(),(ends?.getTime()||begins.getTime()+3_600_000)-1)));for(const day of days)if(day>=first&&day<=last)load[day]++}
-  const publicDays=days.map(date=>{const calendarStatus:AvailabilityStatus=load[date]<=1?'Good Availability':load[date]<=3?'Limited Availability':load[date]<=5?'Very Limited':'Contact for Availability';return{date,status:applyAvailabilityOverrides(date,calendarStatus,business.availabilityOverrides)}});
-  const rank:Record<AvailabilityStatus,number>={'Good Availability':0,'Limited Availability':1,'Very Limited':2,'Contact for Availability':3};
-  return{state:publicDays.reduce((worst,day)=>rank[day.status]>rank[worst]?day.status:worst,'Good Availability' as AvailabilityStatus),days:publicDays};
+  for(const [index,raw] of events.entries()){if(index%50===0&&clock()-started>MAX_ICS_PROCESSING_MS)throw new Error('calendar-processing-time');const event=raw.split('END:VEVENT')[0];if(/STATUS:CANCELLED/i.test(event)||/TRANSP:TRANSPARENT/i.test(event))continue;const startLine=event.match(/^DTSTART[^\r\n]*$/mi)?.[0];if(startLine)parseIcsDate(startLine)}
+  const publicDays=days.map(date=>({date,status:applyAvailabilityOverrides(date,'Request for Review',business.availabilityOverrides)}));
+  const rank:Record<AvailabilityStatus,number>={'Request for Review':0,'Limited Availability':1,'Very Limited':2,'Contact for Availability':3};
+  return{state:publicDays.reduce((worst,day)=>rank[day.status]>rank[worst]?day.status:worst,'Request for Review' as AvailabilityStatus),days:publicDays};
 }

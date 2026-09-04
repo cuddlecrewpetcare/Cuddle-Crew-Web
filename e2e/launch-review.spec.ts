@@ -18,12 +18,21 @@ test('launch pages retain landmarks, headings, links, and progressive public con
   await expect(page.getByRole('heading',{level:1})).toHaveCount(1);
   await expect(page.getByRole('link',{name:'Skip to main content'})).toHaveAttribute('href','#main-content');
   await expect(page.getByRole('link',{name:'New client registration'}).first()).toHaveAttribute('href','https://cuddlecrewpetcare.petssl.com/account');
-  await expect(page.getByText('Services for their real routine.')).toBeVisible();
+  await expect(page.getByText('Care for the time the routine needs.')).toBeVisible();
   await expect(page.getByText('$30').first()).toBeVisible();
   await expect(page.getByText('$48').first()).toBeVisible();
   await expect(page.getByText('$32').first()).toBeVisible();
   await expect(page.getByText('$50').first()).toBeVisible();
-  await expect(page.getByText('$105').first()).toBeVisible();
+  await expect(page.getByText('$66').first()).toBeVisible();
+  await expect(page.getByText('$68').first()).toBeVisible();
+  await expect(page.getByText('$85').first()).toBeVisible();
+  await expect(page.getByText('$80').first()).toBeVisible();
+  await expect(page.locator('.estimate-fields')).toBeVisible();
+  await page.getByLabel('First service date').fill('2099-01-02');
+  await page.getByLabel('Last service date').fill('2099-01-02');
+  await page.getByLabel('9 AM–12 PM').check();
+  await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
+  await expect(page.getByText('Personalized review required').first()).toBeVisible();
 });
 
 test('mobile, 200 percent zoom, keyboard, and reduced-motion paths avoid horizontal overflow',async({page})=>{

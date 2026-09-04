@@ -59,7 +59,7 @@ export default function RootLayout({
               {
                 '@type': 'LocalBusiness',
                 '@id': `${business.website}/#business`,
-                description: 'Owner-operated professional in-home pet sitting, dog walking, drop-ins, and overnight care serving Sacramento and surrounding communities.',
+                description: 'Owner-operated in-home pet sitting, dog walking, drop-ins, and overnight care in the Sacramento area.',
                 name: business.name,
                 url: business.website,
                 email: business.email,
