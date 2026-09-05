@@ -6,7 +6,18 @@ const auditedRoutes=['/','/plan','/contact','/faq','/privacy'] as const;
 for(const route of auditedRoutes){
  test(`${route} has no detectable WCAG A/AA accessibility violations`,async({page})=>{
   await page.goto(route);
-  if(route==='/')await expect(page.locator('.estimate-fields')).toBeVisible();
+  if(route==='/'){
+   await page.route('**/api/availability',request=>request.fulfill({contentType:'application/json',body:JSON.stringify({state:'Request for Review'})}));
+   await expect(page.locator('.estimate-fields')).toBeVisible();
+   await page.getByLabel('How many pets need this service?').fill('2');
+   await expect(page.getByRole('group',{name:'Pet 1',exact:true})).toBeVisible();
+   await expect(page.getByRole('group',{name:'Pet 2',exact:true})).toBeVisible();
+   await page.getByLabel('First service date').fill('2099-01-02');
+   await page.getByLabel('Last service date').fill('2099-01-02');
+   await page.getByLabel('9 AM–12 PM').check();
+   await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
+   await expect(page.locator('.estimate-actions')).toBeVisible();
+  }
   const results=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
   expect(results.violations).toEqual([]);
  });
