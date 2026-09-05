@@ -16,6 +16,7 @@
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "e2e": "npm run build && npm run e2e:run",
     "e2e:run": "node scripts/run-e2e.mjs",
+    "check:a11y": "npm run build && npm run e2e:run -- e2e/accessibility.spec.ts",
     "test:e2e": "npm run e2e",
     "doctor": "node scripts/local-env.mjs doctor",
     "env:summary": "node scripts/local-env.mjs summary",
@@ -45,6 +46,7 @@
     "react-icons": "^5.7.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@cloudflare/vite-plugin": "1.37.1",
     "@cloudflare/workers-types": "4.20260515.1",
     "@openai/sites-vite-plugin": "^0.1.0 || ^0.2.0",

@@ -194,7 +194,7 @@ async function summary(){
   console.log(`Turnstile: ${state.env.providers.turnstile.site&&state.env.providers.turnstile.secret?'configured':state.env.providers.turnstile.site||state.env.providers.turnstile.secret?'misconfigured pair':'not configured'}`);
   console.log(`Google Maps/address: ${state.env.providers.maps.key&&state.env.providers.maps.origin?'configured':state.env.providers.maps.key||state.env.providers.maps.origin?'misconfigured pair':'not configured'}`);
   console.log(`Disk free: ${state.disk.freeGb.toFixed(1)} GiB`);
-  console.log('Baseline: 125 Node tests (117 application + 3 supply-chain + 5 filesystem-safety); 10 Playwright tests; lint allows 4 known no-img-element warnings.');
+  console.log('Baseline: 134 Node tests; 19 Playwright tests including 9 focused accessibility checks; lint allows 4 known no-img-element warnings.');
   console.log('Observability: structured redacted runtime diagnostics and request IDs enabled; live provider health checks disabled.');
   console.log('Network: not needed for healthy local checks; needed for Git operations and intentionally live provider calls.');
 }

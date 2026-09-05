@@ -13,9 +13,9 @@ const profiles = [
 ];
 
 export default function SocialLinks({ compact = false }: { compact?: boolean }) {
-  return <div className={compact ? 'social-links social-links-compact' : 'social-links'} aria-label="Cuddle Crew Pet Care social profiles">
-    {profiles.map((profile) => <a className={`social-button ${profile.className}`} href={profile.href} key={profile.name} target="_blank" rel="noopener noreferrer" aria-label={`${profile.name} (opens in a new tab)`} onClick={()=>profile.className==='instagram'&&trackPublicEvent('instagram_clicked')}>
+  return <ul className={compact ? 'social-links social-links-compact' : 'social-links'} aria-label="Cuddle Crew Pet Care social profiles">
+    {profiles.map((profile) => <li key={profile.name}><a className={`social-button ${profile.className}`} href={profile.href} target="_blank" rel="noopener noreferrer" aria-label={`${profile.name} (opens in a new tab)`} onClick={()=>profile.className==='instagram'&&trackPublicEvent('instagram_clicked')}>
       <span className="social-icon">{profile.icon}</span>{!compact && <span>{profile.name}</span>}
-    </a>)}
-  </div>;
+    </a></li>)}
+  </ul>;
 }

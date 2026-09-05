@@ -420,3 +420,38 @@ Future Codex sessions must:
 28. Sort filesystem/glob results whenever ordering affects output and do not use timestamps, file size, or enumeration order as sole authority.
 29. Before future upload/archive/persistent-file work, define generated names, size/type/parser bounds, containment, link/archive traversal defenses, atomicity, collisions, permissions, retention, and cleanup.
 30. Run `npm run check:cross-platform` after relevant changes and in final validation; report unresolved platform limitations honestly and do not weaken the guard to hide a finding.
+
+## Accessibility and Responsive-UI Contract
+
+Future Codex sessions must:
+
+1. Read `docs/accessibility-responsive.md` before changing public UI markup, styles, forms, navigation, dynamic status, images, motion, or responsive behavior.
+2. Treat WCAG 2.2 AA as the practical engineering target while never claiming legal compliance, conformance, or certification from automated checks alone.
+3. Prefer native semantic HTML and use buttons for actions, links for navigation, labels for controls, fieldsets/legends for related choices, lists for lists, and native details/summary where appropriate.
+4. Preserve one meaningful `main` landmark and a logical heading hierarchy with one descriptive page `h1`; keep page titles distinguishable.
+5. Preserve full keyboard access and logical DOM/focus order across viewport changes; never introduce positive `tabindex` or manual tab-order hacks.
+6. Preserve a clearly visible focus indicator on every interactive control; never remove an outline without an equally or more visible replacement.
+7. Keep focused content from being obscured by sticky headers, fixed controls, menus, or overlays; use scroll spacing or layout corrections where needed.
+8. Avoid keyboard traps. If a real modal or overlay is introduced, implement appropriate focus containment, Escape handling, initial focus, background behavior, and focus restoration.
+9. Keep compact navigation and future menus usable with keyboard, pointer, and touch; expose expanded state and prevent hidden responsive descendants from remaining focusable.
+10. Avoid hover-only functionality and device-width assumptions about input modality; hover enhancements must have keyboard and touch equivalents.
+11. Label every form control programmatically and visibly. Placeholder text remains supplementary and must never replace a label.
+12. Convey required fields visually and programmatically, preserve useful autocomplete/input types/input modes, and keep mobile form text comfortably readable.
+13. Associate custom field errors and instructions with their controls, use `aria-invalid` where appropriate, and move focus after failed submission only when it improves recovery.
+14. Announce important asynchronous success, failure, loading, availability, autocomplete, and planning results with restrained status/alert patterns; never make an entire busy form a live region.
+15. Preserve user-entered non-sensitive values after recoverable errors and do not clear a form until successful completion intentionally requires it.
+16. Use ARIA only when necessary and correct. Native semantics take precedence; invalid, redundant, contradictory, or speculative ARIA must not be added.
+17. Give icon-only controls meaningful accessible names, align accessible names with visible labels for speech input, and hide decorative icons/images from assistive technology.
+18. Write concise contextual alt text for informative images, use empty alt for decorative images, keep critical text as real text, and never restore or expose Client media without approved authority.
+19. Never rely on color alone for state or meaning. Preserve WCAG AA text and non-text contrast and measure actual foreground/background pairs rather than approving them by eye.
+20. Keep body links distinguishable in context and preserve control boundaries, focus, and meaning in Windows forced-colors/high-contrast mode.
+21. Preserve usable touch targets, especially for compact navigation, icon controls, checkboxes, autocomplete options, and primary actions; apply the inline-text exception thoughtfully.
+22. Preserve zoom and reflow: never disable user scaling, lock orientation, globally hide horizontal overflow to conceal defects, or use fixed text-bearing dimensions that clip enlarged content.
+23. Test core layouts around 320, 375, 390, 768, 1024, and 1280+ CSS pixels based on content needs; keep grids/flex children shrinkable and long content wrappable.
+24. Respect `prefers-reduced-motion`, including smooth scrolling and transform-heavy animation, and do not add autoplay, flashing, parallax, or auto-advancing content without accessible controls and a demonstrated need.
+25. Preserve the contact form's security, privacy, required-state, error, pending, and consent semantics. SMS consent remains optional, unchecked, separate from Terms, and linked to the canonical visible disclosure.
+26. Keep accessible names, descriptions, statuses, errors, test data, and screenshots privacy-safe; never expose private addresses, internal route/capacity reasoning, Client data, credentials, or provider payloads for accessibility.
+27. Treat Cloudflare Turnstile and other provider widgets as third-party accessibility boundaries: preserve surrounding context and recoverable failure behavior, but do not claim control of provider internals.
+28. Run `npm run check:a11y` and relevant focused browser tests after meaningful UI changes, and run `npm run validate:full` before completing a substantial phase. Do not broadly suppress Axe findings.
+29. Test task completion and focus behavior rather than brittle tab counts or pixel-perfect snapshots; preserve critical keyboard, responsive, reduced-motion, touch, form, autocomplete, and status coverage.
+30. Document manual gaps honestly. Real screen-reader, 200%/400% browser zoom, text-only zoom, forced-colors, orientation, and configured third-party-widget checks remain manual unless actually performed.

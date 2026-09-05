@@ -38,7 +38,7 @@ try{
   server=spawn(process.execPath,[vinextCli,'start','--port=3100'],{cwd:repoRoot,stdio:'inherit',windowsHide:true,env:{...process.env,RESEND_SEND_ENABLED:'false'}});
   server.unref();
   await waitForServer();
-  const test=spawn(process.execPath,[playwrightCli,'test'],{cwd:repoRoot,stdio:'inherit',windowsHide:true});
+  const test=spawn(process.execPath,[playwrightCli,'test',...process.argv.slice(2)],{cwd:repoRoot,stdio:'inherit',windowsHide:true});
   const exitCode=await new Promise((resolve,reject)=>{test.once('error',reject);test.once('exit',code=>resolve(code??1))});
   process.exitCode=exitCode;
 }catch(error){
