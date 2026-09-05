@@ -455,3 +455,40 @@ Future Codex sessions must:
 28. Run `npm run check:a11y` and relevant focused browser tests after meaningful UI changes, and run `npm run validate:full` before completing a substantial phase. Do not broadly suppress Axe findings.
 29. Test task completion and focus behavior rather than brittle tab counts or pixel-perfect snapshots; preserve critical keyboard, responsive, reduced-motion, touch, form, autocomplete, and status coverage.
 30. Document manual gaps honestly. Real screen-reader, 200%/400% browser zoom, text-only zoom, forced-colors, orientation, and configured third-party-widget checks remain manual unless actually performed.
+
+## CI, Hosting, Deployment, and Release-Safety Contract
+
+Future Codex sessions must:
+
+1. Never deploy from a dirty working tree or include untracked release-critical files.
+2. Deploy only an exact known Git SHA and record that SHA with the result.
+3. Verify the branch, source SHA, freshly fetched GitHub remote match, and intended Sites version before deployment.
+4. Keep implementation, review/merge, Sites version creation, production activation, provider configuration, and DNS changes as separate authorized operations.
+5. Never expose production secrets or private production data to local development, tests, E2E, CI, forks, untrusted pull requests, previews, or build artifacts.
+6. Keep every provider write gate explicit, server-only, environment-specific, and independent of `NODE_ENV`, hostname, build, merge, or deployment success.
+7. Keep preview writes off by default and treat any hosted preview as publicly visible.
+8. Never enable unresolved SMS, payment, booking, webhook, Client-record, or Precise Petcare mutation paths.
+9. Never print, export, diff, log, archive, or record deployment credentials or production secret values.
+10. Store production secrets only in the approved host/provider secret store; `.env.production` and credential exports never belong in Git.
+11. Distinguish build-time, server-runtime, and browser-public environment variables; every `NEXT_PUBLIC_*` value is public.
+12. Preserve deterministic fresh installs with Node 22.17.1, npm 10.9.2, `npm ci`, and the reviewed lockfile.
+13. Run `npm run check:deployment` and the full required validation before a production deployment.
+14. Never deploy while a required check is red or an unexpected test-count decrease, warning, secret finding, artifact finding, or source mismatch is unresolved.
+15. Preserve business-reference authority plus privacy, integration, accessibility, time, cross-platform, and resource guarantees in every environment.
+16. Keep `/api/health` minimal, local, provider-free, private-data-free, environment-detail-free, and `no-store`.
+17. Do not perform a real production provider-write smoke test without explicit provider-specific authorization, synthetic data, safe idempotency/reconciliation, and a cleanup/record plan.
+18. Identify the last known-good rollback SHA/version before a risky deployment.
+19. Roll back by selecting/redeploying or rebuilding the last known-good exact version/SHA, never by rewriting Git history.
+20. Verify health, critical routes, redirects, headers, indexing, assets, and provider-gate state after deployment or rollback.
+21. Keep a secret-free deployment record containing environment, exact SHA/source, validation, result, smoke result, and rollback SHA.
+22. Keep DNS and domain cutover separate from application deployment; never modify records merely because a build is ready.
+23. Never modify MX, SPF, DKIM, or DMARC casually during web deployment.
+24. Document production configuration names/classes without values and record environment changes by name, actor, time, reason, and result.
+25. Give CI and deploy credentials the minimum permissions; routine validation has read-only repository access and no deploy token.
+26. Never expose secrets to `pull_request_target`, forked code, arbitrary feature branches, or untrusted CI artifacts.
+27. Keep CI provider-write safe with mocks/off configuration, synthetic data, explicit false write gates, and no production network dependency.
+28. Audit every third-party GitHub Action, build plugin, hook, or deployment integration and pin Actions to reviewed exact SHAs.
+29. Keep CI artifacts failure-only, short-lived, synthetic/private-safe, and never treat artifact storage as a secret store.
+30. Report host-dashboard state, production SHA, logs/retention, deployment atomicity, runtime limits, and other external configuration as unresolved unless actually verified.
+
+Use `docs/deployment-hosting.md` for the complete environment matrix, CI design, release checklist, smoke test, rollback, incident, DNS, and owner-action boundaries. A GitHub push does not authorize a Sites push or production activation.

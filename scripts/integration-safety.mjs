@@ -16,7 +16,8 @@ for(const integration of integrationRegistry){
   for(const name of integration.secrets)if(name.startsWith('NEXT_PUBLIC_'))fail(`${integration.id}: secret ${name} is browser-public`);
   if(['WRITE','WRITE_TARGET'].includes(integration.access)&&integration.status.startsWith('ACTIVE')&&!integration.writeGate&&integration.id!=='business-mailbox')fail(`${integration.id}: active write has no provider-specific gate`);
   if(integration.writeGate&&envTemplate.get(integration.writeGate)!=='false')fail(`${integration.id}: ${integration.writeGate} must default to false`);
-  if(['tests','e2e'].some(environment=>!integration[environment]))fail(`${integration.id}: automated environment policy is missing`);
+  if(['local','tests','e2e','preview','staging','production'].some(environment=>!integration[environment]))fail(`${integration.id}: environment policy is missing`);
+  if(['WRITE','WRITE_TARGET'].includes(integration.access)&&integration.preview!=='BLOCKED')fail(`${integration.id}: preview writes must be blocked`);
 }
 
 const packageJson=JSON.parse(read('package.json'));
@@ -31,7 +32,8 @@ for(const file of testFiles){const source=read(file);for(const host of forbidden
 
 if(failures.length){for(const message of failures)console.error(`FAIL ${message}`);console.error(`Integration safety check failed with ${failures.length} finding(s). Nothing was modified.`);process.exitCode=1}
 else{
-  console.log(`PASS Integration registry — ${integrationRegistry.length} provider/boundary entries have explicit access and environment policy`);
+  console.log(`PASS Integration registry — ${integrationRegistry.length} provider/boundary entries cover local, test, E2E, preview, staging, and production policy`);
+  console.log('PASS Preview isolation — active write providers are blocked in preview');
   console.log('PASS Write isolation — active email delivery has a provider-specific gate that defaults off');
   console.log('PASS Secret boundary — registered provider secrets are server-only and declared without values');
   console.log('PASS Test isolation — known live write hosts are absent from Node and E2E source');

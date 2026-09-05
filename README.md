@@ -32,6 +32,8 @@ The address integration does not use a browser key. In Google Cloud, enable Plac
 
 The production site is hosted through OpenAI Sites. Push the exact reviewed commit to the Sites source remote, package the build, save a new Sites version, then deploy that version. The GitHub mirror is at `cuddlecrewpetcare/Cuddle-Crew-Web`.
 
+CI validates pull requests and `main` without production secrets or deployment capability. The exact-SHA release gate, environment/write boundaries, hosting inventory, smoke checks, rollback procedure, and deployment-record template are in [`docs/deployment-hosting.md`](docs/deployment-hosting.md).
+
 ## Social profiles and Instagram
 
 All official social URLs live in `app/config/business.ts` under `business.social`; components must consume that central configuration rather than duplicating URLs. `SocialLinks` renders Google, Facebook, Yelp, and the official Instagram profile in its normal and compact layouts. The same centralized values feed LocalBusiness `sameAs` structured data.

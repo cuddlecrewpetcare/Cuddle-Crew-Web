@@ -74,7 +74,7 @@ Holiday automation stays disabled while the holiday calendar is `PLACEHOLDER`. C
 | Client-safe errors | Contact, address, availability, health, and fallback-page checks | Maintain whenever new routes/providers are added |
 | Server/client environment boundary | Feature gates, response minimization, build/supply-chain review | No automated compiled-bundle secret-name test; current secret scan/build review remains the gate |
 | External side effects | Provider-specific Resend gate, injected transports, missing-config fail-closed checks, browser contact interception, and `check:integrations` | Any new provider write requires an explicit gate, adapter, idempotency/reconciliation design, and regression tests before activation |
-| Build and repository safety | Typecheck, lint, build, secret scan, supply-chain and Git safety commands | Hosted CI is not configured; local validation is the executable gate |
+| Build and repository safety | Typecheck, lint, build, artifact/deployment checks, secret scan, supply-chain and Git safety commands | Validation-only Linux CI mirrors the local full gate without production secrets or deployment capability |
 
 ## Side effects, mocks, fixtures, and contracts
 
@@ -161,7 +161,7 @@ The baseline and point-in-time results live in `docs/test-baseline.md`. Update i
 | --- | --- | --- |
 | Critical | No live destructive test write, production/Client fixture, committed test secret, or production-leaking test bypass found | Preserve the side-effect and fixture contract |
 | High | No unexplained test loss, order-dependent critical state, unsafe E2E process killing, or validation bypass found | Investigate immediately if introduced |
-| Medium | No hosted CI currently enforces the local gate | Keep local commands authoritative; add CI only in a dedicated task |
+| Medium | Host dashboard configuration and the exact currently deployed Sites SHA are not provable from validation CI | Verify environment-name assignments and Sites version provenance in a separately authorized production task |
 | Medium | Successful live Google/Resend/calendar schemas are not checked against providers | Deferred intentionally; add fixture-backed adapter contracts when provider churn justifies them |
 | Low | Several source-text tests couple to implementation shape | Retain where they protect progressive/policy linkage; prefer behavioral tests for new coverage |
 | Info | Accessibility and responsive coverage is preparatory, not comprehensive | Complete in the dedicated later phases |
