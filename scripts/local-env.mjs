@@ -24,11 +24,36 @@ const npmRun=(args,options={})=>process.env.npm_execpath&&existsSync(process.env
   ?run(process.execPath,[process.env.npm_execpath,...args],options)
   :run(process.platform==='win32'?'npm.cmd':'npm',args,options);
 const output=(result)=>(result.stdout||result.stderr||'').trim();
-const semverParts=(value)=>String(value).replace(/^v/,'').split('.').map(Number);
 const stable=(value)=>Array.isArray(value)?value.map(stable):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])])):value;
 const dependencyShape=Object.fromEntries(dependencyGroups.map(key=>[key,manifest[key]||{}]));
-const runtimeIdentity={node:process.versions.node.split('.').slice(0,2).join('.'),npm:output(npmRun(['--version']))};
-const fingerprint=()=>createHash('sha256').update(readFileSync(lockPath)).update(JSON.stringify(stable(dependencyShape))).update(JSON.stringify(runtimeIdentity)).digest('hex');
+
+export function normalizeExactVersion(value,{allowLeadingV=false}={}){
+  const pattern=allowLeadingV?/^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/:/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+  const match=String(value).trim().match(pattern);
+  return match?`${match[1]}.${match[2]}.${match[3]}`:null;
+}
+
+export function exactVersionMatches(actual,expected,options){
+  const normalizedActual=normalizeExactVersion(actual,options),normalizedExpected=normalizeExactVersion(expected,options);
+  return normalizedActual!==null&&normalizedExpected!==null&&normalizedActual===normalizedExpected;
+}
+
+export function createRuntimeIdentity({nodeVersion,npmVersion}){
+  return{node:normalizeExactVersion(nodeVersion,{allowLeadingV:true})??String(nodeVersion).trim(),npm:normalizeExactVersion(npmVersion)??String(npmVersion).trim()};
+}
+
+export function createEnvironmentFingerprint({lockfile,dependencies,runtime}){
+  return createHash('sha256').update(lockfile).update(JSON.stringify(stable(dependencies))).update(JSON.stringify(stable(runtime))).digest('hex');
+}
+
+export function evaluateRuntimeVersions({nodeVersion,npmVersion,expectedNodeVersion,expectedNpmVersion}){
+  const node=normalizeExactVersion(nodeVersion,{allowLeadingV:true})??String(nodeVersion).trim(),npm=normalizeExactVersion(npmVersion)??String(npmVersion).trim();
+  const nodeOk=exactVersionMatches(nodeVersion,expectedNodeVersion,{allowLeadingV:true}),npmOk=exactVersionMatches(npmVersion,expectedNpmVersion);
+  return{ok:nodeOk&&npmOk,nodeOk,npmOk,node,npm};
+}
+
+const runtimeIdentity=createRuntimeIdentity({nodeVersion:process.versions.node,npmVersion:output(npmRun(['--version']))});
+const fingerprint=()=>createEnvironmentFingerprint({lockfile:readFileSync(lockPath),dependencies:dependencyShape,runtime:runtimeIdentity});
 
 function checkRoot(){
   const git=run('git',['rev-parse','--show-toplevel']);
@@ -39,8 +64,7 @@ function checkRoot(){
 }
 
 function checkRuntime(){
-  const [major,minor]=semverParts(process.versions.node),[expectedMajor,expectedMinor]=semverParts(expectedNode);
-  return{nodeOk:major===expectedMajor&&minor===expectedMinor,npmOk:runtimeIdentity.npm===expectedNpm,node:process.versions.node,npm:runtimeIdentity.npm};
+  return evaluateRuntimeVersions({nodeVersion:process.versions.node,npmVersion:runtimeIdentity.npm,expectedNodeVersion:expectedNode,expectedNpmVersion:expectedNpm});
 }
 
 function checkLock(){
@@ -221,5 +245,9 @@ async function setup(){
   console.log('Local setup is ready. Existing caches and installations were preserved.');
 }
 
-const mode=process.argv[2];
-if(mode==='doctor')await doctor();else if(mode==='summary')await summary();else if(mode==='setup')await setup();else{console.error('Use doctor, summary, or setup.');process.exitCode=2}
+async function main(){
+  const mode=process.argv[2];
+  if(mode==='doctor')await doctor();else if(mode==='summary')await summary();else if(mode==='setup')await setup();else{console.error('Use doctor, summary, or setup.');process.exitCode=2}
+}
+
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))await main();

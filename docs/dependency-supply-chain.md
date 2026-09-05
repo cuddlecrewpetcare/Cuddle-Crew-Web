@@ -14,7 +14,7 @@
 - A healthy environment installs nothing. Preserve `node_modules`, the user npm cache, the user Playwright browser cache, and valid build/test caches.
 - Dependency additions, removals, and upgrades are intentional maintenance work. Never introduce Yarn, pnpm, Bun, an alternate lockfile, `--force`, `--legacy-peer-deps`, routine `--ignore-scripts`, or routine `--unsafe-perm`.
 
-The ignored environment fingerprint hashes the complete lockfile, all four dependency declaration groups, Node major/minor, and the exact npm version. That is the right sensitivity: it detects meaningful dependency/toolchain drift without reacting to unrelated source or documentation changes.
+The ignored environment fingerprint hashes the complete lockfile, all four dependency declaration groups, and the full exact Node and npm versions. Node or npm patch drift therefore invalidates the fingerprint, while unrelated source, documentation, paths, usernames, shells, and timestamps do not. A version mismatch requires selecting the pinned runtime and rerunning the doctor; it does not justify reinstalling otherwise healthy dependencies.
 
 ## Point-in-time dependency inventory
 

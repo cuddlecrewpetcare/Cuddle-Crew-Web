@@ -86,9 +86,11 @@ Run:
 npm run doctor
 ```
 
-The doctor is read-only and non-destructive. It checks the repository root, branch, pinned Node/npm versions, lockfile-to-manifest compatibility, required installed package versions, fingerprint state, Playwright/Chromium availability, Gitleaks availability/version, ports 3000 and 3100, `.env.example` names, `.env.local` presence without values, and disk space. It never installs, fetches, switches branches, kills processes, cleans files, runs a secret scan, or changes the fingerprint.
+The doctor is read-only and non-destructive. It requires the exact Node version from `.nvmrc` and the exact npm version selected by `packageManager`; patch drift fails with the expected and actual versions. It also checks the repository root, branch, lockfile-to-manifest compatibility, required installed package versions, fingerprint state, Playwright/Chromium availability, Gitleaks availability/version, ports 3000 and 3100, `.env.example` names, `.env.local` presence without values, and disk space. It never installs, fetches, switches runtimes or branches, kills processes, cleans files, runs a secret scan, or changes the fingerprint.
 
 `PASS` means healthy. `WARNING` is actionable context that does not necessarily block work. `FAIL` exits non-zero and should be repaired before development. Running on `main` is reported as information; the doctor never creates or switches branches.
+
+The environment fingerprint includes the full normalized Node and npm versions plus the existing dependency declarations and complete lockfile. Node or npm patch drift makes it stale, but unrelated machine details do not. A runtime mismatch requires deliberately selecting the pinned tool version and rerunning the doctor; it does not justify reinstalling healthy dependencies.
 
 ## Environment Summary
 
