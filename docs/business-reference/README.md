@@ -50,9 +50,12 @@ Use the most specific applicable `CURRENT / APPROVED` file. In particular:
 
 - SMS consent, A2P/10DLC website behavior, canonical disclosure, consent records, STOP/HELP handling, mobile-information privacy, and marketing-SMS boundaries → `guidance/sms-communications-consent-compliance.md`.
 - Source precedence and conflict resolution → `guidance/source-of-truth-document-hierarchy.md`.
-- Exact rates, fees, and pricing modifiers → `core/03-pricing-fees-surcharge-policy.md`.
+- Exact public rates, fees, and pricing modifiers → `core/03-pricing-fees-surcharge-policy.md`.
+- PPC base/modifier configuration, 15-minute supplemental care, same-arrival modifier treatment, Overnight + midday pricing implementation, reservation-payment quote default, and view-only quote workflow → `logic/38-ppc-pricing-quote-implementation.md`.
+- Exact 2026 holiday and peak-date qualifying periods → `logic/36-holiday-peak-date-calendar.md`.
 - Cancellation, refund, and booking-change terms → `core/02-cancellation-booking-change-refund-policy.md`.
-- Internal booking, scope, safety, capacity, and suitability decisions → the applicable `logic/` reference.
+- Internal custom-quote and personalized-scope review triggers → `logic/33-custom-quote-scope-review.md`.
+- Other internal booking, scope, safety, capacity, and suitability decisions → the applicable `logic/` reference.
 
 SMS-specific implementation must read the canonical SMS reference before changing phone-number collection, communications consent, disclosure text, notification preferences, opt-out or HELP behavior, SMS Privacy Policy language, or marketing-SMS behavior. Existing website behavior, form fields, CRM data, or possession of a phone number does not override that reference or establish consent. Higher-authority signed contractual or legal requirements still control where applicable.
 
