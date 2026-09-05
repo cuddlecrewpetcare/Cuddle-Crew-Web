@@ -10,6 +10,7 @@ test('health endpoint returns only safe operational fields',async()=>{
 
   assert.equal(response.status,200);
   assert.equal(response.headers.get('Cache-Control'),'no-store');
+  assert.match(response.headers.get('X-Request-ID')||'',/^[0-9a-f-]{36}$/);
   assert.deepEqual(Object.keys(payload).sort(),['status','timestamp']);
   assert.equal(payload.status,'ok');
   assert.equal(typeof payload.timestamp,'string');

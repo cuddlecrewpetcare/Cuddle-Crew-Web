@@ -12,7 +12,7 @@ This document is the durable testing contract for Cuddle Crew Pet Care. It descr
 
 ## Current inventory
 
-The F6 baseline contains 110 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
+The F7 baseline contains 114 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
 
 | Owning suite | Count | Primary purpose |
 | --- | ---: | --- |
@@ -22,6 +22,7 @@ The F6 baseline contains 110 Node tests and 10 Playwright tests. The executable 
 | `tests/feature-completion.test.ts` | 15 | Address parsing, bounded planning state, privacy-safe persistence, and feature gates |
 | `tests/growth-features.test.ts` | 6 | Referral allowlisting, public analytics minimization, and manifest safety |
 | `tests/production-reliability.test.ts` | 12 | Health contract plus source/build/config regression guards for critical public behavior |
+| `tests/observability.test.ts` | 4 | Structured redaction schema, correlation IDs, and bounded application error taxonomy |
 | `tests/supply-chain.test.ts` | 3 | Lockfile, package-source, integrity, and lifecycle-review guard behavior |
 | `e2e/public-flows.spec.ts` | 7 | Critical home, estimator, planner, contact, consent, responsive, and session-state browser journeys |
 | `e2e/launch-review.spec.ts` | 3 | Route/status smoke, public progressive content, keyboard/reflow, and reduced-motion paths |

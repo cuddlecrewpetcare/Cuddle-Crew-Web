@@ -295,3 +295,38 @@ Future Codex sessions must:
 28. Never enable SMS, payment, booking, Precise Petcare mutation, Client-record mutation, or publishing without explicit authorization and provider-specific safety design.
 29. Preserve business-reference and Client-record authority; provider defaults, examples, docs, or API capabilities do not create business policy or consent.
 30. Run `npm run check:integrations`, relevant provider-failure tests, secret scanning, and the required full validation; report unresolved configuration and live-contract gaps honestly.
+
+## Observability, Diagnostics, and Recovery Contract
+
+Future Codex sessions must:
+
+1. Read `docs/observability-recovery.md` before changing logging, diagnostics, error handling, health, startup behavior, failure artifacts, cleanup, recovery, or incident handling.
+2. Diagnose before cleaning, resetting, reinstalling, retrying, increasing timeouts, or rebuilding the environment.
+3. Preserve useful safe failure evidence until the root cause and remediation are validated.
+4. Never print or log secrets, credentials, authorization/cookie headers, environment values, private URLs, or raw provider responses.
+5. Never log complete contact submissions, identity/contact details, exact addresses, access instructions, travel dates, pet care/medical/behavior details, payment data, private calendar content, or private production data.
+6. Keep client-safe errors separate from internal diagnostics; never return raw causes, stacks, local paths, credentials, provider bodies/headers, or internal decision reasons.
+7. Preserve the small application and provider error taxonomies; do not collapse configuration, validation, security, duplicate, rate-limit, provider, and internal failures into one generic category prematurely.
+8. Distinguish `NOT_ATTEMPTED`, `CONFIRMED_FAILURE`, provider acceptance, and `UNKNOWN_OUTCOME` for external writes.
+9. Never report timeout/transport ambiguity as confirmed failure or blindly retry an unknown write outcome.
+10. Use server-generated random correlation IDs; do not encode PII or trust client-supplied IDs as authoritative.
+11. Retain provider request IDs only when safe, sanitized, bounded, and useful; do not expose them to clients without a concrete need.
+12. Use only the explicit structured diagnostic schema and keep production logs minimal; never attach arbitrary context or payload objects.
+13. Keep `doctor` local, read-only, deterministic, fast, secret-safe, non-destructive, and independent of live providers.
+14. Keep live provider health separate from local health, startup, builds, tests, and standard validation.
+15. Treat `/api/health` as minimal process liveness, not proof of provider availability, business capacity, or complete readiness.
+16. Distinguish missing/incomplete configuration from provider outage and identify only variable names or safe configured/unconfigured status.
+17. Preserve rate-limit, Turnstile, honeypot, and duplicate diagnostics without logging IPs, fingerprints, attempted values, payloads, or private thresholds.
+18. Preserve operation latency only as bounded numeric duration with a safe operation/provider label.
+19. Keep logs, traces, screenshots, reports, and generated diagnostics ignored, bounded, and private-safe.
+20. Preserve failed-test artifacts when useful; remove exact generated targets only after the investigation or when proven stale.
+21. Never kill unrelated processes or broad Node groups; inspect and stop only the exact repository-owned process/session.
+22. Preserve port ownership rules for interactive development and E2E, including explicit occupied-port failure and release after testing.
+23. Use an exact Git SHA plus passing baseline and verified remote state for a known-good checkpoint; never rely on “last working version.”
+24. Prefer corrective commits or normal `git revert` over shared-history rewrite; never reset, clean, force-push, or rewrite history without explicit authorization.
+25. Follow the documented dependency, build, E2E, provider, configuration, secret, and private-data recovery ladders in order.
+26. Fix root cause where practical; a retry, larger timeout, cache clear, reinstall, or process kill is not a root-cause fix without evidence.
+27. Do not add Sentry, Datadog, New Relic, OpenTelemetry, Prometheus, centralized logging, tracing, alerting, or another monitoring SaaS without explicit authorization and privacy/retention/ownership review.
+28. Classify incidents proportionately, preserve evidence before privacy/security cleanup, and create a safe incident record only for meaningful events.
+29. Never include secret/private raw values in an incident record; use an approved access-controlled evidence location and safe opaque references.
+30. Report unresolved production logging, retention, access, alert ownership, metrics, and live-diagnostic decisions honestly without inventing infrastructure or policy.
