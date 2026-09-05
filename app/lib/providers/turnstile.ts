@@ -1,7 +1,9 @@
-import {fetchWithTimeout} from '../server-security.ts';
+import {fetchWithTimeout,readResponseJson} from '../server-security.ts';
+import {resourceLimits} from '../../config/resource-limits.ts';
 import {providerFailureForException,providerFailureForStatus,type ProviderFailure} from './errors.ts';
 
-export const TURNSTILE_TIMEOUT_MS=5_000;
+export const TURNSTILE_TIMEOUT_MS=resourceLimits.providerTimeoutMs.turnstile;
+export const TURNSTILE_MAX_RESPONSE_BYTES=resourceLimits.providerResponseBytes.turnstile;
 export type TurnstileResult={ok:true;verified:boolean}|ProviderFailure;
 
 export async function verifyTurnstile(
@@ -19,11 +21,11 @@ export async function verifyTurnstile(
   try{
     const response=await fetchWithTimeout('https://challenges.cloudflare.com/turnstile/v0/siteverify',{method:'POST',body},TURNSTILE_TIMEOUT_MS,fetcher);
     if(!response.ok)return providerFailureForStatus(response.status);
-    const result:unknown=await response.json();
-    if(!result||typeof result!=='object'||typeof (result as {success?:unknown}).success!=='boolean')return{ok:false,category:'UNKNOWN',outcome:'CONFIRMED_FAILURE'};
-    const payload=result as {success:boolean;'error-codes'?:unknown};
+    const result=await readResponseJson(response,TURNSTILE_MAX_RESPONSE_BYTES);
+    if(!result.ok||!result.value||typeof result.value!=='object'||typeof (result.value as {success?:unknown}).success!=='boolean')return{ok:false,category:'UNKNOWN',outcome:'CONFIRMED_FAILURE'};
+    const payload=result.value as {success:boolean;'error-codes'?:unknown};
     if(!payload.success&&Array.isArray(payload['error-codes'])){
-      const codes=payload['error-codes'].filter((value):value is string=>typeof value==='string');
+      const codes=payload['error-codes'].slice(0,32).filter((value):value is string=>typeof value==='string');
       if(codes.includes('internal-error'))return{ok:false,category:'PROVIDER_UNAVAILABLE',outcome:'CONFIRMED_FAILURE'};
       if(codes.some(code=>code==='invalid-input-secret'||code==='missing-input-secret'))return{ok:false,category:'AUTH_OR_CONFIG',outcome:'CONFIRMED_FAILURE'};
     }

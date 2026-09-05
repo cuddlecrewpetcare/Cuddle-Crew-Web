@@ -1,8 +1,9 @@
-import {fetchWithTimeout} from '../server-security.ts';
+import {discardResponseBody,fetchWithTimeout} from '../server-security.ts';
+import {resourceLimits} from '../../config/resource-limits.ts';
 import {providerFailureForException,providerFailureForStatus,type ProviderResult} from './errors.ts';
 
 const endpoint='https://api.resend.com/emails';
-export const RESEND_TIMEOUT_MS=8_000;
+export const RESEND_TIMEOUT_MS=resourceLimits.providerTimeoutMs.resend;
 
 export type ResendMessage={
   from:string;
@@ -41,8 +42,9 @@ export async function sendResendEmail(
       },
       body:JSON.stringify(message),
     },RESEND_TIMEOUT_MS,options.fetcher);
-    if(!response.ok)return providerFailureForStatus(response.status);
+    if(!response.ok){const failure=providerFailureForStatus(response.status);await discardResponseBody(response);return failure}
     const requestId=response.headers.get('x-request-id')?.trim();
+    await discardResponseBody(response);
     return{ok:true,...(requestId?{providerRequestId:requestId.slice(0,128)}:{})};
   }catch(error){
     return providerFailureForException(error);

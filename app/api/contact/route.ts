@@ -3,6 +3,7 @@ import {clientKey,rateLimit} from '../../lib/rate-limit.ts';
 import {readJsonObject} from '../../lib/server-security.ts';
 import {turnstileMode} from '../../lib/turnstile-config.ts';
 import {smsConsentSource} from '../../config/sms.ts';
+import {resourceLimits} from '../../config/resource-limits.ts';
 import {resendDeliveryConfigured,sendResendEmail,type ResendMessage} from '../../lib/providers/resend.ts';
 import {verifyTurnstile} from '../../lib/providers/turnstile.ts';
 import type {ProviderFailure,ProviderResult} from '../../lib/providers/errors.ts';
@@ -10,6 +11,7 @@ import {createRequestId,jsonWithRequestId,logDiagnostic,logProviderFailure} from
 
 const recipient='lauren@cuddlecrewpetcare.com';
 const duplicateWindowMs=2*60_000;
+export const MAX_RECENT_CONTACT_ATTEMPTS=resourceLimits.processStateEntries.recentContactAttempts;
 type ContactAttempt={expires:number;accepted:boolean;requestId:string;smsConsentTimestamp?:string};
 const recent=new Map<string,ContactAttempt>();
 type EmailSender=(message:ResendMessage,idempotencyKey:string)=>Promise<ProviderResult>;
@@ -17,11 +19,12 @@ type EmailSender=(message:ResendMessage,idempotencyKey:string)=>Promise<Provider
 const pruneAttempts=(now:number)=>{for(const[key,attempt]of recent)if(attempt.expires<=now)recent.delete(key)};
 const upstreamStatus=(failure:ProviderFailure)=>failure.outcome==='CONFIRMED_FAILURE'?502:503;
 export const resetContactAttemptsForTests=()=>recent.clear();
+export const contactAttemptCountForTests=()=>recent.size;
 
 export function createContactPost(sendEmail:EmailSender=sendResendEmail){
   return async function POST(request:Request){
     const requestId=createRequestId();
-    const json=(body:unknown,init:ResponseInit={})=>jsonWithRequestId(body,requestId,init);
+    const json=(body:unknown,init:ResponseInit={})=>{const headers=new Headers(init.headers);headers.set('Cache-Control','no-store');return jsonWithRequestId(body,requestId,{...init,headers})};
     if(turnstileMode(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,process.env.TURNSTILE_SECRET_KEY)==='misconfigured'){
       logDiagnostic('ERROR','configuration.invalid',{operation:'contact',provider:'turnstile',requestId,category:'CONFIGURATION',result:'incomplete_pair'});
       return json({error:'Contact security is temporarily misconfigured. Please email Lauren directly.'},{status:503});
@@ -29,7 +32,7 @@ export function createContactPost(sendEmail:EmailSender=sendResendEmail){
     const ip=clientKey(request),limit=rateLimit(`contact:${ip}`,5,10*60_000);
     if(!limit.allowed){logDiagnostic('WARN','security.rate_limited',{operation:'contact',requestId,category:'RATE_LIMIT',result:'rejected'});return json({error:'Too many attempts. Please wait before trying again.'},{status:429,headers:{'Retry-After':String(limit.retryAfter)}})}
     if(!resendDeliveryConfigured()){logDiagnostic('WARN','configuration.missing',{operation:'contact',provider:'resend',requestId,category:'CONFIGURATION',result:'write_disabled'});return json({error:'Contact delivery is not configured.'},{status:503})}
-    const parsed=await readJsonObject(request,8_192,contactKeys);
+    const parsed=await readJsonObject(request,resourceLimits.requestBodyBytes.contact,contactKeys);
     if(!parsed.ok)return json({error:parsed.error},{status:parsed.status});
     const checked=validateContact(parsed.value);
     if(!checked.ok)return json({error:checked.error},{status:400});
@@ -49,6 +52,7 @@ export function createContactPost(sendEmail:EmailSender=sendResendEmail){
     pruneAttempts(now);
     const prior=recent.get(fingerprint);
     if(prior?.accepted){logDiagnostic('INFO','contact.duplicate_suppressed',{operation:'contact',requestId,category:'DUPLICATE',result:'suppressed'});return json({ok:true,duplicate:true})}
+    if(!prior&&recent.size>=MAX_RECENT_CONTACT_ATTEMPTS){logDiagnostic('WARN','resource.capacity_reached',{operation:'contact',requestId,category:'UNAVAILABLE',result:'contact_attempt_state_full'});return json({error:'Contact delivery is temporarily busy. Please wait and try again.'},{status:503,headers:{'Retry-After':'120'}})}
     const attempt=prior||{
       expires:now+duplicateWindowMs,
       accepted:false,

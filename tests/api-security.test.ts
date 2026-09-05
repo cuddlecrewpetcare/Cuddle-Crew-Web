@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {dateRange,MAX_ICS_BYTES,MAX_ICS_EVENTS,publicAvailability,validIsoDate} from '../app/lib/availability.ts';
 import {contactFingerprint,escapeHtml,validateContact} from '../app/lib/contact.ts';
 import {assertSafePublicAnalyticsPayload,sanitizePublicEventProperties} from '../app/lib/public-analytics.ts';
-import {clientKey,pruneExpiredRateLimits,rateLimit,resetRateLimitsForTests} from '../app/lib/rate-limit.ts';
-import {fetchWithTimeout,readJsonObject,safeCalendarUrl} from '../app/lib/server-security.ts';
+import {clientKey,MAX_RATE_LIMIT_BUCKETS,pruneExpiredRateLimits,rateLimit,rateLimitBucketCountForTests,resetRateLimitsForTests} from '../app/lib/rate-limit.ts';
+import {fetchWithTimeout,readJsonObject,readResponseJson,readResponseText,safeCalendarUrl} from '../app/lib/server-security.ts';
 import * as availabilityRoute from '../app/api/availability/route.ts';
 import * as addressCheckRoute from '../app/api/address/check/route.ts';
 import * as addressSuggestionsRoute from '../app/api/address/suggestions/route.ts';
@@ -31,6 +31,12 @@ test('strict JSON reader accepts known fields and rejects unknown or oversized b
  const wrongType=await readJsonObject(new Request('https://example.test',{method:'POST',body:'{}'}),100,[]);assert.equal(wrongType.status,415);
 });
 
+test('provider response readers stop at byte limits before parsing',async()=>{
+ assert.deepEqual(await readResponseText(new Response('x'.repeat(101)),100),{ok:false,reason:'too-large'});
+ assert.deepEqual(await readResponseJson(new Response('{not-json}'),100),{ok:false,reason:'invalid-json'});
+ assert.deepEqual(await readResponseJson(new Response('{"ok":true}'),100),{ok:true,value:{ok:true}});
+});
+
 test('only a syntactically valid Cloudflare client IP is trusted',()=>{
  assert.equal(clientKey(new Request('https://example.test',{headers:{'x-forwarded-for':'203.0.113.10'}})),'unknown');
  assert.equal(clientKey(new Request('https://example.test',{headers:{'cf-connecting-ip':'203.0.113.10'}})),'203.0.113.10');
@@ -39,9 +45,24 @@ test('only a syntactically valid Cloudflare client IP is trusted',()=>{
 
 test('rate limits fail closed and expired identifiers are pruned',()=>{resetRateLimitsForTests();assert.equal(rateLimit('test',2,60_000,1_000).allowed,true);assert.equal(rateLimit('test',2,60_000,1_001).allowed,true);assert.equal(rateLimit('test',2,60_000,1_002).allowed,false);assert.equal(pruneExpiredRateLimits(61_000),1);assert.equal(pruneExpiredRateLimits(61_001),0)});
 
+test('rate-limit state has bounded key size and cardinality',()=>{
+ resetRateLimitsForTests();
+ assert.equal(rateLimit('x'.repeat(129),1,60_000,1_000).allowed,false);
+ for(let index=0;index<MAX_RATE_LIMIT_BUCKETS;index++)assert.equal(rateLimit(`bounded:${index}`,1,60_000,1_000).allowed,true);
+ assert.equal(rateLimitBucketCountForTests(),MAX_RATE_LIMIT_BUCKETS);
+ assert.equal(rateLimit('bounded:overflow',1,60_000,1_000).allowed,false);
+ assert.equal(pruneExpiredRateLimits(61_000),MAX_RATE_LIMIT_BUCKETS);
+});
+
 test('bounded fetch aborts a stalled provider',async()=>{
  const original=globalThis.fetch;globalThis.fetch=((_input:RequestInfo|URL,init?:RequestInit)=>new Promise((_resolve,reject)=>init?.signal?.addEventListener('abort',()=>reject(new DOMException('Aborted','AbortError'))))) as typeof fetch;
  try{await assert.rejects(()=>fetchWithTimeout('https://example.test',{},5),/Aborted/)}finally{globalThis.fetch=original}
+});
+
+test('provider deadline remains active through slow response-body consumption',async()=>{
+ const stream=new ReadableStream<Uint8Array>({pull:()=>new Promise(()=>{})});
+ const response=await fetchWithTimeout('https://example.test',{},5,(async()=>new Response(stream)) as typeof fetch);
+ assert.deepEqual(await readResponseText(response,100),{ok:false,reason:'timeout'});
 });
 
 test('Resend adapter requires an explicit write gate and keeps credentials out of URLs',async()=>{
@@ -90,6 +111,11 @@ test('public availability remains Request for Review with empty or busy calendar
 test('calendar resource and shape limits reject malformed, oversized, or flooded feeds',()=>{assert.throws(()=>publicAvailability('not a calendar',['2026-09-01']),/calendar-malformed/);assert.throws(()=>publicAvailability('x'.repeat(MAX_ICS_BYTES+1),['2026-09-01']),/calendar-too-large/);assert.throws(()=>publicAvailability(validCalendar('BEGIN:VEVENT\nEND:VEVENT\n'.repeat(MAX_ICS_EVENTS+1)),['2026-09-01']),/calendar-too-many-events/)});
 test('calendar processing has a bounded deadline',()=>{let tick=0;assert.throws(()=>publicAvailability(validCalendar('BEGIN:VEVENT\nEND:VEVENT\n'.repeat(60)),['2026-09-01'],()=>tick++*101),/calendar-processing-time/)});
 
+test('availability rejects an oversized streamed calendar before parsing',async()=>{
+ resetRateLimitsForTests();const previous=process.env.PRIVATE_CALENDAR_ICS_URL,originalFetch=globalThis.fetch;process.env.PRIVATE_CALENDAR_ICS_URL='https://calendar.example.com/private-feed';globalThis.fetch=(async()=>new Response('x'.repeat(MAX_ICS_BYTES+1),{status:200})) as typeof fetch;
+ try{const response=await availabilityRoute.POST(new Request('https://example.test/api/availability',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.43'},body:JSON.stringify({start:'2099-01-02',end:'2099-01-02'})}));assert.equal(response.status,200);assert.equal((await response.json() as {source:string}).source,'fallback')}finally{globalThis.fetch=originalFetch;if(previous===undefined)delete process.env.PRIVATE_CALENDAR_ICS_URL;else process.env.PRIVATE_CALENDAR_ICS_URL=previous}
+});
+
 test('contact validation normalizes safe values and rejects injection or bad fields',async()=>{
  const base={name:'Lauren Test',replyTo:'USER@Example.com',phone:'(916) 555-1212',smsConsent:false,zip:'95814',topic:'Availability or scheduling',message:'Please tell me about availability.',website:'',startedAt:Date.now()-4000,turnstileToken:''};
  const valid=validateContact(base);assert.equal(valid.ok&&!valid.honeypot&&valid.data.replyTo,'user@example.com');assert.equal(valid.ok&&!valid.honeypot&&valid.data.phone,'9165551212');
@@ -106,7 +132,7 @@ test('canonical SMS disclosure contains the complete approved wording',()=>{
 
 test('contact live delivery is blocked unless the provider-specific write gate is enabled',async()=>{
  resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const previousKey=process.env.RESEND_API_KEY,previousGate=process.env.RESEND_SEND_ENABLED,originalFetch=globalThis.fetch;process.env.RESEND_API_KEY='synthetic-key';process.env.RESEND_SEND_ENABLED='false';let calls=0;globalThis.fetch=(async()=>{calls++;throw new Error('must not call provider')}) as typeof fetch;
- try{const response=await contactRoute.POST(new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}));assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:'Contact delivery is not configured.'});assert.equal(calls,0)}finally{globalThis.fetch=originalFetch;if(previousKey===undefined)delete process.env.RESEND_API_KEY;else process.env.RESEND_API_KEY=previousKey;if(previousGate===undefined)delete process.env.RESEND_SEND_ENABLED;else process.env.RESEND_SEND_ENABLED=previousGate}
+ try{const response=await contactRoute.POST(new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}));assert.equal(response.status,503);assert.equal(response.headers.get('cache-control'),'no-store');assert.deepEqual(await response.json(),{error:'Contact delivery is not configured.'});assert.equal(calls,0)}finally{globalThis.fetch=originalFetch;if(previousKey===undefined)delete process.env.RESEND_API_KEY;else process.env.RESEND_API_KEY=previousKey;if(previousGate===undefined)delete process.env.RESEND_SEND_ENABLED;else process.env.RESEND_SEND_ENABLED=previousGate}
 });
 
 test('contact endpoint accepts valid requests, suppresses duplicates, and exposes no unsupported method',async()=>{
@@ -142,6 +168,12 @@ test('contact treats confirmation failure as partial success and suppresses a du
  try{assert.equal((await post(request())).status,200);assert.deepEqual(await (await post(request())).json(),{ok:true,duplicate:true});assert.equal(calls,2)}finally{console.error=originalError;restore()}
 });
 
+test('contact duplicate state refuses new fingerprints at its fixed capacity',async()=>{
+ resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),post=contactRoute.createContactPost(async()=>({ok:true})),originalInfo=console.info,originalWarn=console.warn;console.info=()=>{};console.warn=()=>{};
+ const request=(index:number)=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':`2001:db8::${index.toString(16)}`},body:JSON.stringify({name:`Capacity Tester ${index}`,replyTo:`capacity-${index}@example.com`,phone:'',smsConsent:false,zip:'95814',topic:'Other',message:`Synthetic capacity inquiry number ${index}.`,website:'',startedAt:Date.now()-4000,turnstileToken:''})});
+ try{for(let index=0;index<contactRoute.MAX_RECENT_CONTACT_ATTEMPTS;index++)assert.equal((await post(request(index))).status,200);assert.equal(contactRoute.contactAttemptCountForTests(),contactRoute.MAX_RECENT_CONTACT_ATTEMPTS);const overflow=await post(request(contactRoute.MAX_RECENT_CONTACT_ATTEMPTS));assert.equal(overflow.status,503);assert.equal(overflow.headers.get('retry-after'),'120');assert.equal(contactRoute.contactAttemptCountForTests(),contactRoute.MAX_RECENT_CONTACT_ATTEMPTS)}finally{console.info=originalInfo;console.warn=originalWarn;restore();contactRoute.resetContactAttemptsForTests();resetRateLimitsForTests()}
+});
+
 test('address routes fail closed without configuration and never call providers',async()=>{
  resetRateLimitsForTests();const previousKey=process.env.GOOGLE_MAPS_SERVER_KEY,previousOrigin=process.env.PRIVATE_SERVICE_ORIGIN,originalFetch=globalThis.fetch;delete process.env.GOOGLE_MAPS_SERVER_KEY;delete process.env.PRIVATE_SERVICE_ORIGIN;globalThis.fetch=(async()=>{throw new Error('provider must not be called')}) as typeof fetch;
  const request=(path:string,body:Record<string,unknown>,ip:string)=>new Request(`https://example.test${path}`,{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':ip},body:JSON.stringify(body)});
@@ -152,6 +184,12 @@ test('address validation keeps the Maps key out of the URL and rejects malformed
  resetRateLimitsForTests();const previousKey=process.env.GOOGLE_MAPS_SERVER_KEY,previousOrigin=process.env.PRIVATE_SERVICE_ORIGIN,originalFetch=globalThis.fetch;process.env.GOOGLE_MAPS_SERVER_KEY='synthetic-maps-key';process.env.PRIVATE_SERVICE_ORIGIN='Synthetic private origin';let seenUrl='',seenHeaders=new Headers();globalThis.fetch=(async(input,init)=>{seenUrl=String(input);seenHeaders=new Headers(init?.headers);return new Response('{}',{status:200})}) as typeof fetch;
  const request=new Request('https://example.test/api/address/check',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.42'},body:JSON.stringify({address:'123 Example Street, Sacramento, CA'})});
  try{const response=await addressCheckRoute.POST(request);assert.equal(response.status,503);assert.equal(seenUrl,'https://addressvalidation.googleapis.com/v1:validateAddress');assert.equal(seenUrl.includes('synthetic-maps-key'),false);assert.equal(seenHeaders.get('x-goog-api-key'),'synthetic-maps-key');assert.deepEqual(await response.json(),{available:false})}finally{globalThis.fetch=originalFetch;if(previousKey===undefined)delete process.env.GOOGLE_MAPS_SERVER_KEY;else process.env.GOOGLE_MAPS_SERVER_KEY=previousKey;if(previousOrigin===undefined)delete process.env.PRIVATE_SERVICE_ORIGIN;else process.env.PRIVATE_SERVICE_ORIGIN=previousOrigin}
+});
+
+test('address providers reject oversized response bodies',async()=>{
+ resetRateLimitsForTests();const previousKey=process.env.GOOGLE_MAPS_SERVER_KEY,previousOrigin=process.env.PRIVATE_SERVICE_ORIGIN,originalFetch=globalThis.fetch;process.env.GOOGLE_MAPS_SERVER_KEY='synthetic-maps-key';process.env.PRIVATE_SERVICE_ORIGIN='Synthetic private origin';globalThis.fetch=(async()=>new Response('x'.repeat(addressCheckRoute.MAX_ADDRESS_VALIDATION_RESPONSE_BYTES+1),{status:200})) as typeof fetch;
+ const request=new Request('https://example.test/api/address/check',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.44'},body:JSON.stringify({address:'123 Example Street, Sacramento, CA'})});
+ try{const response=await addressCheckRoute.POST(request);assert.equal(response.status,503);assert.deepEqual(await response.json(),{available:false})}finally{globalThis.fetch=originalFetch;if(previousKey===undefined)delete process.env.GOOGLE_MAPS_SERVER_KEY;else process.env.GOOGLE_MAPS_SERVER_KEY=previousKey;if(previousOrigin===undefined)delete process.env.PRIVATE_SERVICE_ORIGIN;else process.env.PRIVATE_SERVICE_ORIGIN=previousOrigin}
 });
 
 test('analytics keeps only bounded public dimensions and asserts on sensitive fields in development',()=>{assert.deepEqual(sanitizePublicEventProperties({status:'available',email:'person@example.com',duration:Infinity}),{status:'available'});assert.throws(()=>assertSafePublicAnalyticsPayload({homeAddress:'secret'}),/Prohibited analytics property/)});

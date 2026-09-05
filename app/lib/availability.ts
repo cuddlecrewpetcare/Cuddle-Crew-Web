@@ -1,8 +1,9 @@
 import {business} from '../config/business.ts';
+import {resourceLimits} from '../config/resource-limits.ts';
 import {applyAvailabilityOverrides,type AvailabilityStatus} from './business-rules.ts';
-export const MAX_ICS_BYTES=512_000;
-export const MAX_ICS_EVENTS=2_000;
-export const MAX_ICS_PROCESSING_MS=100;
+export const MAX_ICS_BYTES=resourceLimits.providerResponseBytes.calendar;
+export const MAX_ICS_EVENTS=resourceLimits.calendar.maximumEvents;
+export const MAX_ICS_PROCESSING_MS=resourceLimits.calendar.maximumProcessingMs;
 const dayMs=86_400_000;
 const iso=(date:Date)=>date.toISOString().slice(0,10);
 const parseIcsDate=(value:string)=>{const raw=value.split(':').pop()?.trim()||'',match=raw.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?Z?)?/);return match?new Date(Date.UTC(+match[1],+match[2]-1,+match[3],+(match[4]||0),+(match[5]||0),+(match[6]||0))):null};

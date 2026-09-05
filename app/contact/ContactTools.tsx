@@ -21,20 +21,23 @@ export default function ContactTools({turnstileSiteKey=''}:{turnstileSiteKey?:st
   const [turnstileReset,setTurnstileReset]=useState(0);
   const [errorMessage,setErrorMessage]=useState('');
   const errorRef=useRef<HTMLDivElement>(null);
+  const submitController=useRef<AbortController|null>(null);
   const siteKey=turnstileSiteKey;
   const receiveToken=useCallback((token:string)=>setTurnstileToken(token),[]);
   const startedAt=useRef(0);
   useEffect(()=>{startedAt.current=Date.now()},[]);
+  useEffect(()=>()=>submitController.current?.abort(),[]);
   useEffect(()=>{if(status==='error')errorRef.current?.focus()},[status]);
   const copyEmail=async()=>{try{await navigator.clipboard.writeText(email);setCopied(true);window.setTimeout(()=>setCopied(false),2500)}catch{setCopied(false)}};
   const submit=async(event:FormEvent<HTMLFormElement>)=>{
     event.preventDefault();if(siteKey&&!turnstileToken){setStatus('error');setErrorMessage('Please complete the security verification before sending.');return;} setStatus('sending');setErrorMessage('');
-    const data=new FormData(event.currentTarget);
+    const data=new FormData(event.currentTarget),controller=new AbortController();submitController.current?.abort();submitController.current=controller;
     try{
-      const response=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,replyTo,phone,smsConsent,zip,topic,message,website:data.get('website'),startedAt:startedAt.current,turnstileToken})});
+      const response=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,replyTo,phone,smsConsent,zip,topic,message,website:data.get('website'),startedAt:startedAt.current,turnstileToken}),signal:controller.signal});
       const payload=(await response.json().catch(()=>({}))) as {error?:unknown};if(!response.ok) throw new Error(typeof payload.error==='string'?payload.error:'The message could not be sent right now.');
+      if(controller.signal.aborted)return;
       trackPublicEvent('contact_submitted',{status:'success'});setStatus('sent'); setName(''); setReplyTo(''); setPhone(''); setSmsConsent(false); setZip(''); setMessage(''); startedAt.current=Date.now();setTurnstileReset(x=>x+1);
-    }catch(error){setStatus('error');setErrorMessage(error instanceof Error?error.message:'The message could not be sent right now.');if(siteKey)setTurnstileReset(x=>x+1);}
+    }catch(error){if(controller.signal.aborted)return;setStatus('error');setErrorMessage(error instanceof Error?error.message:'The message could not be sent right now.');if(siteKey)setTurnstileReset(x=>x+1);}finally{if(submitController.current===controller)submitController.current=null}
   };
   return <div className="contact-tools">
     <section className="contact-direct" aria-labelledby="direct-contact"><p className="eyebrow">Direct contact</p><h2 id="direct-contact">Reach Lauren your way.</h2><p>You can send the form here, call, or contact Lauren from your own email account.</p><div className="contact-buttons"><button type="button" className="button" onClick={copyEmail}>{copied?'Email copied!':'Copy email address'}</button><a className="text-link" href={emailHref}>Open email app →</a><a className="text-link" href="tel:+19162523550">Call 916-252-3550 →</a></div><p className="contact-address">{email}</p></section>

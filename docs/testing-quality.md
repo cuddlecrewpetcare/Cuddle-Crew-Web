@@ -12,11 +12,11 @@ This document is the durable testing contract for Cuddle Crew Pet Care. It descr
 
 ## Current inventory
 
-The F7 baseline contains 114 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
+The F8 baseline contains 120 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
 
 | Owning suite | Count | Primary purpose |
 | --- | ---: | --- |
-| `tests/api-security.test.ts` | 29 | Request parsing, API contracts, provider adapters, idempotency/partial failure, security/privacy boundaries, rate limits, and side-effect isolation |
+| `tests/api-security.test.ts` | 35 | Request/response bounds and deadlines, API contracts, provider adapters, idempotency/partial failure, security/privacy boundaries, rate/state limits, and side-effect isolation |
 | `tests/business-rules.test.ts` | 21 | Pricing, travel, short-notice, holiday-placeholder, estimator, and planner decision logic |
 | `tests/care-planner.test.ts` | 24 | Care-plan suitability, duration, care-gap, and review-boundary behavior |
 | `tests/feature-completion.test.ts` | 15 | Address parsing, bounded planning state, privacy-safe persistence, and feature gates |
@@ -41,6 +41,7 @@ The requested semantic categories overlap by design:
 | Build/config | Source-level public-content guards, metadata/manifest behavior, typecheck, lint, and production build |
 | Supply chain | 3 unit guards plus `check:supply-chain` for the installed graph and lockfile |
 | Repository safety | `check:git-safety`; this is a validation command, not counted as a Node test |
+| Resource safety | `check:resources`; validates central ceilings, the cheap health boundary, and static-asset hard limit without counting as a Node test |
 
 Some source-text tests in `production-reliability.test.ts` are intentionally brittle because they guard progressive enhancement, policy linkage, or centralized configuration that runtime assertions alone would not prove. Do not expand that style casually; prefer behavior/contract tests when practical.
 
@@ -141,7 +142,7 @@ Use this targeted mapping while implementing:
 | Repository/security script | Its targeted tests/check plus Git safety and secret scan |
 | Documentation only | Relevant structural checks and diff review; full validation when it changes the quality contract |
 
-For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain and integration checks, current secret scan, Node tests, typecheck, lint, and build. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
+For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain, integration and resource checks, current secret scan, Node tests, typecheck, lint, and build. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
 
 The efficient failure order is structural/repository/security checks, targeted tests, full Node tests, typecheck, lint, build, then E2E. The existing commands already implement a sensible composition, so F5 adds no redundant `check:quality` or `test:summary` command. The test runner and this baseline document already provide the necessary count signal.
 

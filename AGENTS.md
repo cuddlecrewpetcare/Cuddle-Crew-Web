@@ -330,3 +330,38 @@ Future Codex sessions must:
 28. Classify incidents proportionately, preserve evidence before privacy/security cleanup, and create a safe incident record only for meaningful events.
 29. Never include secret/private raw values in an incident record; use an approved access-controlled evidence location and safe opaque references.
 30. Report unresolved production logging, retention, access, alert ownership, metrics, and live-diagnostic decisions honestly without inventing infrastructure or policy.
+
+## Performance and Resource-Safety Contract
+
+Future Codex sessions must:
+
+1. Read `docs/performance-resources.md` before changing public input processing, provider calls, caching, process-local state, client async work, assets, build behavior, or performance controls.
+2. Optimize for predictable, bounded, responsive behavior in that order after correctness and safety; do not micro-optimize healthy small workloads.
+3. Keep every untrusted request body and field bounded before parsing, hashing, logging, rendering, email generation, or provider use.
+4. Preserve streaming request-body limits and return `413` for oversized public JSON without logging the rejected body.
+5. Bound provider bodies before text or JSON parsing, even when the provider is operationally trusted or omits `Content-Length`.
+6. Preserve calendar response bytes, event count, date-window, processing-deadline, timeout, malformed-feed fallback, and no-store controls; never expand recurrence without an explicit finite bound.
+7. Return only the minimum validated subset of address, route, calendar, and other provider results; never proxy raw provider payloads to the browser.
+8. Avoid user-action-to-loop provider patterns and document the maximum external calls for every new workflow.
+9. Preserve operation-specific provider timeouts and evaluate total sequential route latency before adding another call or increasing a deadline.
+10. Parallelize external calls only when independent, quota-safe, and semantically safe under partial failure; preserve business-notification-before-confirmation semantics.
+11. Do not add automatic provider retries or polling loops that can create retry storms; unknown writes require the same payload and idempotency key or reconciliation.
+12. Keep all process-local maps, sets, and caches cardinality-bounded, payload-minimal, expiring, and pruned; the control must not become an exhaustion vector.
+13. Preserve the documented per-instance nature of rate limits, duplicate state, and transient idempotency; do not claim cross-instance guarantees.
+14. Add durable or distributed state only after a concrete trigger such as multiple-instance correctness failure, high-risk writes, ineffective limits, or measured traffic pressure.
+15. Keep browser storage to a fixed small key set with sanitized bounded values; never add append-only history or sensitive Client data.
+16. Cancel stale rapid-input and unmounted client requests where relevant, and prevent older async responses from overwriting newer decisions.
+17. Clean up dynamically registered listeners, timers, animation frames, and provider widgets; do not introduce uncontrolled intervals or polling.
+18. Preserve loading and in-flight UI states that discourage duplicate expensive work while retaining server-side enforcement.
+19. Keep `/api/health` local, constant-work, provider-free, database-free, private-data-free, and `no-store`.
+20. Keep diagnostic records schema-limited and field-bounded; do not add per-item or loop logging that can amplify an error storm.
+21. Do not introduce application caching without a defined key, value, TTL, maximum size, invalidation rule, privacy class, authority, and safe failure behavior.
+22. Do not cache private Client data or stale business-rule data merely for speed; preserve `no-store` on private or dynamic endpoints.
+23. Preserve static asset caching and deliberate lazy loading; investigate assets at or above 1 MiB and block new assets at or above 10 MiB unless separately approved.
+24. Preserve client/server bundle boundaries, targeted icon imports, local font strategy, and deferred heavy optional UI; do not move secrets or provider logic client-side.
+25. Keep builds deterministic apart from documented timestamps and free of live provider reads, writes, production data, and network side effects.
+26. Investigate material, repeatable build, test, route, bundle, or interaction regressions; do not treat ordinary timing noise as failure.
+27. Use pagination/windowing for future large reads and define bounded batch size, concurrency, partial failure, progress, retry, and cleanup for future bulk work.
+28. Require size, parser, storage, concurrency, and cleanup budgets before adding uploads; require query bounds/index review before adding a database; require runtime, concurrency, batch, retry, idempotency, and shutdown limits before adding jobs.
+29. Do not add Redis, queues, workers, service workers, CDN rules, load-test tooling, performance SaaS, analytics, or distributed controls without measured need and explicit scope.
+30. Never weaken validation, Turnstile, rate limiting, privacy, authorization, idempotency, or business/safety review for speed; run `npm run check:resources` and report performance/resource changes explicitly.
