@@ -3,6 +3,7 @@ import {existsSync,readFileSync,realpathSync,statfsSync,writeFileSync,mkdirSync}
 import {dirname,join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
+import {createServer} from 'node:net';
 import {expectedGitleaksVersion,findGitleaks} from './gitleaks-tool.mjs';
 
 const scriptDir=dirname(fileURLToPath(import.meta.url));
@@ -93,11 +94,20 @@ function processName(pid){
   const match=output(result).match(/^"([^"]+)"/);return match?.[1]||'unknown';
 }
 
-function portStatus(port){
+function windowsPortOwner(port){
   const result=run('netstat',['-ano','-p','tcp']);
   const line=String(result.stdout||'').split(/\r?\n/).find(value=>new RegExp(`[:.]${port}\\s+.*LISTENING\\s+(\\d+)\\s*$`,'i').test(value));
-  if(!line)return{port,available:true};
-  const pid=Number(line.trim().split(/\s+/).at(-1));return{port,available:false,pid,name:processName(pid),ownership:'unknown'};
+  if(!line)return{};
+  const pid=Number(line.trim().split(/\s+/).at(-1));return{pid,name:processName(pid)};
+}
+
+function portStatus(port){
+  return new Promise(resolveStatus=>{
+    const probe=createServer();
+    probe.unref();
+    probe.once('error',error=>resolveStatus({port,available:false,error:error.code||'unavailable',ownership:'unknown',...(process.platform==='win32'?windowsPortOwner(port):{})}));
+    probe.listen(port,'0.0.0.0',()=>probe.close(()=>resolveStatus({port,available:true})));
+  });
 }
 
 function envNames(){
@@ -129,7 +139,7 @@ function disk(){
 
 async function collect(){
   const dependencies=checkDependencies();
-  return{root:checkRoot(),runtime:checkRuntime(),lock:checkLock(),dependencies,tree:dependencies.ok?checkTreeIntegrity():{ok:false,problems:dependencies.problems},fingerprint:readFingerprint(),playwright:await checkPlaywright(),gitleaks:findGitleaks(),ports:[portStatus(3000),portStatus(3100)],env:envNames(),git:gitInfo(),disk:disk()};
+  return{root:checkRoot(),runtime:checkRuntime(),lock:checkLock(),dependencies,tree:dependencies.ok?checkTreeIntegrity():{ok:false,problems:dependencies.problems},fingerprint:readFingerprint(),playwright:await checkPlaywright(),gitleaks:findGitleaks(),ports:await Promise.all([3000,3100].map(portStatus)),env:envNames(),git:gitInfo(),disk:disk()};
 }
 
 const line=(kind,label,detail='')=>console.log(`${kind.padEnd(7)} ${label}${detail?` — ${detail}`:''}`);
@@ -146,7 +156,7 @@ async function doctor(){
   if(state.fingerprint.state==='current')pass('Environment fingerprint','current');else if(state.fingerprint.state==='missing')warn('Environment fingerprint','missing; run npm run setup:local once');else fail('Environment fingerprint',`${state.fingerprint.state}; run npm run setup:local`);
   if(state.playwright.ok)pass('Playwright browser',`${state.playwright.version} Chromium available`);else fail('Playwright browser','Chromium unavailable; run npm run setup:local');
   if(state.gitleaks.available&&state.gitleaks.compatible)pass('Secret scanner',`Gitleaks ${state.gitleaks.version} available`);else if(state.gitleaks.available)fail('Secret scanner',`Gitleaks ${state.gitleaks.version}; expected ${expectedGitleaksVersion}`);else fail('Secret scanner',`Gitleaks ${expectedGitleaksVersion} unavailable; follow docs/local-development.md`);
-  for(const port of state.ports){if(port.available)pass(`Port ${port.port}`,'available');else if(port.port===3000)warn('Port 3000',`occupied by PID ${port.pid} (${port.name}); ownership unknown, inspect before starting dev`);else fail('Port 3100',`occupied by PID ${port.pid} (${port.name}); Playwright will not reuse it`)}
+  for(const port of state.ports){const owner=port.pid?` by PID ${port.pid} (${port.name})`:'';if(port.available)pass(`Port ${port.port}`,'available');else if(port.port===3000)warn('Port 3000',`occupied${owner}; ownership unknown, inspect before starting dev`);else fail('Port 3100',`occupied${owner}; Playwright will not reuse it`)}
   if(state.env.exists)info('.env.local',`${state.env.names.length} recognized or custom variable names present; values hidden`);else info('.env.local','not present; optional integrations use safe fallbacks');
   const missingTemplate=expectedEnv.filter(name=>!readFileSync(join(root,'.env.example'),'utf8').includes(`${name}=`));
   if(missingTemplate.length)fail('.env.example',`missing ${missingTemplate.join(', ')}`);else pass('.env.example','expected variable names documented');
@@ -177,14 +187,14 @@ async function summary(){
   console.log(`Playwright Chromium: ${state.playwright.ok?'available':'missing'} (${state.playwright.executable})`);
   console.log(`Gitleaks: ${state.gitleaks.available?(state.gitleaks.compatible?`available (${state.gitleaks.version})`:`incompatible (${state.gitleaks.version}; expected ${expectedGitleaksVersion})`):`missing (expected ${expectedGitleaksVersion})`}`);
   console.log('Secret scan integration: enabled in npm run validate; history scan is separate.');
-  for(const port of state.ports)console.log(`Port ${port.port}: ${port.available?'available':`occupied by PID ${port.pid} (${port.name}); ownership unknown`}`);
+  for(const port of state.ports)console.log(`Port ${port.port}: ${port.available?'available':`occupied${port.pid?` by PID ${port.pid} (${port.name})`:''}; ownership unknown`}`);
   console.log(`.env.local: ${state.env.exists?`${state.env.names.length} variable names detected; values hidden`:'not present'}`);
   console.log(`Resend: ${state.env.providers.resend.enabled&&state.env.providers.resend.key?'configured and explicitly write-enabled':state.env.providers.resend.key?'key configured; writes disabled':'not configured; writes disabled'}`);
   console.log(`Private calendar: ${state.env.providers.calendar.configured?'configured':'not configured; conservative fallback'}`);
   console.log(`Turnstile: ${state.env.providers.turnstile.site&&state.env.providers.turnstile.secret?'configured':state.env.providers.turnstile.site||state.env.providers.turnstile.secret?'misconfigured pair':'not configured'}`);
   console.log(`Google Maps/address: ${state.env.providers.maps.key&&state.env.providers.maps.origin?'configured':state.env.providers.maps.key||state.env.providers.maps.origin?'misconfigured pair':'not configured'}`);
   console.log(`Disk free: ${state.disk.freeGb.toFixed(1)} GiB`);
-  console.log('Baseline: 120 Node tests (117 application + 3 supply-chain); 10 Playwright tests; lint allows 4 known no-img-element warnings.');
+  console.log('Baseline: 125 Node tests (117 application + 3 supply-chain + 5 filesystem-safety); 10 Playwright tests; lint allows 4 known no-img-element warnings.');
   console.log('Observability: structured redacted runtime diagnostics and request IDs enabled; live provider health checks disabled.');
   console.log('Network: not needed for healthy local checks; needed for Git operations and intentionally live provider calls.');
 }

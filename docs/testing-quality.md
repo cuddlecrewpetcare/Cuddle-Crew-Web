@@ -12,7 +12,7 @@ This document is the durable testing contract for Cuddle Crew Pet Care. It descr
 
 ## Current inventory
 
-The F8 baseline contains 120 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
+The F9 baseline contains 125 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
 
 | Owning suite | Count | Primary purpose |
 | --- | ---: | --- |
@@ -20,6 +20,7 @@ The F8 baseline contains 120 Node tests and 10 Playwright tests. The executable 
 | `tests/business-rules.test.ts` | 21 | Pricing, travel, short-notice, holiday-placeholder, estimator, and planner decision logic |
 | `tests/care-planner.test.ts` | 24 | Care-plan suitability, duration, care-gap, and review-boundary behavior |
 | `tests/feature-completion.test.ts` | 15 | Address parsing, bounded planning state, privacy-safe persistence, and feature gates |
+| `tests/filesystem-safety.test.ts` | 5 | POSIX/Windows containment, cleanup allowlisting, link/junction refusal, filename rules, and import-path construction |
 | `tests/growth-features.test.ts` | 6 | Referral allowlisting, public analytics minimization, and manifest safety |
 | `tests/production-reliability.test.ts` | 12 | Health contract plus source/build/config regression guards for critical public behavior |
 | `tests/observability.test.ts` | 4 | Structured redaction schema, correlation IDs, and bounded application error taxonomy |
@@ -142,7 +143,7 @@ Use this targeted mapping while implementing:
 | Repository/security script | Its targeted tests/check plus Git safety and secret scan |
 | Documentation only | Relevant structural checks and diff review; full validation when it changes the quality contract |
 
-For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain, integration and resource checks, current secret scan, Node tests, typecheck, lint, and build. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
+For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain, integration, resource, and cross-platform checks, current secret scan, Node tests, typecheck, lint, and build. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
 
 The efficient failure order is structural/repository/security checks, targeted tests, full Node tests, typecheck, lint, build, then E2E. The existing commands already implement a sensible composition, so F5 adds no redundant `check:quality` or `test:summary` command. The test runner and this baseline document already provide the necessary count signal.
 

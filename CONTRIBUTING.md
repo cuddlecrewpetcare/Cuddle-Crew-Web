@@ -39,7 +39,7 @@ Never use broad staging until every changed and untracked path has been reviewed
 
 ## Validation and Merge Policy
 
-Run targeted checks while editing and `npm run validate:full` before completing a meaningful branch. `npm run validate` includes Git safety, supply-chain validation, the current-tree secret scan, Node tests, typecheck, lint, and build. Run `npm run scan:secrets:history` for migrations, suspected exposure, or public-release preparation. The suite ownership, count-loss rule, failure policy, and targeted-validation map are in [`docs/testing-quality.md`](docs/testing-quality.md).
+Run targeted checks while editing and `npm run validate:full` before completing a meaningful branch. `npm run validate` includes Git, supply-chain, integration, resource, and cross-platform safety checks; the current-tree secret scan; Node tests; typecheck; lint; and build. Run `npm run scan:secrets:history` for migrations, suspected exposure, or public-release preparation. The suite ownership, count-loss rule, failure policy, and targeted-validation map are in [`docs/testing-quality.md`](docs/testing-quality.md).
 
 An unexpected decrease in the Node or E2E test count is a stop-and-investigate event. Never delete tests, weaken assertions, add retries, or expand timeouts merely to obtain a green run. Any intentional consolidation must identify the removed cases and explain how behavioral coverage is preserved or improved.
 
@@ -126,6 +126,7 @@ Confirm all of the following:
 - The unstaged and staged diffs were reviewed, and `git diff --check` passes.
 - No dependency or lockfile change slipped into a non-dependency task.
 - `npm run check:git-safety`, required tests, and secret scans pass.
+- `npm run check:cross-platform` passes for path, filename, case, encoding, link, and shell portability changes.
 - Public files contain no credentials, private/client/school/source material, internal decision logic, databases, dumps, backups, exports, generated artifacts, unapproved claims, or unlicensed assets; ambiguous content is `PRIVATE / MANUAL REVIEW`.
 - The push names the destination explicitly, for example `git push github codex/example-task`.
 - After pushing, local `HEAD` and the verified remote branch resolve to the same commit.

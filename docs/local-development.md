@@ -64,6 +64,7 @@ Do not replace the pinned version with an unverified “latest” download. A ve
 ```powershell
 npm run doctor
 npm run check:git-safety
+npm run check:cross-platform
 npm run dev
 ```
 
@@ -237,7 +238,7 @@ Select the targeted check by risk: business decisions use the relevant business-
 npm run validate
 ```
 
-This runs the read-only repository safety, supply-chain, and integration checks, redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
+This runs the read-only repository, supply-chain, integration, resource, and cross-platform checks, redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
 
 ## Full Validation
 
@@ -385,6 +386,7 @@ No committed GitHub Actions or other CI workflow currently exists. Local command
 | Local command | Intended CI-equivalent check |
 | --- | --- |
 | `npm run check:git-safety` | Repository identity, remote, branch, line-ending, private/generated-file, size, and staging guard |
+| `npm run check:cross-platform` | Filename, case, encoding, path, link, shell, and generated-directory portability guard |
 | `npm test` | Unit/integration/security/business-rule tests |
 | `npm run typecheck` | TypeScript validation |
 | `npm run lint` | ESLint |

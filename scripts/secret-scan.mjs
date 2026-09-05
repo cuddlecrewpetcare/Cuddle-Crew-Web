@@ -1,8 +1,9 @@
-import {copyFileSync,existsSync,mkdirSync,readFileSync,rmSync,statSync} from 'node:fs';
-import {dirname,relative,resolve,sep} from 'node:path';
+import {copyFileSync,existsSync,lstatSync,mkdirSync,readFileSync,rmSync} from 'node:fs';
+import {dirname,relative,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {expectedGitleaksVersion,findGitleaks} from './gitleaks-tool.mjs';
+import {isPathInside} from './filesystem-safety.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const mode=process.argv[2];
@@ -13,7 +14,6 @@ const snapshot=resolve(stateRoot,`${runId}-snapshot`);
 const report=resolve(stateRoot,`${runId}-report.json`);
 
 const safeField=(value,fallback='unknown')=>String(value??fallback).replace(/[\r\n\t]/g,' ').slice(0,240);
-const withinRoot=(path)=>{const rel=relative(root,path);return rel&&!rel.startsWith(`..${sep}`)&&rel!=='..'};
 
 function currentSnapshot(){
   const listed=spawnSync('git',['ls-files','--cached','--others','--exclude-standard','-z'],{cwd:root,encoding:'utf8',windowsHide:true});
@@ -21,9 +21,12 @@ function currentSnapshot(){
   mkdirSync(snapshot,{recursive:true});
   for(const name of listed.stdout.split('\0').filter(Boolean)){
     const source=resolve(root,name);
-    if(!withinRoot(source)||!existsSync(source)||!statSync(source).isFile())continue;
+    if(!isPathInside(root,source)||!existsSync(source))continue;
+    const sourceState=lstatSync(source);
+    if(sourceState.isSymbolicLink())throw new Error(`Tracked link requires manual secret-scan review: ${name}`);
+    if(!sourceState.isFile())continue;
     const destination=resolve(snapshot,name);
-    if(!relative(snapshot,destination)||relative(snapshot,destination).startsWith(`..${sep}`))throw new Error('Unsafe snapshot path encountered.');
+    if(!isPathInside(snapshot,destination))throw new Error('Unsafe snapshot path encountered.');
     mkdirSync(dirname(destination),{recursive:true});
     copyFileSync(source,destination);
   }
@@ -31,7 +34,8 @@ function currentSnapshot(){
 
 function sanitizedPath(value){
   const raw=resolve(String(value||'unknown'));
-  if(mode==='current'&&raw.startsWith(snapshot))return safeField(relative(snapshot,raw).replaceAll('\\','/'));
+  if(mode==='current'&&isPathInside(snapshot,raw))return safeField(relative(snapshot,raw).replaceAll('\\','/'));
+  if(isPathInside(root,raw))return safeField(relative(root,raw).replaceAll('\\','/'));
   return safeField(String(value||'unknown').replaceAll('\\','/'));
 }
 

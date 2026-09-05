@@ -365,3 +365,38 @@ Future Codex sessions must:
 28. Require size, parser, storage, concurrency, and cleanup budgets before adding uploads; require query bounds/index review before adding a database; require runtime, concurrency, batch, retry, idempotency, and shutdown limits before adding jobs.
 29. Do not add Redis, queues, workers, service workers, CDN rules, load-test tooling, performance SaaS, analytics, or distributed controls without measured need and explicit scope.
 30. Never weaken validation, Turnstile, rate limiting, privacy, authorization, idempotency, or business/safety review for speed; run `npm run check:resources` and report performance/resource changes explicitly.
+
+## Cross-Platform and Filesystem-Safety Contract
+
+Future Codex sessions must:
+
+1. Read `docs/cross-platform-filesystem.md` before changing filesystem access, repository scripts, generated state, paths, filenames, process execution, cleanup, encoding, or line-ending behavior.
+2. Keep URL paths and filesystem paths as separate domains; never apply filesystem normalization to site URLs or URL concatenation to filesystem paths.
+3. Use Node path/file-URL APIs for filesystem paths and derive repository roots from the executing module rather than a username, home directory, current shell accident, or fixed clone name.
+4. Preserve native Windows 10/11 as the primary verified developer environment and report Linux-like/macOS support only to the level actually validated.
+5. Do not require WSL, Bash, Docker, or a devcontainer for normal repository workflows.
+6. Keep npm commands PowerShell-compatible and avoid Bash-only file commands, POSIX-only environment assignment, or shell command-string construction when a Node script or argument array is practical.
+7. Preserve `.gitattributes`: LF for repository text and Unix/Python scripts, CRLF for PowerShell/CMD/BAT, and explicit binary treatment for media/fonts/archives.
+8. Keep repository text UTF-8 without BOM unless a documented tool requirement creates a narrow exception; never mass-convert binary or unrelated files.
+9. Treat filename/import/public-asset case mismatches as Linux-like deployment defects even when Windows resolves them.
+10. Use a two-step Git-aware operation for a necessary case-only rename on Windows; never rename only for style during unrelated work.
+11. Avoid Windows reserved device names, invalid characters, control characters, trailing dots/spaces, and needlessly deep generated paths.
+12. Review non-ASCII filenames for lookalikes, combining marks, normalization ambiguity, and unusual whitespace rather than normalizing indiscriminately.
+13. Keep generated output, build state, reports, traces, screenshots, logs, and caches ignored, regenerable, and non-authoritative; fix source/configuration instead.
+14. Allow recursive cleanup only for fixed reviewed generated targets that are inside the script-derived repository root and on an explicit allowlist.
+15. Never recursively delete or move an unknown, user-supplied, shared-temp, home, repository-root, worktree, dependency, package-cache, browser-cache, or private-data path.
+16. Refuse linked cleanup/scanner traversal; account for symbolic links and Windows junctions/reparse points before destructive recursion or copying.
+17. Verify containment with resolved paths plus separator-aware `path.relative()` logic; a raw string-prefix check is not containment.
+18. Keep temporary files in an application/project-specific unique directory, clean only owned targets, and preserve safe failure evidence while it remains useful.
+19. Never clear an OS-wide temp directory or assume unrelated temp content belongs to this project.
+20. Use child-process executable/argument arrays with an explicit working directory, exit handling, bounded waits where needed, and no untrusted shell interpolation.
+21. Never kill broad Node/process-name groups; preserve exact E2E process ownership, explicit occupied-port failure, and release of port 3100 after tests.
+22. Use platform-neutral Node probing for port availability; Windows commands may enrich owner diagnostics but must not decide portability-critical state.
+23. Keep Gitleaks and Playwright paths environment/tool-discovered, user-independent, and outside tracked source; do not vendor machine binaries or caches.
+24. Keep Git/security/resource scans repository-scoped and bounded; never traverse unrelated home folders, other repositories, browser caches, or dependency trees without an explicit reason.
+25. Do not relocate a repository or active worktree during implementation; after a clean pushed checkpoint, prefer a fresh clone, recreated ignored config, and full validation.
+26. Treat OneDrive/sync-folder and UNC/network-share operation as non-canonical and unverified; do not promise their locking, watcher, latency, or consistency behavior.
+27. Use repository-relative links in tracked documentation; completion-report links may be local, but client responses and public artifacts must not expose local paths.
+28. Sort filesystem/glob results whenever ordering affects output and do not use timestamps, file size, or enumeration order as sole authority.
+29. Before future upload/archive/persistent-file work, define generated names, size/type/parser bounds, containment, link/archive traversal defenses, atomicity, collisions, permissions, retention, and cleanup.
+30. Run `npm run check:cross-platform` after relevant changes and in final validation; report unresolved platform limitations honestly and do not weaken the guard to hide a finding.

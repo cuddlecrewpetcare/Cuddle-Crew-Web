@@ -1,14 +1,12 @@
 import {existsSync,rmSync} from 'node:fs';
-import {dirname,relative,resolve,sep} from 'node:path';
+import {dirname,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {assertSafeGeneratedTarget,generatedCleanupTargets} from './filesystem-safety.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const dryRun=process.argv.includes('--dry-run');
-const targets=['.next','.vinext','dist','out','coverage','playwright-report','test-results','.cache/local-dev/playwright','.cache/local-dev/logs'];
-
-for(const item of targets){
-  const target=resolve(root,item),rel=relative(root,target);
-  if(!rel||rel.startsWith(`..${sep}`)||rel==='..')throw new Error(`Refusing unsafe cleanup target: ${target}`);
+for(const item of generatedCleanupTargets){
+  const target=resolve(root,item),rel=assertSafeGeneratedTarget(root,target);
   if(!existsSync(target))continue;
   console.log(`${dryRun?'Would remove':'Removing'} ${rel}`);
   if(!dryRun)rmSync(target,{recursive:true,force:true});
