@@ -26,8 +26,25 @@ jobs:
       - name: Check out the exact source revision
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          # PR validation proves the reviewed source commit itself. Merge
+          # compatibility remains a separate merge simulation/merge-only gate.
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Verify the exact source revision
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          echo "Expected source SHA: $EXPECTED_SHA"
+          echo "Checked-out HEAD: $actual_sha"
+          if [[ "$actual_sha" != "$EXPECTED_SHA" ]]; then
+            echo "Checked-out HEAD does not match the event source SHA." >&2
+            exit 1
+          fi
 
       - name: Establish the reviewed repository identity
         shell: bash

@@ -2,9 +2,9 @@ import {existsSync,statSync} from 'node:fs';
 import {dirname,relative,resolve,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
+import {isApprovedGithubRemote} from './git-remote-identity.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-const expectedRemote='https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web.git';
 const reviewBytes=1024*1024;
 const rejectBytes=10*1024*1024;
 let failed=false;
@@ -29,9 +29,9 @@ else if(branch==='main'||branch==='master')warn('Branch',`${branch}; implementat
 else pass('Branch',branch);
 
 const remote=output(run(['remote','get-url','github']));
-if(remote===expectedRemote)pass('GitHub remote',remote);else fail('GitHub remote',remote?`unexpected destination ${safePath(remote)}`:'required remote "github" is missing');
+if(isApprovedGithubRemote(remote))pass('GitHub remote',remote);else fail('GitHub remote',remote?`unexpected destination ${safePath(remote)}`:'required remote "github" is missing');
 const pushRemote=output(run(['remote','get-url','--push','github']));
-if(pushRemote===expectedRemote)pass('GitHub push remote','matches the reviewed repository');else fail('GitHub push remote','does not match the reviewed repository');
+if(isApprovedGithubRemote(pushRemote))pass('GitHub push remote','matches the reviewed repository');else fail('GitHub push remote','does not match the reviewed repository');
 const defaultBranch=output(run(['symbolic-ref','refs/remotes/github/HEAD']));
 if(defaultBranch==='refs/remotes/github/main')pass('Default branch','github/main');else fail('Default branch',defaultBranch||'github/HEAD is unresolved');
 const upstream=output(run(['rev-parse','--abbrev-ref','--symbolic-full-name','@{u}']));

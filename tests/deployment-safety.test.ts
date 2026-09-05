@@ -2,14 +2,29 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {isApprovedGithubRemote,normalizeGithubRemote} from '../scripts/git-remote-identity.mjs';
 import {integrationRegistry} from '../scripts/integration-registry.mjs';
 
 const read=(path:string)=>readFileSync(path,'utf8');
 
-test('deployment configuration guard accepts the reviewed repository policy',()=>{
+test('repository and deployment safety accept only the reviewed repository policy',()=>{
   const result=spawnSync(process.execPath,['scripts/deployment-safety.mjs'],{encoding:'utf8',windowsHide:true});
   assert.equal(result.status,0,result.stderr||result.stdout);
   assert.match(result.stdout,/Deployment safety check passed/);
+
+  for(const remote of [
+    'https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web.git',
+    'https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web',
+    'https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/',
+  ])assert.equal(isApprovedGithubRemote(remote),true,remote);
+  assert.equal(normalizeGithubRemote('https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web.git'),'https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web');
+
+  for(const remote of [
+    'https://github.com/cuddlecrewpetcare/OtherRepo.git',
+    'https://github.com/otherowner/Cuddle-Crew-Web.git',
+    'https://evil.example/cuddlecrewpetcare/Cuddle-Crew-Web.git',
+    'https://evil.example/https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web.git',
+  ])assert.equal(isApprovedGithubRemote(remote),false,remote);
 });
 
 test('validation CI is read-only, exact-SHA pinned, and has no production secret or deploy path',()=>{
@@ -17,6 +32,11 @@ test('validation CI is read-only, exact-SHA pinned, and has no production secret
   assert.match(workflow,/permissions:\s*\n\s+contents: read/);
   assert.doesNotMatch(workflow,/pull_request_target|\bsecrets\.|environment:\s*production|wrangler\s+deploy|git\s+push\s+sites/i);
   assert.match(workflow,/persist-credentials: false/);
+  const sourceShaExpression="github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha";
+  assert.match(workflow,new RegExp(`ref: \\$\\{\\{ ${sourceShaExpression.replaceAll('.','\\\\.')} \\}\\}`));
+  assert.match(workflow,new RegExp(`EXPECTED_SHA: \\$\\{\\{ ${sourceShaExpression.replaceAll('.','\\\\.')} \\}\\}`));
+  assert.match(workflow,/actual_sha="\$\(git rev-parse HEAD\)"/);
+  assert.match(workflow,/"\$actual_sha" != "\$EXPECTED_SHA"/);
   assert.match(workflow,/RESEND_SEND_ENABLED: 'false'/);
   assert.match(workflow,/SITE_INDEXING_ENABLED: 'false'/);
   const actions=[...workflow.matchAll(/^\s*uses:\s*(\S+)/gm)].map(match=>match[1]);
