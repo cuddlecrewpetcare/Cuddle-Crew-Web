@@ -36,8 +36,8 @@ export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];r
    addOnPetFee=input.midday.startsWith('walk')?Math.max(0,c.dog-1)*business.pricing.additionalDog:petFee;
  }
  let potentialShortFee=0,shortCount=0,sameDayCount=0;
- if(overnight){for(const date of dates){const kind=shortNoticeKind(date,business.overnight.startHour,input.now,'overnight');if(kind==='same-day'||kind==='short-notice'){potentialShortFee+=business.pricing.shortNoticeOvernight;shortCount++;}}}
- else for(const date of dates)for(const index of input.blocks){const window=business.windows[index];if(!window)continue;const kind=shortNoticeKind(date,window.startHour,input.now);if(kind==='same-day'){potentialShortFee+=business.pricing.sameDayVisit;sameDayCount++;}else if(kind==='short-notice'){potentialShortFee+=business.pricing.shortNoticeVisit;shortCount++;}}
+ if(overnight){for(const date of dates){const kind=shortNoticeKind(date,business.overnight.startHour,input.now,'overnight');if(kind==='review')reviewReasons.push('short-notice');else if(kind==='same-day'||kind==='short-notice'){potentialShortFee+=business.pricing.shortNoticeOvernight;shortCount++;}}}
+ else for(const date of dates)for(const index of input.blocks){const window=business.windows[index];if(!window)continue;const kind=shortNoticeKind(date,window.startHour,input.now);if(kind==='review')reviewReasons.push('short-notice');else if(kind==='same-day'){potentialShortFee+=business.pricing.sameDayVisit;sameDayCount++;}else if(kind==='short-notice'){potentialShortFee+=business.pricing.shortNoticeVisit;shortCount++;}}
  if(potentialShortFee)reviewReasons.push('short-notice');
  const tier=input.travelTier?business.travel[input.travelTier]:undefined,travelFee=tier?overnight?0:tier.fee:null;
  const travelTotal=travelFee===null?0:overnight?0:travelFee*(units+addOnUnits);

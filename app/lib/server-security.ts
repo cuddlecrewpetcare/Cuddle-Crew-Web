@@ -39,7 +39,7 @@ export async function readResponseText(response:Response,maxBytes:number):Promis
   const deadline=responseDeadlines.get(response);
   try{
     if(declaredTooLarge(response.headers,maxBytes)){await cancelBody(response.body);return{ok:false,reason:'too-large'}}
-    const result=await readBoundedBytes(response.body,maxBytes,deadline?deadline.expires-Date.now():undefined);
+    const result=await readBoundedBytes(response.body,maxBytes,deadline?deadline.expires-performance.now():undefined);
     return result.ok?{ok:true,text:new TextDecoder().decode(result.bytes)}:result;
   }finally{if(deadline){clearTimeout(deadline.timer);responseDeadlines.delete(response)}}
 }
@@ -65,7 +65,7 @@ export async function readJsonObject(request:Request,maxBytes:number,allowedKeys
 
 export async function fetchWithTimeout(input:RequestInfo|URL,init:RequestInit={},timeoutMs=7000,fetcher:typeof fetch=fetch){
   const controller=new AbortController();
-  const expires=Date.now()+Math.max(0,timeoutMs);
+  const expires=performance.now()+Math.max(0,timeoutMs);
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
   try{const response=await fetcher(input,{...init,signal:controller.signal});responseDeadlines.set(response,{timer,expires});return response}catch(error){clearTimeout(timer);throw error}
 }

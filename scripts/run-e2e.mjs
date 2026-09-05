@@ -18,8 +18,8 @@ const assertPortAvailable=()=>new Promise((resolve,reject)=>{
 });
 
 const waitForServer=async()=>{
-  const deadline=Date.now()+60_000;
-  while(Date.now()<deadline){
+  const deadline=performance.now()+60_000;
+  while(performance.now()<deadline){
     if(server.exitCode!==null)throw new Error(`E2E server exited early with code ${server.exitCode}.`);
     try{const response=await fetch(target);if(response.ok)return}catch{}
     await new Promise(resolve=>setTimeout(resolve,500));

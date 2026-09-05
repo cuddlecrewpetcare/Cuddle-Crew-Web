@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {dateRange,MAX_ICS_BYTES,MAX_ICS_EVENTS,publicAvailability,validIsoDate} from '../app/lib/availability.ts';
+import {dateRange,MAX_ICS_BYTES,MAX_ICS_EVENTS,parseIcsDate,publicAvailability,validIsoDate} from '../app/lib/availability.ts';
 import {contactFingerprint,escapeHtml,validateContact} from '../app/lib/contact.ts';
 import {assertSafePublicAnalyticsPayload,sanitizePublicEventProperties} from '../app/lib/public-analytics.ts';
 import {clientKey,MAX_RATE_LIMIT_BUCKETS,pruneExpiredRateLimits,rateLimit,rateLimitBucketCountForTests,resetRateLimitsForTests} from '../app/lib/rate-limit.ts';
@@ -86,6 +86,17 @@ test('Turnstile validates representative success and fails closed on malformed p
 
 test('calendar URL validation permits public HTTPS and blocks local targets',()=>{assert.equal(safeCalendarUrl('webcal://calendar.example.com/feed'),'https://calendar.example.com/feed');assert.equal(safeCalendarUrl('http://calendar.example.com/feed'),undefined);assert.equal(safeCalendarUrl('https://127.0.0.1/feed'),undefined)});
 
+test('calendar dates distinguish UTC, TZID, date-only, and ambiguous provider values',()=>{
+ const utc=parseIcsDate('DTSTART:20260906T010000Z');assert.equal(utc?.kind,'instant');if(utc?.kind==='instant')assert.equal(utc.instant.toISOString(),'2026-09-06T01:00:00.000Z');
+ const zoned=parseIcsDate('DTSTART;TZID=America/Los_Angeles:20260905T180000');assert.equal(zoned?.kind,'instant');if(zoned?.kind==='instant')assert.equal(zoned.instant.toISOString(),'2026-09-06T01:00:00.000Z');
+ assert.deepEqual(parseIcsDate('DTSTART;VALUE=DATE:20260905'),{kind:'date',date:'2026-09-05'});
+ assert.equal(parseIcsDate('DTSTART:20260905T180000'),null);
+ assert.equal(parseIcsDate('DTSTART;TZID=Not/A_Zone:20260905T180000'),null);
+ assert.equal(parseIcsDate('DTSTART;TZID=America/Los_Angeles:20260308T023000'),null);
+ assert.equal(parseIcsDate('DTSTART;TZID=America/Los_Angeles:20261101T013000'),null);
+ assert.throws(()=>publicAvailability(validCalendar('BEGIN:VEVENT\nDTSTART:20260905T180000\nEND:VEVENT\n'),['2026-09-05']),/calendar-time-ambiguous/);
+});
+
 test('calendar dates are real and availability dates stay in a no-store POST body',async()=>{assert.equal(validIsoDate('2028-02-29'),true);assert.equal(validIsoDate('2027-02-29'),false);assert.deepEqual(dateRange('2026-12-31','2027-01-01'),['2026-12-31','2027-01-01']);resetRateLimitsForTests();const previous=process.env.PRIVATE_CALENDAR_ICS_URL;delete process.env.PRIVATE_CALENDAR_ICS_URL;try{const response=await availabilityRoute.POST(new Request('https://example.test/api/availability',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({start:'2026-12-31',end:'2027-01-01'})}));assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');const payload=await response.json() as {days:{date:string;status:string}[]};assert.deepEqual(payload.days,[{date:'2026-12-31',status:'Request for Review'},{date:'2027-01-01',status:'Request for Review'}]);assert.equal('GET' in availabilityRoute,false)}finally{if(previous===undefined)delete process.env.PRIVATE_CALENDAR_ICS_URL;else process.env.PRIVATE_CALENDAR_ICS_URL=previous}});
 
 test('availability provider failure returns a private, conservative fallback',async()=>{
@@ -117,7 +128,7 @@ test('availability rejects an oversized streamed calendar before parsing',async(
 });
 
 test('contact validation normalizes safe values and rejects injection or bad fields',async()=>{
- const base={name:'Lauren Test',replyTo:'USER@Example.com',phone:'(916) 555-1212',smsConsent:false,zip:'95814',topic:'Availability or scheduling',message:'Please tell me about availability.',website:'',startedAt:Date.now()-4000,turnstileToken:''};
+ const base={name:'Lauren Test',replyTo:'USER@Example.com',phone:'(916) 555-1212',smsConsent:false,zip:'95814',topic:'Availability or scheduling',message:'Please tell me about availability.',website:'',turnstileToken:''};
  const valid=validateContact(base);assert.equal(valid.ok&&!valid.honeypot&&valid.data.replyTo,'user@example.com');assert.equal(valid.ok&&!valid.honeypot&&valid.data.phone,'9165551212');
  assert.equal(valid.ok&&!valid.honeypot&&valid.data.smsConsent,false);assert.equal(validateContact({...base,phone:'',smsConsent:true}).ok,false);
  for(const malformed of ['true','1',1]){const result=validateContact({...base,smsConsent:malformed});assert.equal(result.ok&&!result.honeypot&&result.data.smsConsent,false)}
@@ -137,13 +148,31 @@ test('contact live delivery is blocked unless the provider-specific write gate i
 
 test('contact endpoint accepts valid requests, suppresses duplicates, and exposes no unsupported method',async()=>{
  resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),messages:{message:ResendMessage;key:string}[]=[];const post=contactRoute.createContactPost(successfulSender(messages));
- const body={name:'Route Tester',replyTo:'route@example.com',phone:'9165551212',smsConsent:true,zip:'95814',topic:'Other',message:'A valid route-level test message.',website:'',startedAt:Date.now()-4000,turnstileToken:''};
+ const body={name:'Route Tester',replyTo:'route@example.com',phone:'9165551212',smsConsent:true,zip:'95814',topic:'Other',message:'A valid route-level test message.',website:'',turnstileToken:''};
  try{const request=(value=body)=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.20'},body:JSON.stringify(value)});const first=await post(request()),second=await post(request()),changedZip=await post(request({...body,zip:'95815'}));assert.equal(first.status,200);assert.deepEqual(await second.json(),{ok:true,duplicate:true});assert.equal(changedZip.status,200);assert.equal(messages.length,4);assert.match(messages[0].message.text,/SMS consent: Granted/);assert.match(messages[0].message.text,/SMS consent source: website_contact_form/);assert.match(messages[0].message.text,/SMS consent timestamp: 20/);assert.match(messages[0].key,/^contact\/[0-9a-f-]{36}$/);assert.match(messages[1].key,/^confirmation\/[0-9a-f-]{36}$/);assert.notEqual(messages[0].key.split('/')[1],messages[2].key.split('/')[1]);assert.equal('GET' in contactRoute,false)}finally{restore()}
+});
+
+test('client timestamps cannot control contact security timing',async()=>{
+ resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),messages:{message:ResendMessage;key:string}[]=[];const post=contactRoute.createContactPost(successfulSender(messages));
+ const body={name:'Clock Tester',replyTo:'clock@example.com',phone:'',smsConsent:false,zip:'95814',topic:'Other',message:'A valid immediate contact inquiry.',website:'',turnstileToken:''};
+ try{
+  const request=(value:Record<string,unknown>)=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.60'},body:JSON.stringify(value)});
+  const immediate=await post(request(body));assert.equal(immediate.status,200);assert.equal(messages.length,2);
+  for(const startedAt of [-1,0,Date.now()+86_400_000]){const forged=await post(request({...body,replyTo:`clock-${startedAt}@example.com`,startedAt}));assert.equal(forged.status,400);assert.deepEqual(await forged.json(),{error:'Request contains unsupported fields.'})}
+  assert.equal(messages.length,2);
+ }finally{restore()}
+});
+
+test('contact duplicate expiry uses a controlled monotonic clock without sleeping',async()=>{
+ resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),messages:{message:ResendMessage;key:string}[]=[];let now=1_000;const post=contactRoute.createContactPost(successfulSender(messages),()=>now,()=>new Date('2026-09-05T12:00:00Z'));
+ const body={name:'Expiry Tester',replyTo:'expiry@example.com',phone:'',smsConsent:false,zip:'95814',topic:'Other',message:'A deterministic duplicate-window inquiry.',website:'',turnstileToken:''};
+ const request=()=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.61'},body:JSON.stringify(body)});
+ try{assert.equal((await post(request())).status,200);assert.equal(messages.length,2);now=120_999;assert.deepEqual(await (await post(request())).json(),{ok:true,duplicate:true});assert.equal(messages.length,2);now=121_000;assert.equal((await post(request())).status,200);assert.equal(messages.length,4)}finally{restore()}
 });
 
 test('contact endpoint preserves non-consent and rejects forged consent metadata',async()=>{
  resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),messages:{message:ResendMessage;key:string}[]=[];const post=contactRoute.createContactPost(successfulSender(messages));
- const base={name:'No Consent Tester',replyTo:'no-consent@example.com',phone:'9165553434',smsConsent:false,zip:'95814',topic:'Other',message:'Please reply to this inquiry by email.',website:'',startedAt:Date.now()-4000,turnstileToken:''};
+ const base={name:'No Consent Tester',replyTo:'no-consent@example.com',phone:'9165553434',smsConsent:false,zip:'95814',topic:'Other',message:'Please reply to this inquiry by email.',website:'',turnstileToken:''};
  try{const unchecked=await post(new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.21'},body:JSON.stringify(base)}));assert.equal(unchecked.status,200);assert.equal(messages.length,2);assert.match(messages[0].message.text,/SMS consent: Not granted/);assert.doesNotMatch(messages[0].message.text,/SMS consent source|SMS consent timestamp/);const forged=await post(new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.22'},body:JSON.stringify({...base,name:'Forged Metadata',replyTo:'forged@example.com',smsConsentTimestamp:'2099-01-01T00:00:00.000Z',smsConsentSource:'verbal_consent'})}));assert.equal(forged.status,400);assert.equal(messages.length,2)}finally{restore()}
 });
 
@@ -151,26 +180,26 @@ test('contact endpoint returns a safe schema error without reflecting submitted 
 
 test('contact provider failure is bounded to one attempted delivery and returns a safe error',async()=>{
  resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),originalError=console.error;let calls=0;const post=contactRoute.createContactPost(async()=>{calls++;return{ok:false,category:'PROVIDER_UNAVAILABLE',outcome:'CONFIRMED_FAILURE',status:503}});console.error=()=>{};
- const body={name:'Failure Path Visitor',replyTo:'failure-path@example.com',phone:'9165550100',smsConsent:false,zip:'95814',topic:'Other',message:'Synthetic failure-path inquiry.',website:'',startedAt:Date.now()-4000,turnstileToken:''};
+ const body={name:'Failure Path Visitor',replyTo:'failure-path@example.com',phone:'9165550100',smsConsent:false,zip:'95814',topic:'Other',message:'Synthetic failure-path inquiry.',website:'',turnstileToken:''};
  try{const response=await post(new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.31'},body:JSON.stringify(body)}));assert.equal(response.status,502);assert.equal(calls,1);const text=await response.text();assert.deepEqual(JSON.parse(text),{error:'Unable to send inquiry.'});for(const privateValue of [body.name,body.replyTo,body.phone,body.message])assert.equal(text.includes(String(privateValue)),false)}finally{console.error=originalError;restore()}
 });
 
 test('contact retries an unknown email outcome only with the same payload and idempotency key',async()=>{
  resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),originalError=console.error,calls:{message:ResendMessage;key:string}[]=[];let first=true;const post=contactRoute.createContactPost(async(message,key)=>{calls.push({message,key});if(first){first=false;return{ok:false,category:'TIMEOUT',outcome:'UNKNOWN_OUTCOME'}}return{ok:true}});console.error=()=>{};
- const body={name:'Retry Tester',replyTo:'retry@example.com',phone:'9165550101',smsConsent:true,zip:'95814',topic:'Other',message:'Synthetic unknown-outcome inquiry.',website:'',startedAt:Date.now()-4000,turnstileToken:''};
+ const body={name:'Retry Tester',replyTo:'retry@example.com',phone:'9165550101',smsConsent:true,zip:'95814',topic:'Other',message:'Synthetic unknown-outcome inquiry.',website:'',turnstileToken:''};
  const request=()=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.34'},body:JSON.stringify(body)});
  try{assert.equal((await post(request())).status,503);assert.equal((await post(request())).status,200);assert.equal(calls.length,3);assert.equal(calls[0].key,calls[1].key);assert.deepEqual(calls[0].message,calls[1].message)}finally{console.error=originalError;restore()}
 });
 
 test('contact treats confirmation failure as partial success and suppresses a duplicate business message',async()=>{
  resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),originalError=console.error;let calls=0;const post=contactRoute.createContactPost(async()=>{calls++;return calls===2?{ok:false,category:'PROVIDER_UNAVAILABLE',outcome:'CONFIRMED_FAILURE',status:503}:{ok:true}});console.error=()=>{};
- const body={name:'Partial Success',replyTo:'partial@example.com',phone:'',smsConsent:false,zip:'95814',topic:'Other',message:'Synthetic partial-success inquiry.',website:'',startedAt:Date.now()-4000,turnstileToken:''};const request=()=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.35'},body:JSON.stringify(body)});
+ const body={name:'Partial Success',replyTo:'partial@example.com',phone:'',smsConsent:false,zip:'95814',topic:'Other',message:'Synthetic partial-success inquiry.',website:'',turnstileToken:''};const request=()=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':'203.0.113.35'},body:JSON.stringify(body)});
  try{assert.equal((await post(request())).status,200);assert.deepEqual(await (await post(request())).json(),{ok:true,duplicate:true});assert.equal(calls,2)}finally{console.error=originalError;restore()}
 });
 
 test('contact duplicate state refuses new fingerprints at its fixed capacity',async()=>{
  resetRateLimitsForTests();contactRoute.resetContactAttemptsForTests();const restore=contactEnvironment(),post=contactRoute.createContactPost(async()=>({ok:true})),originalInfo=console.info,originalWarn=console.warn;console.info=()=>{};console.warn=()=>{};
- const request=(index:number)=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':`2001:db8::${index.toString(16)}`},body:JSON.stringify({name:`Capacity Tester ${index}`,replyTo:`capacity-${index}@example.com`,phone:'',smsConsent:false,zip:'95814',topic:'Other',message:`Synthetic capacity inquiry number ${index}.`,website:'',startedAt:Date.now()-4000,turnstileToken:''})});
+ const request=(index:number)=>new Request('https://example.test/api/contact',{method:'POST',headers:{'content-type':'application/json','cf-connecting-ip':`2001:db8::${index.toString(16)}`},body:JSON.stringify({name:`Capacity Tester ${index}`,replyTo:`capacity-${index}@example.com`,phone:'',smsConsent:false,zip:'95814',topic:'Other',message:`Synthetic capacity inquiry number ${index}.`,website:'',turnstileToken:''})});
  try{for(let index=0;index<contactRoute.MAX_RECENT_CONTACT_ATTEMPTS;index++)assert.equal((await post(request(index))).status,200);assert.equal(contactRoute.contactAttemptCountForTests(),contactRoute.MAX_RECENT_CONTACT_ATTEMPTS);const overflow=await post(request(contactRoute.MAX_RECENT_CONTACT_ATTEMPTS));assert.equal(overflow.status,503);assert.equal(overflow.headers.get('retry-after'),'120');assert.equal(contactRoute.contactAttemptCountForTests(),contactRoute.MAX_RECENT_CONTACT_ATTEMPTS)}finally{console.info=originalInfo;console.warn=originalWarn;restore();contactRoute.resetContactAttemptsForTests();resetRateLimitsForTests()}
 });
 

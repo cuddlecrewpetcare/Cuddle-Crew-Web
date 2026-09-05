@@ -109,6 +109,26 @@ Prefer centralized configuration or data sources over duplicating rules across u
 
 Never make a public claim about credentials, certifications, insurance, memberships, service area, transportation availability, medical-care capabilities, safety procedures, or other regulated/professional matters unless a CURRENT / APPROVED business-reference source supports it.
 
+## Time, Time Zone, Locale, and Determinism Contract
+
+Future Codex work must:
+
+1. Distinguish instants, date-only values, local wall-clock times, durations, calendar days, and Service nights.
+2. Use the approved `America/Los_Angeles` IANA zone for business-local rules; never calculate with `PST`, `PDT`, or a fixed UTC offset.
+3. Preserve business date-only values as validated `YYYY-MM-DD` strings and use calendar arithmetic that is independent of the host timezone.
+4. Require an offset or `Z` for authoritative input instants. Resolve intended business-local wall-clock components explicitly and conservatively reject DST gaps or repeated times when no disambiguation exists.
+5. Serialize true instants as ISO 8601 with `Z` or an offset. Keep locale formatting display-only and never parse formatted dates, times, or currency back into logic.
+6. Use server-created time for authoritative business, security, contact, and consent decisions. Client clocks and client timestamps are untrusted and must not control acceptance, rejection, quota, consent provenance, or fees.
+7. Preserve DST-aware local semantics. Do not divide milliseconds by 24 hours to count calendar days or Service nights, and do not redefine an Overnight as a fixed elapsed duration.
+8. Treat same-business-day and less-than-24-hours as different concepts. Preserve approved `<`/`<=` boundaries exactly; flag unclear cancellation/day semantics instead of guessing.
+9. Never invent holiday dates or enable automatic holiday fees while the holiday calendar is `PLACEHOLDER`. Future holiday evaluation must use the approved business-local Service-date rule.
+10. Treat provider timestamps as untrusted. Accept explicit UTC, supported IANA-zone, or valid date-only semantics; conservatively reject ambiguous floating, malformed, unsupported-zone, DST-gap, or repeated-time values.
+11. Use monotonic clocks for latency, deadlines, short process-local TTLs, and timeout measurement where practical. Never compare monotonic values with wall-clock instants.
+12. Inject or pass controlled clocks in tests where current time affects a result. Never sleep to test expiry, never use offset-free timestamps as instants, and avoid fixed dates that age into failure.
+13. Cover relevant midnight, DST, month/year, leap-day, exact-threshold, invalid-input, and before/exact/after-expiry boundaries.
+14. Do not mutate caller-owned `Date` objects. Keep build timestamps only when they represent an authoritative content change; do not make builds vary merely because they ran later.
+15. Keep timestamp-only values out of idempotency keys, preserve server-created consent/contact timestamp provenance, and report unresolved time-related business authority explicitly.
+
 ## Local Development Environment Reuse
 
 Future Codex sessions operating on this local repository must:
