@@ -11,7 +11,7 @@
 | Platform | Classification | Evidence and limits |
 | --- | --- | --- |
 | Windows 10/11, native PowerShell | **PRIMARY SUPPORTED / VERIFIED** | Node 22.17.1, npm 10.9.2, doctor, tests, build, and Playwright are exercised here. |
-| Linux-like build/runtime | **EXPECTED COMPATIBLE** | Application and repository automation use Node APIs and argument-array child processes; lockfile contains platform-optional binaries. No Linux CI or F9 Linux host was available. |
+| Linux-like build/runtime | **EXPECTED COMPATIBLE / HOSTED EXECUTION UNVERIFIED** | Application and repository automation use Node APIs and argument-array child processes; lockfile contains platform-optional binaries. F12 added `ubuntu-24.04` validation-only CI, but GitHub reported zero workflow runs at the F14 audit. |
 | macOS | **UNVERIFIED** | The dependency graph contains macOS optional packages and the existing Codex Seatbelt watcher exception, but F9 did not execute the workflow on macOS. |
 | WSL | **NOT REQUIRED / UNVERIFIED** | Native Windows is the supported developer path. Do not introduce a WSL dependency. |
 | Dev container | **NOT NEEDED** | No Docker or devcontainer is required or added. |
@@ -90,7 +90,7 @@ Gitleaks discovery order is explicit `GITLEAKS_PATH`, the reviewed shared Window
 
 UNC/network shares are **UNSUPPORTED / UNVERIFIED**. The project makes no network-share locking or latency guarantee. Paths with spaces, parentheses, ampersands, and Unicode are expected to work because Node path APIs and argument arrays are used; exhaustive exotic-path execution is not claimed.
 
-OneDrive or another synchronized folder is not canonical storage architecture and is not recommended for active Node/Playwright development because of watcher churn, locks, sync contention, `node_modules` overhead, and generated-artifact conflicts. The preferred active clone is a shallow ordinary local directory. F9 does not relocate any repository or worktree.
+OneDrive or another synchronized folder is not canonical storage architecture and is not recommended for active Node/Playwright development because of watcher churn, locks, sync contention, `node_modules` overhead, and generated-artifact conflicts. The preferred active clone is a shallow ordinary local directory. The canonical main checkout is now `C:\Dev\CuddleCrewPetCareWEB`; F14 performed no relocation.
 
 For a future relocation: finish and push; verify a clean exact checkpoint; create a fresh clone in the intended local directory; recreate `.env.local` from the approved secret source; run setup, doctor, and full validation; then retire the old copy only through a separate deliberate action. Do not drag/drop an active checkout or copy its dependencies/caches.
 
@@ -118,11 +118,11 @@ Risk register:
 | --- | --- |
 | `CRITICAL` | None. No cleanup target can be supplied by a user, and current cleanup/scanning refuses escape or linked traversal. |
 | `HIGH` | Pre-F9 doctor port availability depended on Windows `netstat`, giving a false-free result on Linux-like hosts. Replaced with Node TCP probing. |
-| `MEDIUM` | Linux-like execution is expected but not actually exercised by CI/a host in F9. Validate before claiming support. |
+| `MEDIUM` | Linux-like execution is expected and CI is configured, but no hosted run had executed by F14. Obtain a green `ubuntu-24.04` run before claiming verified Linux support. |
 | `LOW` | macOS and UNC/network-share behavior remain unverified; OneDrive/sync-folder development remains discouraged. |
 | `INFO` | Uploads, archives, persistent file state, atomic authoritative writes, locking, custom watchers, CI, WSL, and containers remain intentionally absent. |
 
-Unresolved decisions are limited to: when to add Linux-like validation in the dedicated CI phase; whether macOS ever becomes supported; whether a future host changes process-tree shutdown requirements; and whether a real upload/archive/persistent-state feature justifies its currently deferred controls.
+Unresolved decisions are limited to: obtaining the first hosted Linux validation result; whether macOS ever becomes supported; whether a future host changes process-tree shutdown requirements; and whether a real upload/archive/persistent-state feature justifies its currently deferred controls.
 
 ## References used for F9
 

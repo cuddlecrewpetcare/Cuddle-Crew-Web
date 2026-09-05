@@ -30,6 +30,7 @@
     "check:time": "node --experimental-strip-types scripts/time-safety.mjs",
     "check:deployment": "node scripts/deployment-safety.mjs",
     "check:recovery": "node scripts/recovery-safety.mjs",
+    "check:foundation": "npm run check:git-safety && npm run scan:secrets && npm run check:supply-chain && npm run check:integrations && npm run check:resources && npm run check:cross-platform && npm run check:time && npm run check:deployment && npm run check:recovery",
     "check:build-artifact": "node scripts/build-artifact-safety.mjs",
     "validate": "npm run check:git-safety && npm run check:supply-chain && npm run check:integrations && npm run check:resources && npm run check:cross-platform && npm run check:time && npm run check:deployment && npm run check:recovery && npm run scan:secrets && npm run test && npm run typecheck && npm run lint && npm run build && npm run check:build-artifact",
     "validate:full": "npm run validate && npm run e2e:run",

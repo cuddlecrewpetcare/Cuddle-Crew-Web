@@ -345,14 +345,14 @@ The doctor warns below 10 GiB free. First remove old regenerable reports, traces
 
 All primary commands are PowerShell-compatible and repository scripts use Node rather than Bash. Avoid Unix-only environment assignment, `/tmp`, `chmod`, `rm`, or broad process-kill recipes. Use `Set-Location`, `Copy-Item`, `Get-Process`, and explicit paths when manual diagnosis is necessary.
 
-## OneDrive / Repository Location
+## Repository Location
 
-Assessment: **RECOMMEND MOVING** for long-term active development. A Node/Playwright checkout under a synchronized OneDrive Documents folder can create file-watcher overhead, lock contention, generated-file churn, and unnecessary sync/storage work even when Git ignores those files.
+Assessment: **CANONICAL LOCAL CHECKOUT RELOCATED / NOT A BLOCKER**. The main checkout is now at `C:\Dev\CuddleCrewPetCareWEB`, outside synchronized OneDrive storage. Dedicated Codex worktrees remain under Codex-managed local paths. F14 did not relocate, delete, or prune any checkout.
 
-No move is performed by this foundation task. A safer future manual relocation is:
+If another future relocation becomes necessary:
 
 1. Finish, commit, and push all intended Git work; inventory untracked files separately.
-2. Clone the repository to a local path such as `C:\Dev\CuddleCrewPetCareWEB`.
+2. Clone the repository to a shallow ordinary local path outside synchronized storage.
 3. Confirm the Git remote and history in the clone.
 4. Recreate `.env.local` from the secure secret source; do not copy it through Git or cloud sync.
 5. Do not copy `node_modules`, build output, framework caches, test artifacts, or logs. The user-level npm and Playwright caches can still be reused.
@@ -381,7 +381,7 @@ The default audit covers production-classified dependencies. Use `npm run audit:
 
 ## CI Parity
 
-No committed GitHub Actions or other CI workflow currently exists. Local commands are therefore the executable quality contract:
+`.github/workflows/validate.yml` provides validation-only GitHub Actions on `ubuntu-24.04` for pull requests, pushes to `main`, and explicit manual runs. It calls the same repository commands, forces provider writes and indexing off, requests read-only repository permission, and has no deployment capability. Local commands remain the executable quality contract:
 
 | Local command | Intended CI-equivalent check |
 | --- | --- |
@@ -396,7 +396,7 @@ No committed GitHub Actions or other CI workflow currently exists. Local command
 | `npm run e2e` | Browser E2E/smoke |
 | `npm run validate:full` | Complete pre-merge gate |
 
-The material difference is that no hosted workflow currently enforces these checks. Adding CI should be a separate task; it should call the same scripts rather than duplicate their logic. Native GitHub secret-scanning availability and repository settings must be verified separately rather than assumed.
+As of the F14 audit on 2026-09-05, the GitHub Actions API reported zero workflow runs. The workflow is therefore **LOCAL CONFIG ONLY / HOSTED EXECUTION UNVERIFIED** until a pull request or `main` push produces a green run. Do not trigger or describe a manual run without authorization. Native GitHub secret-scanning availability, branch protection, and repository settings remain owner-side checks rather than assumed controls.
 
 ## Periodic Maintenance
 

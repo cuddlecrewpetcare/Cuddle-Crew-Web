@@ -1,9 +1,9 @@
 # Test Baseline
 
-The original application baseline was verified from `main` at `3b443a6dcafb0cb3f4ed4129714d357e3e059816`. The F11 foundation lineage is based on F10 commit `90f3e33cbd94fa0429d521bb46ce0da1bb78de36`:
+The original application baseline was verified from `main` at `3b443a6dcafb0cb3f4ed4129714d357e3e059816`. The F14 foundation lineage is based on F13 commit `df53040b36640e96d9bdf511946f119b26b3cda6`:
 
-- 134 Node unit, integration, security, business-rule, filesystem-safety, and time-determinism tests
-- 19 Playwright E2E/accessibility/smoke tests across `e2e/accessibility.spec.ts`, `e2e/launch-review.spec.ts`, and `e2e/public-flows.spec.ts`
+- 142 Node unit, integration, security, business-rule, filesystem, time, deployment, and recovery tests
+- 21 Playwright E2E/accessibility/smoke tests across `e2e/accessibility.spec.ts`, `e2e/launch-review.spec.ts`, and `e2e/public-flows.spec.ts`
 - TypeScript typecheck passing
 - ESLint passing with 0 errors and 4 known `@next/next/no-img-element` warnings
 - Vinext production build passing
@@ -19,3 +19,5 @@ See [`testing-quality.md`](testing-quality.md) for suite ownership, regression c
 F12 starts from the exact F11 checkpoint `65b48a0c5bf9203629ead5222d294b9e4373c120`. It adds 4 Node deployment/CI policy regressions (138 total), 2 Playwright deployment-header and preview-indexing regressions (21 total), validation-only Linux CI, a source/configuration deployment check, and a post-build artifact check. The checks do not deploy, contact production providers, access production data, or require production secrets. Final F12 counts and warnings must be verified by the branch validation result; this paragraph is the intended suite inventory, not permission to ignore an unexpected count change.
 
 F13 starts from the exact F12 checkpoint `b41c87582da98ca97d608c5195774037e165bcf1`. It adds 4 Node recovery-foundation regressions (142 total), the read-only `check:recovery` command, a state/backup/restore policy, a concise business-continuity runbook, and a secret-free backup-manifest template. The check verifies repository/document boundaries only; it does not create or prove an external backup, provider export, account-recovery path, production restore, or approved active-care offline method. Browser behavior and the 21-test Playwright baseline are unchanged.
+
+F14 starts from the exact F13 checkpoint `df53040b36640e96d9bdf511946f119b26b3cda6`. It reconciles stale technical inventory, adds the non-duplicating `check:foundation` orchestration command, and records the final foundation readiness audit. No tests, dependency versions, lockfile entries, business rules, provider states, or browser behavior change; the verified baseline remains 142 Node, 21 Playwright, and 9 focused accessibility checks.

@@ -12,21 +12,25 @@ This document is the durable testing contract for Cuddle Crew Pet Care. It descr
 
 ## Current inventory
 
-The F9 baseline contains 125 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
+The F14 baseline contains 142 Node tests and 21 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
 
 | Owning suite | Count | Primary purpose |
 | --- | ---: | --- |
-| `tests/api-security.test.ts` | 35 | Request/response bounds and deadlines, API contracts, provider adapters, idempotency/partial failure, security/privacy boundaries, rate/state limits, and side-effect isolation |
-| `tests/business-rules.test.ts` | 21 | Pricing, travel, short-notice, holiday-placeholder, estimator, and planner decision logic |
-| `tests/care-planner.test.ts` | 24 | Care-plan suitability, duration, care-gap, and review-boundary behavior |
+| `tests/api-security.test.ts` | 38 | Request/response bounds and deadlines, API contracts, provider adapters, idempotency/partial failure, security/privacy boundaries, rate/state limits, and side-effect isolation |
+| `tests/business-rules.test.ts` | 22 | Pricing, travel, short-notice, holiday-placeholder, estimator, and planner decision logic |
+| `tests/care-planner.test.ts` | 23 | Care-plan suitability, duration, care-gap, and review-boundary behavior |
+| `tests/deployment-safety.test.ts` | 4 | CI, deployment, preview, release-provenance, and production-safety policy guards |
 | `tests/feature-completion.test.ts` | 15 | Address parsing, bounded planning state, privacy-safe persistence, and feature gates |
 | `tests/filesystem-safety.test.ts` | 5 | POSIX/Windows containment, cleanup allowlisting, link/junction refusal, filename rules, and import-path construction |
 | `tests/growth-features.test.ts` | 6 | Referral allowlisting, public analytics minimization, and manifest safety |
 | `tests/production-reliability.test.ts` | 12 | Health contract plus source/build/config regression guards for critical public behavior |
 | `tests/observability.test.ts` | 4 | Structured redaction schema, correlation IDs, and bounded application error taxonomy |
 | `tests/supply-chain.test.ts` | 3 | Lockfile, package-source, integrity, and lifecycle-review guard behavior |
+| `tests/time-determinism.test.ts` | 6 | Business timezone, DST ambiguity, date-only arithmetic, wall-clock notice, and sitemap determinism |
+| `tests/recovery-safety.test.ts` | 4 | Backup/recovery boundary, manifest, runbook, and no-private-copy policy guards |
 | `e2e/public-flows.spec.ts` | 7 | Critical home, estimator, planner, contact, consent, responsive, and session-state browser journeys |
-| `e2e/launch-review.spec.ts` | 3 | Route/status smoke, public progressive content, keyboard/reflow, and reduced-motion paths |
+| `e2e/launch-review.spec.ts` | 5 | Route/status smoke, public progressive content, deployment headers, preview indexing, keyboard/reflow, and reduced-motion paths |
+| `e2e/accessibility.spec.ts` | 9 | Axe scans, navigation/focus, combobox keyboard behavior, touch, reduced motion, visible focus, and six-width reflow |
 
 The requested semantic categories overlap by design:
 
@@ -37,8 +41,8 @@ The requested semantic categories overlap by design:
 | Security | Strict JSON limits, untrusted-IP handling, SSRF-oriented calendar URL validation, rate limiting, input rejection, bounded fetches, and supply-chain guards |
 | Privacy | Coarse calendar output, no-store responses, safe errors, URL/storage/analytics minimization, server-created consent metadata, and public response shaping |
 | Business-rule | Pricing, pet modifiers, travel, short notice, overnight, review gates, care suitability, cancellation-copy, and authority-linkage regressions |
-| E2E/smoke | 10 browser cases covering critical journeys, all public routes, redirects, progressive rendering, and failure-safe contact UX |
-| Accessibility preparation | Keyboard skip link, focus recovery, landmarks/headings, reduced motion, 200% reflow equivalent, and SMS control readability; this is not a full accessibility audit |
+| E2E/smoke | 21 browser cases covering critical journeys, all public routes, redirects, progressive rendering, deployment headers/indexing, failure-safe contact UX, and accessibility/responsive regressions |
+| Accessibility | 9 focused browser checks plus relevant public-flow/launch cases cover representative Axe scans, keyboard/focus, touch, reduced motion, and reflow; automated coverage is not WCAG certification |
 | Build/config | Source-level public-content guards, metadata/manifest behavior, typecheck, lint, and production build |
 | Supply chain | 3 unit guards plus `check:supply-chain` for the installed graph and lockfile |
 | Repository safety | `check:git-safety`; this is a validation command, not counted as a Node test |
@@ -118,7 +122,7 @@ Tests require Node 22.17.1, npm 10.9.2, the pinned lockfile graph, and Playwrigh
 
 Playwright keeps screenshots only on failure, traces on failure, video off, a line reporter, and an ignored HTML report under `.cache/local-dev/playwright/`. Failure diagnostics should name the test/layer and observable contract, preserve a safe artifact location, and distinguish environment/startup failures from assertion failures. They must not dump secrets, complete contact bodies, Client data, private URLs, provider bodies, stack traces to clients, or private decision reasons.
 
-There are no snapshots. Do not add large snapshots automatically. Visual regression is **OPTIONAL / DEFERRED** until stable approved UI assets and a concrete review workflow justify it. Current responsive preparation covers 320, 390, 640-at-200%-zoom-equivalent, 768, and 1280 CSS-pixel paths in targeted flows; comprehensive responsive and accessibility work belongs to their later phases.
+There are no snapshots. Do not add large snapshots automatically. Visual regression is **OPTIONAL / DEFERRED** until stable approved UI assets and a concrete review workflow justify it. Current responsive coverage exercises six widths from 320 through 1440 CSS pixels plus the existing 200%-zoom-equivalent path. Real screen-reader, 400%/text zoom, forced-colors, orientation, and configured-provider checks remain manual pre-launch tasks.
 
 ## Coverage strategy
 
@@ -165,6 +169,6 @@ The baseline and point-in-time results live in `docs/test-baseline.md`. Update i
 | Medium | Host dashboard configuration and the exact currently deployed Sites SHA are not provable from validation CI | Verify environment-name assignments and Sites version provenance in a separately authorized production task |
 | Medium | Successful live Google/Resend/calendar schemas are not checked against providers | Deferred intentionally; add fixture-backed adapter contracts when provider churn justifies them |
 | Low | Several source-text tests couple to implementation shape | Retain where they protect progressive/policy linkage; prefer behavioral tests for new coverage |
-| Info | Accessibility and responsive coverage is preparatory, not comprehensive | Complete in the dedicated later phases |
+| Info | Automated accessibility/responsive coverage is substantial but is not certification or a substitute for assistive-technology/manual launch QA | Complete the recorded manual pre-launch checks |
 
-Unresolved choices are explicit: whether/when to add hosted CI; whether adapter-level success fixtures merit maintenance; whether a future concrete gap justifies formal branch coverage; and when approved visual assets justify visual regression. None blocks the current local quality gate.
+Unresolved choices are explicit: obtaining the first hosted CI result; whether adapter-level success fixtures merit maintenance; whether a future concrete gap justifies formal branch coverage; and when approved visual assets justify visual regression. None blocks the current local quality gate.
