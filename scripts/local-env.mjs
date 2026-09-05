@@ -162,7 +162,7 @@ async function summary(){
   for(const port of state.ports)console.log(`Port ${port.port}: ${port.available?'available':`occupied by PID ${port.pid} (${port.name}); ownership unknown`}`);
   console.log(`.env.local: ${state.env.exists?`${state.env.names.length} variable names detected; values hidden`:'not present'}`);
   console.log(`Disk free: ${state.disk.freeGb.toFixed(1)} GiB`);
-  console.log('Baseline: 96 Node tests; 10 Playwright tests; lint allows 4 known no-img-element warnings.');
+  console.log('Baseline: 99 Node tests (96 application + 3 supply-chain); 10 Playwright tests; lint allows 4 known no-img-element warnings.');
   console.log('Network: not needed for healthy local checks; needed for Git operations and intentionally live provider calls.');
 }
 
@@ -173,8 +173,9 @@ async function setup(){
   if(!gitleaks.available||!gitleaks.compatible){console.error(`Gitleaks ${expectedGitleaksVersion} must be installed once as documented in docs/local-development.md. Setup does not download it automatically.`);process.exitCode=1;return}
   let dependencies=checkDependencies(),tree=dependencies.ok?checkTreeIntegrity():{ok:false,problems:dependencies.problems,extraneous:[]};
   if(!dependencies.ok||!tree.ok){
-    console.log('Dependency evidence is stale or incomplete; running npm install without deleting caches or node_modules.');
-    const install=npmRun(['install'],{stdio:'inherit'});if(install.status!==0){process.exitCode=install.status||1;return}
+    const missingTree=!existsSync(join(root,'node_modules'));
+    console.log(missingTree?'Dependencies are absent; running deterministic npm ci from package-lock.json.':'Dependency evidence is stale or incomplete; running npm install without deleting caches or node_modules.');
+    const install=npmRun(missingTree?['ci']:['install'],{stdio:'inherit'});if(install.status!==0){process.exitCode=install.status||1;return}
     dependencies=checkDependencies();if(!dependencies.ok){console.error(dependencies.problems.join('\n'));process.exitCode=1;return}
   }else console.log('Dependencies are healthy; install skipped.');
   let playwright=await checkPlaywright();

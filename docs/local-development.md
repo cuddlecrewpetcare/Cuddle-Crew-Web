@@ -38,7 +38,7 @@ npm --version
 npm run setup:local
 ```
 
-`setup:local` verifies the pinned tools, dependency/lockfile state, and Playwright Chromium. It skips installs when the local environment is healthy. If evidence shows dependencies are missing or invalid, it runs `npm install` without deleting the dependency tree or caches. If the required Chromium binary alone is missing, it installs only Chromium. It never overwrites `.env.local`.
+`setup:local` verifies the pinned tools, dependency/lockfile state, and Playwright Chromium. It skips installs when the local environment is healthy. If `node_modules` is absent, it runs deterministic `npm ci` from the authoritative lockfile. If an existing tree has evidence of missing or invalid packages, it uses non-destructive `npm install` without deleting caches. If the required Chromium binary alone is missing, it installs only Chromium. It never overwrites `.env.local`.
 
 Create `.env.local` from `.env.example` only when an optional live integration is needed:
 
@@ -263,6 +263,8 @@ npm uninstall <package>
 
 Review both `package.json` and `package-lock.json`, run `npm run setup:local` to refresh the ignored fingerprint, then validate. Do not regenerate the lockfile or upgrade unrelated packages casually.
 
+Run `npm run check:supply-chain` for the local structural/provenance guard and `npm run deps:summary` for a credential-safe inventory. The complete dependency, lifecycle, audit, build, artifact, license, and recovery contract is in [`dependency-supply-chain.md`](dependency-supply-chain.md).
+
 ## Environment Fingerprint
 
 `.cache/local-dev/fingerprint.json` records a non-secret hash of the lockfile, dependency-relevant manifest fields, Node major/minor, and npm version. `setup:local` creates or refreshes it only after integrity checks pass. The doctor reads it but never updates it. A stale fingerprint is evidence to inspect the tree; it is not permission to delete caches automatically.
@@ -370,6 +372,8 @@ npm run audit:dependencies
 ```
 
 This is intentionally separate from daily doctor/validation commands. Investigate findings; do not auto-upgrade packages solely because an audit reports them.
+
+The default audit covers production-classified dependencies. Use `npm run audit:dependencies:all` during a dedicated maintenance/release review to include development dependencies. Both commands are read-only, never invoke an audit fix, and report registry unavailability distinctly from a clean result.
 
 ## CI Parity
 

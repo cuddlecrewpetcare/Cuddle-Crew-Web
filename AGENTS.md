@@ -200,3 +200,33 @@ Future Codex sessions must:
 18. Treat ambiguous content as `PRIVATE / MANUAL REVIEW`; preserve evidence and stop before irreversible cleanup when exposure or authority is uncertain.
 19. Redact reports, tool output, issue text, screenshots, and commit messages; never reproduce private values merely to document a finding.
 20. Preserve the business-reference hierarchy. Data architecture documents describe handling and provenance; they do not create competing business, privacy, consent, or legal policy.
+
+## Dependency, Supply-Chain, and Build Contract
+
+Future Codex sessions must:
+
+1. Use Node 22.17.1 from `.nvmrc`, npm 10.9.2 from `packageManager`, and npm only.
+2. Treat `package-lock.json` lockfile v3 as authoritative; never introduce Yarn, pnpm, Bun, an alternate lockfile, or a package-manager migration without an explicit task.
+3. Reuse healthy `node_modules`, npm cache, Playwright browser cache, and valid build/test caches; a new chat is not an install trigger.
+4. Use `npm ci` for an absent/clean dependency tree and only evidence-based targeted repair for an existing tree.
+5. Never delete the dependency tree or clear package/browser caches as routine troubleshooting.
+6. Investigate any unexpected `package-lock.json` change immediately and never stage it in a task that did not intentionally change dependencies.
+7. Make dependency additions, removals, overrides, and upgrades dedicated, single-purpose maintenance work.
+8. Do not incidentally upgrade Node, npm, Next, Vinext, React, TypeScript, Playwright, ESLint, tests, Gitleaks, or application dependencies.
+9. Before adding a package, verify its exact identity, reputable source, purpose, classification, compatibility, alternatives, lifecycle behavior, license, graph growth, and maintenance cost.
+10. Prefer the platform, standard library, or an existing dependency when it solves the problem safely and maintainably.
+11. Do not leave experimental installs behind; inspect the complete manifest and lockfile diff after every intentional package operation.
+12. Before removing a package, inspect imports, dynamic/config/script use, generated behavior, and peer requirements; validate fully afterward.
+13. Review meaningful transitive graph changes and do not manually pin transitives or add `overrides` without a documented reason and removal condition.
+14. Evaluate new install/lifecycle scripts before accepting them; do not globally disable required scripts merely to make installation appear safer.
+15. Do not normalize `--force`, `--legacy-peer-deps`, `--ignore-scripts`, `--unsafe-perm`, or similar bypass flags.
+16. Run `npm run check:supply-chain` after dependency/toolchain changes and use `npm run deps:summary` for a safe inventory.
+17. Never run `npm audit fix` or `npm audit fix --force` automatically; assess direct/transitive placement, runtime/dev exposure, exploit applicability, remediation, and upgrade impact.
+18. Report a registry/audit outage as unavailable, never as a clean vulnerability result.
+19. Keep Git, the editor/Codex, runtime manager, and Gitleaks machine-wide; keep framework, compiler, lint, tests, Playwright package, and build tooling project-local.
+20. Keep Playwright Chromium in its user cache and reinstall it only when missing, corrupt, or incompatible with an intentional Playwright change.
+21. Preserve server/client environment boundaries during build; every `NEXT_PUBLIC_*` value is browser-public and no server secret may enter client output.
+22. Ensure builds compile only and do not perform live Client-data fetches, provider writes, messages, payments, bookings, or production mutations.
+23. Treat `.next`, `.vinext`, `dist`, `.wrangler`, coverage, reports, traces, logs, and other generated output as ignored, regenerable, and non-authoritative.
+24. Follow the recovery ladder in `docs/dependency-supply-chain.md` before replacing the dependency tree or clearing caches.
+25. Keep dependency upgrades, CI/bots, SBOM infrastructure, deployment, and hosting changes out of unrelated work; report all limitations and unresolved findings accurately.

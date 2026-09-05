@@ -87,6 +87,12 @@ Reviewed source-controlled schemas, migrations, and synthetic fixtures may be ap
 
 Pre-commit hooks remain **optional and not installed**. Committed hooks do not activate themselves, and a hidden machine-specific hook would be an unreliable gate. A future managed hook may call the existing repository scripts, but it must fail clearly and remain bypass-independent from the required final validation.
 
+## Dependency and build changes
+
+Follow [`docs/dependency-supply-chain.md`](docs/dependency-supply-chain.md). npm 10.9.2 and lockfile v3 are authoritative; do not introduce another package manager or alternate lockfile. A healthy checkout installs nothing, while a clean checkout uses `npm ci`. Any dependency addition, removal, override, or upgrade must be deliberate, single-purpose, and accompanied by manifest/lockfile, lifecycle, provenance, license, graph, build, and test review.
+
+Run `npm run check:supply-chain` after dependency-relevant changes. Use the read-only audit commands for maintenance/release review, but never run `npm audit fix` or `npm audit fix --force` as routine remediation. Unexpected lockfile changes stop the task until their cause and exact diff are understood.
+
 ## Legacy Migration and Archive Policy
 
 Treat every old checkout, drive, zip, exported repository, and database as untrusted input:
