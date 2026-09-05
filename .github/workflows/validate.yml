@@ -1,0 +1,110 @@
+name: Validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      CI: 'true'
+      RESEND_SEND_ENABLED: 'false'
+      SITE_INDEXING_ENABLED: 'false'
+    steps:
+      - name: Check out the exact source revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          # PR validation proves the reviewed source commit itself. Merge
+          # compatibility remains a separate merge simulation/merge-only gate.
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify the exact source revision
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          echo "Expected source SHA: $EXPECTED_SHA"
+          echo "Checked-out HEAD: $actual_sha"
+          if [[ "$actual_sha" != "$EXPECTED_SHA" ]]; then
+            echo "Checked-out HEAD does not match the event source SHA." >&2
+            exit 1
+          fi
+
+      - name: Establish the reviewed repository identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          git remote rename origin github
+          git symbolic-ref refs/remotes/github/HEAD refs/remotes/github/main
+          if [[ -z "$(git branch --show-current)" ]]; then
+            git switch --create "codex/ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          fi
+
+      - name: Use the pinned Node runtime
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Verify the package manager pin
+        shell: bash
+        run: test "$(npm --version)" = '10.9.2'
+
+      - name: Install the locked dependency graph
+        run: npm ci
+
+      - name: Install pinned Gitleaks from its official release
+        shell: bash
+        run: |
+          set -euo pipefail
+          version='8.30.0'
+          asset="gitleaks_${version}_linux_x64.tar.gz"
+          base="https://github.com/gitleaks/gitleaks/releases/download/v${version}"
+          mkdir -p "$RUNNER_TEMP/gitleaks"
+          curl --fail --location --silent --show-error "$base/$asset" --output "$RUNNER_TEMP/$asset"
+          curl --fail --location --silent --show-error "$base/gitleaks_${version}_checksums.txt" --output "$RUNNER_TEMP/gitleaks-checksums.txt"
+          grep "  $asset$" "$RUNNER_TEMP/gitleaks-checksums.txt" > "$RUNNER_TEMP/gitleaks-checksum.txt"
+          (cd "$RUNNER_TEMP" && sha256sum --check gitleaks-checksum.txt)
+          tar -xzf "$RUNNER_TEMP/$asset" -C "$RUNNER_TEMP/gitleaks" gitleaks
+          chmod +x "$RUNNER_TEMP/gitleaks/gitleaks"
+          echo "$RUNNER_TEMP/gitleaks" >> "$GITHUB_PATH"
+
+      - name: Install the pinned Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify the CI environment
+        run: npm run doctor
+
+      - name: Run the full side-effect-safe validation gate
+        run: npm run validate:full
+
+      - name: Scan full history on explicit manual runs
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: npm run scan:secrets:history
+
+      - name: Retain synthetic browser failure evidence
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: playwright-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .cache/local-dev/playwright/test-results
+            .cache/local-dev/playwright/report
+          if-no-files-found: ignore
+          retention-days: 7

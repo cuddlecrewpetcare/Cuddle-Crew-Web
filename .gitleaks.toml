@@ -1,0 +1,15 @@
+title = "Cuddle Crew Pet Care secret scanning"
+
+[extend]
+useDefault = true
+
+# Add only narrow, documented suppressions for confirmed false positives.
+# Never allowlist an unknown finding or disable a detector category to make validation pass.
+
+[[allowlists]]
+description = "Known non-secret sessionStorage key constants in the two state modules"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''(^|[\\/])app[\\/]lib[\\/](care-planner-progress|planning-state)\.ts$''']
+regexTarget = "match"
+regexes = ['''(CARE_PLANNER_PROGRESS_KEY|PLANNING_KEY)''']

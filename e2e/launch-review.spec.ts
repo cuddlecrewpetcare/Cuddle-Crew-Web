@@ -12,6 +12,28 @@ test('all public routes, metadata routes, legacy redirects, and 404 return expec
   expect((await request.get('/api/contact')).status()).toBe(405);
 });
 
+test('representative page and API responses retain deployment security headers',async({request})=>{
+  for(const route of ['/', '/api/health']){
+    const headers=(await request.get(route)).headers();
+    expect(headers['content-security-policy']).toContain("frame-ancestors 'none'");
+    expect(headers['content-security-policy']).not.toContain("'unsafe-eval'");
+    expect(headers['strict-transport-security']).toBe('max-age=31536000');
+    expect(headers['x-content-type-options']).toBe('nosniff');
+    expect(headers['x-frame-options']).toBe('DENY');
+    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
+    expect(headers['permissions-policy']).toBe('camera=(), microphone=(), geolocation=()');
+    expect(headers['access-control-allow-origin']).toBeUndefined();
+  }
+  expect((await request.get('/api/health')).headers()['cache-control']).toContain('no-store');
+});
+
+test('test and preview defaults remain undiscoverable',async({request})=>{
+  const robots=await request.get('/robots.txt');
+  expect(await robots.text()).toContain('Disallow: /');
+  const sitemap=await request.get('/sitemap.xml');
+  expect(await sitemap.text()).not.toContain('<url>');
+});
+
 test('launch pages retain landmarks, headings, links, and progressive public content',async({page})=>{
   await page.goto('/');
   await expect(page.locator('main')).toBeVisible();

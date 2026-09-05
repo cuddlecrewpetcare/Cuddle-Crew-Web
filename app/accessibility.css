@@ -1,0 +1,207 @@
+/* F11 accessibility and reflow safeguards. Brand meaning and business copy live elsewhere. */
+html {
+  scroll-padding-top: 7rem;
+}
+
+main,
+section,
+article,
+aside,
+fieldset,
+.shell,
+.planner-grid,
+.contact-tools,
+.estimate-fields {
+  min-width: 0;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid #145fd7;
+  outline-offset: 3px;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])) {
+  scroll-margin-block: 7rem 6rem;
+}
+
+.skip-link {
+  border: 2px solid #fff;
+  font-weight: 800;
+}
+
+.button {
+  min-height: 44px;
+  color: #3b241a !important;
+  text-align: center;
+  white-space: normal;
+}
+
+.nav-toggle,
+.estimate-copy,
+.address-actions button,
+.address-suggestions [role="option"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.address-actions button {
+  background: #9f4f37;
+}
+
+.eyebrow {
+  color: #5a6a56;
+}
+
+.brand-mark,
+.hero h1 em {
+  color: #9f4f37;
+}
+
+.brand-mark {
+  border-color: #9f4f37;
+}
+
+.how .eyebrow {
+  color: #3b241a;
+}
+
+.area .area-heading .eyebrow,
+.area .area-heading p:not(.eyebrow) {
+  color: #fffaf5;
+}
+
+.inquiry-builder input,
+.inquiry-builder select,
+.inquiry-builder textarea,
+.address-actions input {
+  font-size: 1rem;
+}
+
+.inquiry-builder select {
+  width: 100%;
+  border: 1px solid #8a7b72;
+  border-radius: 11px;
+  background: #fff;
+  padding: 13px;
+  color: var(--ink);
+}
+
+.required-note {
+  margin: 0;
+  font-size: .875rem;
+  font-weight: 700;
+}
+
+.content-card p a,
+.lede a,
+.sms-disclosure a,
+.fine-print a,
+.start-helper a {
+  text-decoration-line: underline;
+  text-decoration-thickness: .12em;
+  text-underline-offset: .18em;
+}
+
+.actions,
+.estimate-actions,
+.footer-links {
+  flex-wrap: wrap;
+}
+
+.content-card,
+.planner-result,
+.estimate-result,
+.care-plan-summary,
+.address-checker,
+.contact-next,
+footer {
+  overflow-wrap: anywhere;
+}
+
+.social-links {
+  padding: 0;
+  list-style: none;
+}
+
+.social-links li {
+  display: flex;
+}
+
+.address-suggestions [role="option"] {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 0;
+  border-radius: 9px;
+  background: #fff;
+  padding: 12px;
+  color: #3b241a;
+  cursor: pointer;
+}
+
+.address-suggestions [role="option"][aria-selected="true"] {
+  background: #fff0df;
+}
+
+@media (max-width: 480px) {
+  .shell {
+    width: min(1160px, calc(100% - 32px));
+  }
+
+  .hero h1 {
+    font-size: clamp(2.55rem, 15vw, 3.3rem);
+  }
+
+  .content-card,
+  .planner-form,
+  .planner-result,
+  .address-checker,
+  .estimator {
+    padding-inline: 18px;
+  }
+
+  .actions {
+    gap: 14px;
+  }
+
+  .actions > .button {
+    max-width: 100%;
+  }
+
+  .estimate-result > strong {
+    max-width: 100%;
+    font-size: clamp(2rem, 15vw, 3.5rem);
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  .social-button:focus-visible,
+  .social-button:hover,
+  .pet-gallery figure:hover img {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .button,
+  .nav-toggle,
+  .estimate-copy,
+  .address-actions button,
+  .address-suggestions [role="option"],
+  input,
+  select,
+  textarea,
+  summary {
+    border: 1px solid ButtonText;
+    forced-color-adjust: auto;
+  }
+
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    outline-color: Highlight;
+  }
+}

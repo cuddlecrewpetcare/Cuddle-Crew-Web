@@ -1,10 +1,6 @@
 import {expect,test} from '@playwright/test';
 
-const futureDate=()=>{
-  const date=new Date();
-  date.setDate(date.getDate()+21);
-  return date.toISOString().slice(0,10);
-};
+const futureDate='2099-01-02';
 
 test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=>{
   await page.goto('/');
@@ -16,8 +12,8 @@ test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=
 
   const zip=page.locator('.checker').getByLabel('Service ZIP');
   await expect(zip).toBeEditable();
-  await page.waitForTimeout(500);
   await zip.fill('95821');
+  await expect(zip).toHaveValue('95821');
   await page.getByRole('button',{name:'Check ZIP'}).click();
   await expect(page.locator('.checker .result')).toContainText('Personalized travel review required');
   await zip.fill('95660');
@@ -25,11 +21,14 @@ test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=
 });
 
 test('estimator and planner retain preliminary, non-booking boundaries',async({page})=>{
-  await page.route('**/api/availability?*',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({state:'Limited Availability'})}));
+  const date=futureDate;
+  let availabilityPayload:Record<string,unknown>|undefined;
+  await page.route('**/api/availability',route=>{expect(route.request().method()).toBe('POST');expect(new URL(route.request().url()).search).toBe('');availabilityPayload=route.request().postDataJSON() as Record<string,unknown>;return route.fulfill({contentType:'application/json',body:JSON.stringify({state:'Limited Availability'})})});
   await page.goto('/');
   await expect(page.locator('.estimate-fields')).toBeVisible();
-  await page.getByLabel('First service date').fill(futureDate());
-  await page.getByLabel('Last service date').fill(futureDate());
+  await page.getByLabel('First service date').fill(date);
+  await page.getByLabel('Last service date').fill(date);
+  await expect.poll(()=>availabilityPayload).toEqual({start:date,end:date});
   await page.getByLabel('9 AM–12 PM').check();
   await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
   await expect(page.getByText('Personalized review required').first()).toBeVisible();
@@ -47,7 +46,8 @@ test('start and contact flows do not send a real inquiry in browser tests',async
   await expect(page.getByRole('link',{name:'Open your client portal'})).toHaveAttribute('href','https://cuddlecrewpetcare.petssl.com/login');
 
   let submitted:Record<string,unknown>|undefined;
-  await page.route('**/api/contact',route=>{submitted=route.request().postDataJSON() as Record<string,unknown>;return route.fulfill({contentType:'application/json',body:'{}'})});
+  let failDelivery=false;
+  await page.route('**/api/contact',route=>{submitted=route.request().postDataJSON() as Record<string,unknown>;return route.fulfill({status:failDelivery?503:200,contentType:'application/json',body:failDelivery?JSON.stringify({error:'Unable to send inquiry.'}):'{}'})});
   await page.goto('/contact');
   const phone=page.getByLabel(/Phone/);
   const smsConsent=page.getByRole('checkbox',{name:'Yes, I agree to service-related text messages.'});
@@ -67,8 +67,12 @@ test('start and contact flows do not send a real inquiry in browser tests',async
   await phone.fill('916-555-1212');
   await page.getByLabel(/What would you like to ask/).fill('Could you explain the service-area review process?');
   await page.getByRole('button',{name:'Send inquiry'}).click();
-  await expect(page.getByText('Thanks—your inquiry was sent to Lauren.')).toBeVisible();
+  await expect(page.getByText('Thanks—your inquiry was accepted for delivery to Lauren.')).toBeVisible();
   expect(submitted?.phone).toBe('916-555-1212');expect(submitted?.smsConsent).toBe(false);
+
+  failDelivery=true;await page.reload();
+  await page.getByLabel(/Your name/).fill('Private Test Visitor');await page.getByLabel(/Your email/).fill('private-test@example.com');await page.getByLabel(/Phone/).fill('916-555-0199');await page.getByLabel(/What would you like to ask/).fill('This private test message must not enter a URL.');await page.getByRole('button',{name:'Send inquiry'}).click();
+  const fallback=page.getByRole('link',{name:'Open your email app instead'});await expect(fallback).toHaveAttribute('href','mailto:lauren@cuddlecrewpetcare.com?subject=Pet%20care%20question');const href=await fallback.getAttribute('href');for(const value of ['Private Test Visitor','private-test@example.com','916-555-0199','private test message'])expect(href?.toLowerCase()).not.toContain(value.toLowerCase());
 });
 
 test('contact form transmits affirmative SMS consent only when checked',async({page})=>{
@@ -83,7 +87,7 @@ test('contact form transmits affirmative SMS consent only when checked',async({p
   await phone.fill('916-555-3434');
   await page.getByLabel(/What would you like to ask/).fill('Please explain how service-related text updates work.');
   await page.getByRole('button',{name:'Send inquiry'}).click();
-  await expect(page.getByText('Thanks—your inquiry was sent to Lauren.')).toBeVisible();
+  await expect(page.getByText('Thanks—your inquiry was accepted for delivery to Lauren.')).toBeVisible();
   expect(submitted?.phone).toBe('916-555-3434');expect(submitted?.smsConsent).toBe(true);expect(submitted).not.toHaveProperty('smsConsentTimestamp');expect(submitted).not.toHaveProperty('smsConsentSource');
 });
 
@@ -101,8 +105,8 @@ test('anonymous progress survives refresh without retaining dates or safety deta
   await expect(page.locator('.estimate-fields')).toBeVisible();
   await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
   await page.getByLabel('9 AM–12 PM').check();
-  await page.getByLabel('First service date').fill(futureDate());
-  await page.getByLabel('Last service date').fill(futureDate());
+  await page.getByLabel('First service date').fill(futureDate);
+  await page.getByLabel('Last service date').fill(futureDate);
   await page.reload();
   await expect(page.locator('.estimate-fields').getByLabel('Service ZIP')).toHaveValue('95821');
   await expect(page.getByLabel('9 AM–12 PM')).toBeChecked();

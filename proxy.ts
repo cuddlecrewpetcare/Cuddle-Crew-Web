@@ -14,7 +14,9 @@ const securityHeaders={
   'X-Frame-Options':'DENY',
   'Permissions-Policy':'camera=(), microphone=(), geolocation=()',
   'Cross-Origin-Opener-Policy':'same-origin-allow-popups',
-  'Strict-Transport-Security':'max-age=31536000; includeSubDomains',
+  // HTTPS is verified for the canonical and apex hosts. Do not cover unrelated
+  // subdomains or request preload until every subdomain is separately reviewed.
+  'Strict-Transport-Security':'max-age=31536000',
   'Content-Security-Policy':"default-src 'self'; img-src 'self' data: https://*.tile.openstreetmap.org; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; font-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
 };
 

@@ -8,7 +8,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <main>
+    <main id="main-content" tabIndex={-1}>
       <div className="shell">
         <section className="subhero fallback-page">
           <p className="eyebrow">Something went wrong</p>

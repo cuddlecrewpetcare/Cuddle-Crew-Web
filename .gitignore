@@ -12,6 +12,7 @@
 /coverage
 /playwright-report/
 /test-results/
+/.cache/local-dev/
 
 # next.js
 /.next/
@@ -21,6 +22,9 @@
 # misc
 .DS_Store
 *.pem
+*.key
+*.p12
+*.pfx
 
 # debug
 npm-debug.log*
@@ -40,3 +44,27 @@ next-env.d.ts
 /outputs/
 /work/
 *.tsbuildinfo
+*.log
+
+# local databases, backups, and private exports
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+*.local.db
+*.local.sqlite
+*.local.sqlite3
+*.dump
+*.bak
+*.backup
+*.sql.gz
+/.private/
+/private/
+/backups/
+/database-dumps/
+/private-exports/

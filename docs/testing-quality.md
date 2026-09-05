@@ -1,0 +1,174 @@
+# Testing and Quality Architecture
+
+This document is the durable testing contract for Cuddle Crew Pet Care. It describes what the current suites prove, how changes should be validated, and how failures are handled. Tests are implementation evidence; they do not outrank the most specific applicable `CURRENT / APPROVED` business reference.
+
+## Quality principles
+
+- Test count is a regression signal, not a quality score. An unexpected decrease requires investigation. An intentional consolidation must document why behavior coverage is preserved or improved.
+- Passing tests do not replace a passing build. A passing build does not replace tests. Typechecking does not prove runtime behavior, and E2E does not prove that every business rule is complete.
+- Prefer many fast deterministic logic and route tests, targeted security/privacy regressions, and a smaller browser suite for critical journeys.
+- Assert observable behavior and public contracts. Avoid implementation-detail coupling, broad truthy checks, giant snapshots, and assertions weakened merely to make a failure disappear.
+- Tests must use synthetic data, prevent live external writes, and keep failure artifacts private-safe.
+
+## Current inventory
+
+The F14 baseline contains 142 Node tests and 21 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
+
+| Owning suite | Count | Primary purpose |
+| --- | ---: | --- |
+| `tests/api-security.test.ts` | 38 | Request/response bounds and deadlines, API contracts, provider adapters, idempotency/partial failure, security/privacy boundaries, rate/state limits, and side-effect isolation |
+| `tests/business-rules.test.ts` | 22 | Pricing, travel, short-notice, holiday-placeholder, estimator, and planner decision logic |
+| `tests/care-planner.test.ts` | 23 | Care-plan suitability, duration, care-gap, and review-boundary behavior |
+| `tests/deployment-safety.test.ts` | 4 | CI, deployment, preview, release-provenance, and production-safety policy guards |
+| `tests/feature-completion.test.ts` | 15 | Address parsing, bounded planning state, privacy-safe persistence, and feature gates |
+| `tests/filesystem-safety.test.ts` | 5 | POSIX/Windows containment, cleanup allowlisting, link/junction refusal, filename rules, and import-path construction |
+| `tests/growth-features.test.ts` | 6 | Referral allowlisting, public analytics minimization, and manifest safety |
+| `tests/production-reliability.test.ts` | 12 | Health contract plus source/build/config regression guards for critical public behavior |
+| `tests/observability.test.ts` | 4 | Structured redaction schema, correlation IDs, and bounded application error taxonomy |
+| `tests/supply-chain.test.ts` | 3 | Lockfile, package-source, integrity, and lifecycle-review guard behavior |
+| `tests/time-determinism.test.ts` | 6 | Business timezone, DST ambiguity, date-only arithmetic, wall-clock notice, and sitemap determinism |
+| `tests/recovery-safety.test.ts` | 4 | Backup/recovery boundary, manifest, runbook, and no-private-copy policy guards |
+| `e2e/public-flows.spec.ts` | 7 | Critical home, estimator, planner, contact, consent, responsive, and session-state browser journeys |
+| `e2e/launch-review.spec.ts` | 5 | Route/status smoke, public progressive content, deployment headers, preview indexing, keyboard/reflow, and reduced-motion paths |
+| `e2e/accessibility.spec.ts` | 9 | Axe scans, navigation/focus, combobox keyboard behavior, touch, reduced motion, visible focus, and six-width reflow |
+
+The requested semantic categories overlap by design:
+
+| Category | Current evidence |
+| --- | --- |
+| Unit | Pure parsers, sanitizers, formatters, business decisions, care-gap calculations, and configuration gates |
+| Integration/API | Contact, availability, estimate, address, and health route contracts using real route code and synthetic `Request` objects |
+| Security | Strict JSON limits, untrusted-IP handling, SSRF-oriented calendar URL validation, rate limiting, input rejection, bounded fetches, and supply-chain guards |
+| Privacy | Coarse calendar output, no-store responses, safe errors, URL/storage/analytics minimization, server-created consent metadata, and public response shaping |
+| Business-rule | Pricing, pet modifiers, travel, short notice, overnight, review gates, care suitability, cancellation-copy, and authority-linkage regressions |
+| E2E/smoke | 21 browser cases covering critical journeys, all public routes, redirects, progressive rendering, deployment headers/indexing, failure-safe contact UX, and accessibility/responsive regressions |
+| Accessibility | 9 focused browser checks plus relevant public-flow/launch cases cover representative Axe scans, keyboard/focus, touch, reduced motion, and reflow; automated coverage is not WCAG certification |
+| Build/config | Source-level public-content guards, metadata/manifest behavior, typecheck, lint, and production build |
+| Supply chain | 3 unit guards plus `check:supply-chain` for the installed graph and lockfile |
+| Repository safety | `check:git-safety`; this is a validation command, not counted as a Node test |
+| Resource safety | `check:resources`; validates central ceilings, the cheap health boundary, and static-asset hard limit without counting as a Node test |
+
+Some source-text tests in `production-reliability.test.ts` are intentionally brittle because they guard progressive enhancement, policy linkage, or centralized configuration that runtime assertions alone would not prove. Do not expand that style casually; prefer behavior/contract tests when practical.
+
+## Portfolio and ownership
+
+Use unit tests for pure decisions, parsers, formatting, normalization, validation, and boundary math. Use integration/API tests for route validation, request/response schemas, server-created metadata, environment gates, provider adapters, failure fallbacks, and public/private field boundaries. Security/privacy tests should emphasize rejection and minimization paths, not just successful input.
+
+Use E2E only for critical user journeys and real browser/server integration: primary navigation, estimator/planner boundaries, contact and SMS consent UX, progressive public content, privacy-safe session state, status/redirect smoke, and meaningful viewport/keyboard behavior. Do not reproduce exhaustive pricing or parser matrices through the browser.
+
+Build/config checks prove that source and configuration compile into deployable output. They do not prove runtime correctness. Supply-chain and repository-safety checks protect different boundaries and remain required alongside application tests.
+
+## Business-rule authority
+
+Before changing a business-rule test, read `docs/business-reference/README.md`, the source hierarchy, and the most specific applicable `CURRENT / APPROVED` reference. Tests reflect approved references; stale test expectations never make stale implementation behavior authoritative. If implementation or a test conflicts with an approved source, investigate and correct the authorized implementation. If two controlling approved sources materially conflict, stop for human review. Never edit an authoritative reference merely to make a test pass.
+
+Holiday automation stays disabled while the holiday calendar is `PLACEHOLDER`. Client-facing failure/review output remains neutral, normally `Personalized review required`, without exposing private thresholds or review reasons.
+
+## Critical regression matrix
+
+| Behavior | Current layer/evidence | Meaningful gap or next trigger |
+| --- | --- | --- |
+| Contact validation and delivery | Injected Node route/adapter tests plus write-gated, intercepted E2E | Live provider contract is deliberately not exercised |
+| SMS consent | Canonical wording, affirmative/non-consent, forged metadata rejection, server timestamp/source, scanner-readable HTML, responsive E2E | Operational provider/STOP/HELP behavior remains outside this codebase |
+| Rate limiting and duplicates | Deterministic helper boundaries and contact duplicate route behavior | Multi-instance/distributed limits require a future persistence design |
+| Availability privacy | POST body only, no-store, coarse output, bounded calendar parsing, safe provider fallback | Live calendar provider contract is deliberately not exercised |
+| Estimator/planner | Extensive logic matrices, negative route inputs, neutral review output, critical browser flows | Re-audit whenever approved business references change |
+| Pricing/travel/short notice/overnight | Unit and source-linkage regressions | Exact holiday dates remain unresolved because the calendar is not approved |
+| Address integration | Parser/feature gates and fail-closed no-configuration route tests | Successful Google response contracts are deferred until adapter churn justifies fixtures |
+| Client-safe errors | Contact, address, availability, health, and fallback-page checks | Maintain whenever new routes/providers are added |
+| Server/client environment boundary | Feature gates, response minimization, build/supply-chain review | No automated compiled-bundle secret-name test; current secret scan/build review remains the gate |
+| External side effects | Provider-specific Resend gate, injected transports, missing-config fail-closed checks, browser contact interception, and `check:integrations` | Any new provider write requires an explicit gate, adapter, idempotency/reconciliation design, and regression tests before activation |
+| Build, repository, and recovery safety | Typecheck, lint, build, artifact/deployment/recovery checks, secret scan, supply-chain and Git safety commands | Validation-only Linux CI mirrors the local full gate without production secrets or deployment capability |
+
+## Side effects, mocks, fixtures, and contracts
+
+Automated tests must never send email or SMS, charge a payment, create a booking, write to a third-party account, mutate Client data, or publish content. Contact route tests inject a synthetic sender, provider adapters receive synthetic fetch transports, and remaining route tests replace `globalThis.fetch` only within `try/finally`. Browser tests intercept `/api/contact`, and the E2E server forces the Resend write gate off. Blank optional configuration must fail closed or use the documented conservative fallback. No payment, SMS, Precise Petcare, database, or publishing write integration exists.
+
+Mock dangerous writes, unavailable providers, and nondeterministic external services. Do not mock away business logic, route validation, security boundaries, or meaningful request/response behavior. A test that proves only its mock configuration has no value.
+
+Fixtures use fabricated people/pets, `example.com`/`.test`, documentation-only IP ranges, fake IDs, and reserved fictional 555 phone numbers. Never use real Clients, home addresses, access details, travel dates, medical/care records, payment metadata, provider exports, or production screenshots. Treat browser traces, screenshots, reports, and logs as potentially private even when inputs are synthetic.
+
+Lightweight internal route and synthetic adapter contract testing is **IMPLEMENTED** for Resend, Turnstile, address/calendar parsing, and provider failure categories. Live provider contract testing is **DEFERRED** because routine validation must not depend on or write to external services.
+
+## Determinism, time, retries, and flakiness
+
+Logic tests inject explicit clocks where time affects a decision. F5 removed the browser suite's wall-clock-derived date and its arbitrary sleep; browser waits now use observable assertions. Provider calls are stubbed/intercepted. Tests must not depend on locale, filesystem enumeration order, production network, user-specific paths, or shared external state.
+
+The Node runner uses its default per-test behavior with no retries. Playwright has a 30-second test timeout and no configured retries. The E2E server has a separate 60-second bounded readiness deadline with a condition-based local health poll. Do not increase global timeouts or add retries to conceal hangs. Targeted timeouts are acceptable only for a demonstrated slow boundary.
+
+When a test appears flaky:
+
+1. Reproduce it and record the exact command/environment.
+2. Classify timing, clock, race, state leakage, environment, network, or product behavior.
+3. Remove nondeterminism and isolate shared resources.
+4. Preserve the assertion strength and validate the fix repeatedly at the narrowest layer.
+5. Document any unavoidable external dependency and keep it outside routine validation.
+
+A single lucky rerun is not resolution. Permanent skips, weakened assertions, and unlimited retries are prohibited. Quarantine is **NOT NEEDED** today. If introduced later, it must be temporary, issue-linked, owner-visible, have removal criteria/deadline, and exclude the suite from a fully healthy claim.
+
+## Isolation, parallelism, filesystem, network, and environment
+
+Rate-limit state is reset by tests that use it. Environment and `globalThis.fetch` mutations are restored in `finally`. Browser storage is scoped to a context and explicitly tested for clear/reset behavior. No application test writes source files. Scanner and browser artifacts use ignored bounded paths; temporary scanner output is removed after use.
+
+Node test files may run independently; do not introduce cross-file mutable state. Playwright uses one local worker for reliability and two in CI. Do not disable all parallelism without a demonstrated collision. Any future shared port, file, database, or singleton must receive explicit isolation/serialization.
+
+Routine Node tests use no external network: provider paths are stubbed or disabled. E2E uses only the repository-owned local server and intercepted contact delivery. Builds use installed dependencies and repository assets. Git push, dependency audits, and intentional live-provider checks are separate network operations and must never be described as offline.
+
+Tests require Node 22.17.1, npm 10.9.2, the pinned lockfile graph, and Playwright Chromium for E2E. Optional provider variables are blank for routine validation. Never copy `.env.local` into committed test configuration or require production credentials.
+
+## E2E lifecycle and artifacts
+
+`npm run e2e` builds, verifies that port 3100 is free, starts the exact Vinext server process, waits conditionally for `http://127.0.0.1:3100`, runs Playwright, and terminates only its owned process tree. `validate:full` reuses the standard validation build and invokes `e2e:run`. An occupied port fails explicitly and is never killed or reused. Cleanup must release port 3100 after success or failure.
+
+Playwright keeps screenshots only on failure, traces on failure, video off, a line reporter, and an ignored HTML report under `.cache/local-dev/playwright/`. Failure diagnostics should name the test/layer and observable contract, preserve a safe artifact location, and distinguish environment/startup failures from assertion failures. They must not dump secrets, complete contact bodies, Client data, private URLs, provider bodies, stack traces to clients, or private decision reasons.
+
+There are no snapshots. Do not add large snapshots automatically. Visual regression is **OPTIONAL / DEFERRED** until stable approved UI assets and a concrete review workflow justify it. Current responsive coverage exercises six widths from 320 through 1440 CSS pixels plus the existing 200%-zoom-equivalent path. Real screen-reader, 400%/text zoom, forced-colors, orientation, and configured-provider checks remain manual pre-launch tasks.
+
+## Coverage strategy
+
+Formal coverage tooling is **DEFERRED**. A percentage threshold would add maintenance cost without identifying the most important gaps. Prefer review of branch coverage in high-risk business decisions, negative validators, security/privacy boundaries, and provider failure paths. Add tooling only when a concrete recurring gap or release gate needs measurement; do not set an arbitrary 100% target.
+
+Property/fuzz testing is **OPTIONAL / NOT NEEDED** for the current bounded parsers and validators. Mutation testing is **NOT NEEDED** at current project size/cost. Re-evaluate either only when a critical parser or decision matrix demonstrates defects ordinary boundary tests do not catch.
+
+## Performance and validation order
+
+The Node suite is **FAST** (about 2 seconds on the F5 Windows workstation). Typecheck, lint, and build are **MODERATE**. The build plus local-browser lifecycle is **EXPENSIVE** relative to the Node suite and belongs in full validation. Investigate material timing regressions rather than optimizing prematurely.
+
+Use this targeted mapping while implementing:
+
+| Change | Targeted validation |
+| --- | --- |
+| Business decision/config | Most specific business-rule/care-planner test file plus typecheck |
+| API route or validator | Relevant route tests, security/privacy negative paths, and typecheck |
+| UI component | Relevant Node/source contract; browser test when the journey is critical |
+| Contact/SMS/privacy | API security tests plus targeted contact E2E and current secret scan |
+| E2E runner/config | Build, targeted E2E, port cleanup check, then full E2E |
+| Dependency/toolchain | Supply-chain tests/check, manifest/lock review, then full validation |
+| Repository/security script | Its targeted tests/check plus Git safety and secret scan |
+| Recovery documentation/check | `tests/recovery-safety.test.ts`, `npm run check:recovery`, Git safety, cross-platform check, and secret scan |
+| Documentation only | Relevant structural checks and diff review; full validation when it changes the quality contract |
+
+For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain, integration, resource, cross-platform, time, deployment, and recovery checks, current secret scan, Node tests, typecheck, lint, build, and artifact validation. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
+
+The efficient failure order is structural/repository/security checks, targeted tests, full Node tests, typecheck, lint, build, then E2E. The existing commands already implement a sensible composition, so F5 adds no redundant `check:quality` or `test:summary` command. The test runner and this baseline document already provide the necessary count signal.
+
+## Failure, warning, and baseline governance
+
+On failure, identify whether it is new, environmental, or an unchanged recorded baseline. Do not hide it, delete the test, weaken assertions, or claim completion. If the test count decreases, inspect the exact diff and explain every removal/consolidation before proceeding. Report executed commands and actual counts explicitly; never say fully green when the required full validation was not run.
+
+The lint baseline is 0 errors and 4 visible `@next/next/no-img-element` warnings in `app/page.tsx`. They are known, not suppressed, and not a license for new warnings. Fix them only in a scoped UI/performance change with behavior and asset review.
+
+The baseline and point-in-time results live in `docs/test-baseline.md`. Update it intentionally after a reviewed suite change. Never accept “all remaining tests passed” without accounting for removed tests.
+
+## Current risk and unresolved decisions
+
+| Severity | Finding | Disposition |
+| --- | --- | --- |
+| Critical | No live destructive test write, production/Client fixture, committed test secret, or production-leaking test bypass found | Preserve the side-effect and fixture contract |
+| High | No unexplained test loss, order-dependent critical state, unsafe E2E process killing, or validation bypass found | Investigate immediately if introduced |
+| Medium | Host dashboard configuration and the exact currently deployed Sites SHA are not provable from validation CI | Verify environment-name assignments and Sites version provenance in a separately authorized production task |
+| Medium | Successful live Google/Resend/calendar schemas are not checked against providers | Deferred intentionally; add fixture-backed adapter contracts when provider churn justifies them |
+| Low | Several source-text tests couple to implementation shape | Retain where they protect progressive/policy linkage; prefer behavioral tests for new coverage |
+| Info | Automated accessibility/responsive coverage is substantial but is not certification or a substitute for assistive-technology/manual launch QA | Complete the recorded manual pre-launch checks |
+
+Unresolved choices are explicit: obtaining the first hosted CI result; whether adapter-level success fixtures merit maintenance; whether a future concrete gap justifies formal branch coverage; and when approved visual assets justify visual regression. None blocks the current local quality gate.

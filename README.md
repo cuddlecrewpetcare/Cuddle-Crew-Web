@@ -4,18 +4,7 @@ Public marketing and planning website for Cuddle Crew Pet Care, a solo Sacrament
 
 ## Local development
 
-1. Use Node.js 22.13 or newer.
-2. Run `npm install`.
-3. Copy `.env.example` to `.env.local` and add local secrets. Never commit `.env.local`.
-4. Run `npm run dev`.
-
-Quality commands:
-
-- `npm test` — business-rule regression tests.
-- `npm run lint` — ESLint.
-- `npm run build` — production build.
-- `npm run typecheck` — explicit TypeScript validation.
-- `npm run check` — tests, typecheck, lint, and build.
+Use the persistent Windows-first workflow in [`docs/local-development.md`](docs/local-development.md), the final foundation audit in [`docs/foundation-final-audit.md`](docs/foundation-final-audit.md), the backup/disaster-recovery contract in [`docs/backup-disaster-recovery.md`](docs/backup-disaster-recovery.md), the concise continuity runbook in [`docs/business-continuity.md`](docs/business-continuity.md), the accessibility/responsive contract in [`docs/accessibility-responsive.md`](docs/accessibility-responsive.md), the time/locale contract in [`docs/time-locale-determinism.md`](docs/time-locale-determinism.md), the cross-platform/filesystem contract in [`docs/cross-platform-filesystem.md`](docs/cross-platform-filesystem.md), the observability/recovery contract in [`docs/observability-recovery.md`](docs/observability-recovery.md), the external-integration contract in [`docs/integrations-side-effects.md`](docs/integrations-side-effects.md), the testing/quality contract in [`docs/testing-quality.md`](docs/testing-quality.md), the dependency/build security contract in [`docs/dependency-supply-chain.md`](docs/dependency-supply-chain.md), and the repository/history safeguards in [`CONTRIBUTING.md`](CONTRIBUTING.md). For normal daily work, read `AGENTS.md`, run `npm run doctor` and `npm run check:foundation`, and install nothing when the doctor passes. First-time or evidence-based repair uses `npm run setup:local`.
 
 ## Configuration
 
@@ -25,7 +14,8 @@ SMS consent, disclosure, opt-out, HELP, privacy, and marketing boundaries are go
 
 Server-only environment variables:
 
-- `RESEND_API_KEY` sends contact-form messages.
+- `RESEND_SEND_ENABLED=true` explicitly enables Resend writes in an intended environment. It defaults to `false`; a credential alone cannot enable delivery.
+- `RESEND_API_KEY` authenticates contact-form delivery and remains inert while the write gate is off.
 - `PRIVATE_CALENDAR_ICS_URL` powers the privacy-preserving availability summary. Never expose this calendar URL to the browser.
 - `GOOGLE_MAPS_SERVER_KEY` powers the optional server-proxied Places Autocomplete (New), Address Validation, and Routes requests.
 - `PRIVATE_SERVICE_ORIGIN` is the private route origin used only by the server. Never expose or commit it.
@@ -41,6 +31,8 @@ The address integration does not use a browser key. In Google Cloud, enable Plac
 ## Deployment
 
 The production site is hosted through OpenAI Sites. Push the exact reviewed commit to the Sites source remote, package the build, save a new Sites version, then deploy that version. The GitHub mirror is at `cuddlecrewpetcare/Cuddle-Crew-Web`.
+
+CI validates pull requests and `main` without production secrets or deployment capability. The exact-SHA release gate, environment/write boundaries, hosting inventory, smoke checks, rollback procedure, and deployment-record template are in [`docs/deployment-hosting.md`](docs/deployment-hosting.md).
 
 ## Social profiles and Instagram
 
@@ -69,3 +61,5 @@ The following are not live and should not be described as current features: live
 ## Privacy and security
 
 The public estimate and care-planning tools do not require contact information. Private medical, behavioral, access, and household details belong in the secure client portal. Runtime security headers are configured in `proxy.ts`; contact, availability, and address APIs must retain input validation, rate limiting, safe error messages, and secret-only server integrations. Exact lookup addresses are used only for the immediate Google request and are not saved in care-plan session state or planning URLs.
+
+The technical data inventory, classifications, browser/server boundaries, retention states, provider flows, backup rules, and future migration process are maintained in [`docs/data-privacy.md`](docs/data-privacy.md). The current application has no database, object store, file-upload feature, authentication system, external analytics backend, or direct Precise Petcare, Dialpad, or payment API integration.

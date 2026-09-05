@@ -1,6 +1,8 @@
+import {createRequestId,headersWithRequestId} from '../../lib/observability.ts';
+
 export function GET(){
   return Response.json(
     {status:'ok',timestamp:new Date().toISOString()},
-    {headers:{'Cache-Control':'no-store'}},
+    {headers:headersWithRequestId(createRequestId(),{'Cache-Control':'no-store'})},
   );
 }
