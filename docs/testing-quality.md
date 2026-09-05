@@ -12,11 +12,11 @@ This document is the durable testing contract for Cuddle Crew Pet Care. It descr
 
 ## Current inventory
 
-The F5 baseline contains 102 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
+The F6 baseline contains 110 Node tests and 10 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
 
 | Owning suite | Count | Primary purpose |
 | --- | ---: | --- |
-| `tests/api-security.test.ts` | 21 | Request parsing, API contracts, security/privacy boundaries, provider failure, rate limits, and side-effect isolation |
+| `tests/api-security.test.ts` | 29 | Request parsing, API contracts, provider adapters, idempotency/partial failure, security/privacy boundaries, rate limits, and side-effect isolation |
 | `tests/business-rules.test.ts` | 21 | Pricing, travel, short-notice, holiday-placeholder, estimator, and planner decision logic |
 | `tests/care-planner.test.ts` | 24 | Care-plan suitability, duration, care-gap, and review-boundary behavior |
 | `tests/feature-completion.test.ts` | 15 | Address parsing, bounded planning state, privacy-safe persistence, and feature gates |
@@ -61,7 +61,7 @@ Holiday automation stays disabled while the holiday calendar is `PLACEHOLDER`. C
 
 | Behavior | Current layer/evidence | Meaningful gap or next trigger |
 | --- | --- | --- |
-| Contact validation and delivery | Node route tests plus intercepted E2E | Live provider contract is deliberately not exercised |
+| Contact validation and delivery | Injected Node route/adapter tests plus write-gated, intercepted E2E | Live provider contract is deliberately not exercised |
 | SMS consent | Canonical wording, affirmative/non-consent, forged metadata rejection, server timestamp/source, scanner-readable HTML, responsive E2E | Operational provider/STOP/HELP behavior remains outside this codebase |
 | Rate limiting and duplicates | Deterministic helper boundaries and contact duplicate route behavior | Multi-instance/distributed limits require a future persistence design |
 | Availability privacy | POST body only, no-store, coarse output, bounded calendar parsing, safe provider fallback | Live calendar provider contract is deliberately not exercised |
@@ -70,18 +70,18 @@ Holiday automation stays disabled while the holiday calendar is `PLACEHOLDER`. C
 | Address integration | Parser/feature gates and fail-closed no-configuration route tests | Successful Google response contracts are deferred until adapter churn justifies fixtures |
 | Client-safe errors | Contact, address, availability, health, and fallback-page checks | Maintain whenever new routes/providers are added |
 | Server/client environment boundary | Feature gates, response minimization, build/supply-chain review | No automated compiled-bundle secret-name test; current secret scan/build review remains the gate |
-| External side effects | Node fetch stubs, missing-config fail-closed checks, browser contact interception | Any new provider write requires an explicit adapter and regression tests before activation |
+| External side effects | Provider-specific Resend gate, injected transports, missing-config fail-closed checks, browser contact interception, and `check:integrations` | Any new provider write requires an explicit gate, adapter, idempotency/reconciliation design, and regression tests before activation |
 | Build and repository safety | Typecheck, lint, build, secret scan, supply-chain and Git safety commands | Hosted CI is not configured; local validation is the executable gate |
 
 ## Side effects, mocks, fixtures, and contracts
 
-Automated tests must never send email or SMS, charge a payment, create a booking, write to a third-party account, mutate Client data, or publish content. Node route tests replace `globalThis.fetch` only within `try/finally` and restore it. Browser tests intercept `/api/contact`. Blank optional configuration must fail closed or use the documented conservative fallback. No payment, SMS, Precise Petcare, database, or publishing write integration exists.
+Automated tests must never send email or SMS, charge a payment, create a booking, write to a third-party account, mutate Client data, or publish content. Contact route tests inject a synthetic sender, provider adapters receive synthetic fetch transports, and remaining route tests replace `globalThis.fetch` only within `try/finally`. Browser tests intercept `/api/contact`, and the E2E server forces the Resend write gate off. Blank optional configuration must fail closed or use the documented conservative fallback. No payment, SMS, Precise Petcare, database, or publishing write integration exists.
 
 Mock dangerous writes, unavailable providers, and nondeterministic external services. Do not mock away business logic, route validation, security boundaries, or meaningful request/response behavior. A test that proves only its mock configuration has no value.
 
 Fixtures use fabricated people/pets, `example.com`/`.test`, documentation-only IP ranges, fake IDs, and reserved fictional 555 phone numbers. Never use real Clients, home addresses, access details, travel dates, medical/care records, payment metadata, provider exports, or production screenshots. Treat browser traces, screenshots, reports, and logs as potentially private even when inputs are synthetic.
 
-Lightweight internal route contract testing is **IMPLEMENTED**. Live provider contract testing is **DEFERRED** because routine validation must not depend on or write to external services.
+Lightweight internal route and synthetic adapter contract testing is **IMPLEMENTED** for Resend, Turnstile, address/calendar parsing, and provider failure categories. Live provider contract testing is **DEFERRED** because routine validation must not depend on or write to external services.
 
 ## Determinism, time, retries, and flakiness
 
@@ -140,7 +140,7 @@ Use this targeted mapping while implementing:
 | Repository/security script | Its targeted tests/check plus Git safety and secret scan |
 | Documentation only | Relevant structural checks and diff review; full validation when it changes the quality contract |
 
-For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain check, current secret scan, Node tests, typecheck, lint, and build. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
+For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain and integration checks, current secret scan, Node tests, typecheck, lint, and build. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
 
 The efficient failure order is structural/repository/security checks, targeted tests, full Node tests, typecheck, lint, build, then E2E. The existing commands already implement a sensible composition, so F5 adds no redundant `check:quality` or `test:summary` command. The test runner and this baseline document already provide the necessary count signal.
 

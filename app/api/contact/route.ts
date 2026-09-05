@@ -1,24 +1,78 @@
 import {contactFingerprint,contactKeys,escapeHtml,validateContact} from '../../lib/contact.ts';
-import {clientKey,rateLimit,verifyTurnstile} from '../../lib/rate-limit.ts';
-import {fetchWithTimeout,readJsonObject} from '../../lib/server-security.ts';
+import {clientKey,rateLimit} from '../../lib/rate-limit.ts';
+import {readJsonObject} from '../../lib/server-security.ts';
 import {turnstileMode} from '../../lib/turnstile-config.ts';
 import {smsConsentSource} from '../../config/sms.ts';
-const endpoint='https://api.resend.com/emails',recipient='lauren@cuddlecrewpetcare.com',recent=new Map<string,number>();
-const headers=(apiKey:string,key:string)=>({Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json','User-Agent':'CuddleCrewPetCare/1.0','Idempotency-Key':key});
-export async function POST(request:Request){
- if(turnstileMode(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,process.env.TURNSTILE_SECRET_KEY)==='misconfigured'){console.error('Turnstile configuration requires both site and secret keys.');return Response.json({error:'Contact security is temporarily misconfigured. Please email Lauren directly.'},{status:503})}
- const ip=clientKey(request),limit=rateLimit(`contact:${ip}`,5,10*60_000);if(!limit.allowed)return Response.json({error:'Too many attempts. Please wait before trying again.'},{status:429,headers:{'Retry-After':String(limit.retryAfter)}});
- const apiKey=process.env.RESEND_API_KEY;if(!apiKey)return Response.json({error:'Contact delivery is not configured.'},{status:503});
- const parsed=await readJsonObject(request,8_192,contactKeys);if(!parsed.ok)return Response.json({error:parsed.error},{status:parsed.status});const checked=validateContact(parsed.value);if(!checked.ok)return Response.json({error:checked.error},{status:400});if(!await verifyTurnstile(checked.turnstileToken||'',ip))return Response.json({error:'Verification failed. Please try again.'},{status:400});if(checked.honeypot)return Response.json({ok:true});
- const data=checked.data,elapsed=Date.now()-data.startedAt;if(elapsed<3000||elapsed>7_200_000)return Response.json({error:'Please reload the form and try again.'},{status:400});
- const fingerprint=await contactFingerprint(data),now=Date.now();for(const [key,expires] of recent)if(expires<=now)recent.delete(key);if((recent.get(fingerprint)||0)>now)return Response.json({ok:true,duplicate:true});
- const smsConsentTimestamp=data.smsConsent?new Date().toISOString():undefined,smsConsentRecord=data.smsConsent?`Granted\nSMS consent source: ${smsConsentSource}\nSMS consent timestamp: ${smsConsentTimestamp}`:'Not granted';
- const text=`New website inquiry\n\nTopic: ${data.topic}\nName: ${data.name}\nEmail: ${data.replyTo}\nPhone: ${data.phone||'Not provided'}\nSMS consent: ${smsConsentRecord}\nService ZIP: ${data.zip||'Not provided'}\n\nMessage:\n${data.message}`;
- const html=`<h2>New website inquiry</h2><p><strong>Topic:</strong> ${escapeHtml(data.topic)}<br><strong>Name:</strong> ${escapeHtml(data.name)}<br><strong>Email:</strong> ${escapeHtml(data.replyTo)}<br><strong>Phone:</strong> ${escapeHtml(data.phone||'Not provided')}<br><strong>SMS consent:</strong> ${data.smsConsent?`Granted<br><strong>SMS consent source:</strong> ${smsConsentSource}<br><strong>SMS consent timestamp:</strong> ${smsConsentTimestamp}`:'Not granted'}<br><strong>Service ZIP:</strong> ${escapeHtml(data.zip||'Not provided')}</p><h3>Message</h3><p>${escapeHtml(data.message).replace(/\n/g,'<br>')}</p>`;
- try{const response=await fetchWithTimeout(endpoint,{method:'POST',headers:headers(apiKey,`contact-${fingerprint}`),body:JSON.stringify({from:'Cuddle Crew Pet Care <website@cuddlecrewpetcare.com>',to:[recipient],reply_to:data.replyTo,subject:`${data.topic} — inquiry from ${data.name}`,text,html})},8000);if(!response.ok){console.error('Resend contact delivery failed',response.status);return Response.json({error:'Unable to send inquiry.'},{status:502})}}catch{console.error('Resend contact delivery timed out or failed');return Response.json({error:'Unable to send inquiry.'},{status:503})}
- recent.set(fingerprint,now+2*60_000);
- const confirmationText=`Hi ${data.name},\n\nThanks—your ${data.topic.toLowerCase()} inquiry was sent to Lauren at Cuddle Crew Pet Care. Please allow 1–2 business days for a reply. If your requested care begins within 48 hours, submit the formal request through the client portal and call 916-252-3550.\n\nThis confirms delivery only; it is not a booking or acceptance of care.`;
- const confirmationHtml=`<div style="font-family:Arial,sans-serif;line-height:1.6;color:#3b241a"><h2>Thanks, ${escapeHtml(data.name)}.</h2><p>Your <strong>${escapeHtml(data.topic.toLowerCase())}</strong> inquiry was sent to Lauren. Please allow 1–2 business days for a reply.</p><p>If care begins within 48 hours, submit the formal request through the portal and call 916-252-3550.</p><p><strong>This confirms delivery only; it is not a booking or acceptance of care.</strong></p></div>`;
- try{const confirmation=await fetchWithTimeout(endpoint,{method:'POST',headers:headers(apiKey,`confirmation-${fingerprint}`),body:JSON.stringify({from:'Cuddle Crew Pet Care <website@cuddlecrewpetcare.com>',to:[data.replyTo],reply_to:recipient,subject:'We received your Cuddle Crew inquiry',text:confirmationText,html:confirmationHtml})},8000);if(!confirmation.ok)console.error('Resend confirmation delivery failed',confirmation.status)}catch{console.error('Resend confirmation delivery timed out or failed')}
- return Response.json({ok:true});
+import {resendDeliveryConfigured,sendResendEmail,type ResendMessage} from '../../lib/providers/resend.ts';
+import {verifyTurnstile} from '../../lib/providers/turnstile.ts';
+import type {ProviderFailure,ProviderResult} from '../../lib/providers/errors.ts';
+
+const recipient='lauren@cuddlecrewpetcare.com';
+const duplicateWindowMs=2*60_000;
+type ContactAttempt={expires:number;accepted:boolean;requestId:string;smsConsentTimestamp?:string};
+const recent=new Map<string,ContactAttempt>();
+type EmailSender=(message:ResendMessage,idempotencyKey:string)=>Promise<ProviderResult>;
+
+const pruneAttempts=(now:number)=>{for(const[key,attempt]of recent)if(attempt.expires<=now)recent.delete(key)};
+const upstreamStatus=(failure:ProviderFailure)=>failure.outcome==='CONFIRMED_FAILURE'?502:503;
+const logFailure=(operation:string,failure:ProviderFailure)=>console.error('External provider call failed',{
+  provider:'resend',operation,category:failure.category,outcome:failure.outcome,...(failure.status?{status:failure.status}:{}),
+});
+
+export const resetContactAttemptsForTests=()=>recent.clear();
+
+export function createContactPost(sendEmail:EmailSender=sendResendEmail){
+  return async function POST(request:Request){
+    if(turnstileMode(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,process.env.TURNSTILE_SECRET_KEY)==='misconfigured'){
+      console.error('Turnstile configuration requires both site and secret keys.');
+      return Response.json({error:'Contact security is temporarily misconfigured. Please email Lauren directly.'},{status:503});
+    }
+    const ip=clientKey(request),limit=rateLimit(`contact:${ip}`,5,10*60_000);
+    if(!limit.allowed)return Response.json({error:'Too many attempts. Please wait before trying again.'},{status:429,headers:{'Retry-After':String(limit.retryAfter)}});
+    if(!resendDeliveryConfigured())return Response.json({error:'Contact delivery is not configured.'},{status:503});
+    const parsed=await readJsonObject(request,8_192,contactKeys);
+    if(!parsed.ok)return Response.json({error:parsed.error},{status:parsed.status});
+    const checked=validateContact(parsed.value);
+    if(!checked.ok)return Response.json({error:checked.error},{status:400});
+    const verification=await verifyTurnstile(checked.turnstileToken||'',ip);
+    if(!verification.ok){
+      console.error('External provider call failed',{provider:'turnstile',operation:'verify',category:verification.category,outcome:verification.outcome,...(verification.status?{status:verification.status}:{})});
+      return Response.json({error:'Contact security is temporarily unavailable. Please email Lauren directly.'},{status:503});
+    }
+    if(!verification.verified)return Response.json({error:'Verification failed. Please try again.'},{status:400});
+    if(checked.honeypot)return Response.json({ok:true});
+    const data=checked.data,elapsed=Date.now()-data.startedAt;
+    if(elapsed<3000||elapsed>7_200_000)return Response.json({error:'Please reload the form and try again.'},{status:400});
+
+    const fingerprint=await contactFingerprint(data),now=Date.now();
+    pruneAttempts(now);
+    const prior=recent.get(fingerprint);
+    if(prior?.accepted)return Response.json({ok:true,duplicate:true});
+    const attempt=prior||{
+      expires:now+duplicateWindowMs,
+      accepted:false,
+      requestId:crypto.randomUUID(),
+      ...(data.smsConsent?{smsConsentTimestamp:new Date().toISOString()}:{}),
+    };
+    recent.set(fingerprint,attempt);
+
+    const smsConsentRecord=data.smsConsent?`Granted\nSMS consent source: ${smsConsentSource}\nSMS consent timestamp: ${attempt.smsConsentTimestamp}`:'Not granted';
+    const text=`New website inquiry\n\nTopic: ${data.topic}\nName: ${data.name}\nEmail: ${data.replyTo}\nPhone: ${data.phone||'Not provided'}\nSMS consent: ${smsConsentRecord}\nService ZIP: ${data.zip||'Not provided'}\n\nMessage:\n${data.message}`;
+    const html=`<h2>New website inquiry</h2><p><strong>Topic:</strong> ${escapeHtml(data.topic)}<br><strong>Name:</strong> ${escapeHtml(data.name)}<br><strong>Email:</strong> ${escapeHtml(data.replyTo)}<br><strong>Phone:</strong> ${escapeHtml(data.phone||'Not provided')}<br><strong>SMS consent:</strong> ${data.smsConsent?`Granted<br><strong>SMS consent source:</strong> ${smsConsentSource}<br><strong>SMS consent timestamp:</strong> ${attempt.smsConsentTimestamp}`:'Not granted'}<br><strong>Service ZIP:</strong> ${escapeHtml(data.zip||'Not provided')}</p><h3>Message</h3><p>${escapeHtml(data.message).replace(/\n/g,'<br>')}</p>`;
+    const businessResult=await sendEmail({from:'Cuddle Crew Pet Care <website@cuddlecrewpetcare.com>',to:[recipient],reply_to:data.replyTo,subject:`${data.topic} — inquiry from ${data.name}`,text,html},`contact/${attempt.requestId}`);
+    if(!businessResult.ok){
+      logFailure('contact-notification',businessResult);
+      return Response.json({error:'Unable to send inquiry.'},{status:upstreamStatus(businessResult)});
+    }
+    attempt.accepted=true;
+    recent.set(fingerprint,attempt);
+
+    const confirmationText=`Hi ${data.name},\n\nThanks—your ${data.topic.toLowerCase()} inquiry was accepted for delivery to Lauren at Cuddle Crew Pet Care. Please allow 1–2 business days for a reply. If your requested care begins within 48 hours, submit the formal request through the client portal and call 916-252-3550.\n\nThis confirms provider acceptance only; it is not a booking or acceptance of care.`;
+    const confirmationHtml=`<div style="font-family:Arial,sans-serif;line-height:1.6;color:#3b241a"><h2>Thanks, ${escapeHtml(data.name)}.</h2><p>Your <strong>${escapeHtml(data.topic.toLowerCase())}</strong> inquiry was accepted for delivery to Lauren. Please allow 1–2 business days for a reply.</p><p>If care begins within 48 hours, submit the formal request through the portal and call 916-252-3550.</p><p><strong>This confirms provider acceptance only; it is not a booking or acceptance of care.</strong></p></div>`;
+    const confirmationResult=await sendEmail({from:'Cuddle Crew Pet Care <website@cuddlecrewpetcare.com>',to:[data.replyTo],reply_to:recipient,subject:'We received your Cuddle Crew inquiry',text:confirmationText,html:confirmationHtml},`confirmation/${attempt.requestId}`);
+    if(!confirmationResult.ok)logFailure('visitor-confirmation',confirmationResult);
+    return Response.json({ok:true});
+  };
 }
+
+export const POST=createContactPost();

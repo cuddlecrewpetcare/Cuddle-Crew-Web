@@ -15,7 +15,7 @@ const manifest=JSON.parse(readFileSync(packagePath,'utf8'));
 const lock=JSON.parse(readFileSync(lockPath,'utf8'));
 const expectedNode=readFileSync(join(root,'.nvmrc'),'utf8').trim();
 const expectedNpm=String(manifest.packageManager||'npm@unknown').split('@').at(-1);
-const expectedEnv=['RESEND_API_KEY','PRIVATE_CALENDAR_ICS_URL','TURNSTILE_SECRET_KEY','NEXT_PUBLIC_TURNSTILE_SITE_KEY','SITE_INDEXING_ENABLED','GOOGLE_MAPS_SERVER_KEY','PRIVATE_SERVICE_ORIGIN'];
+const expectedEnv=['RESEND_SEND_ENABLED','RESEND_API_KEY','PRIVATE_CALENDAR_ICS_URL','TURNSTILE_SECRET_KEY','NEXT_PUBLIC_TURNSTILE_SITE_KEY','SITE_INDEXING_ENABLED','GOOGLE_MAPS_SERVER_KEY','PRIVATE_SERVICE_ORIGIN'];
 const dependencyGroups=['dependencies','devDependencies','optionalDependencies','peerDependencies'];
 
 const run=(command,args,{cwd=root,stdio='pipe'}={})=>spawnSync(command,args,{cwd,encoding:'utf8',stdio,windowsHide:true});
@@ -102,9 +102,20 @@ function portStatus(port){
 
 function envNames(){
   const envPath=join(root,'.env.local');
-  if(!existsSync(envPath))return{exists:false,names:[]};
-  const names=readFileSync(envPath,'utf8').split(/\r?\n/).flatMap(line=>{const match=line.match(/^\s*([A-Z][A-Z0-9_]*)\s*=/);return match?[match[1]]:[]});
-  return{exists:true,names};
+  const values=new Map();
+  if(existsSync(envPath))for(const line of readFileSync(envPath,'utf8').split(/\r?\n/)){const match=line.match(/^\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*?)\s*$/);if(match)values.set(match[1],match[2].replace(/^(['"])(.*)\1$/,'$2'))}
+  const value=name=>process.env[name]??values.get(name)??'';
+  const configured=name=>Boolean(String(value(name)).trim());
+  return{
+    exists:existsSync(envPath),
+    names:[...values.keys()],
+    providers:{
+      resend:{key:configured('RESEND_API_KEY'),enabled:value('RESEND_SEND_ENABLED')==='true'},
+      calendar:{configured:configured('PRIVATE_CALENDAR_ICS_URL')},
+      turnstile:{site:configured('NEXT_PUBLIC_TURNSTILE_SITE_KEY'),secret:configured('TURNSTILE_SECRET_KEY')},
+      maps:{key:configured('GOOGLE_MAPS_SERVER_KEY'),origin:configured('PRIVATE_SERVICE_ORIGIN')},
+    },
+  };
 }
 
 function gitInfo(){
@@ -139,6 +150,13 @@ async function doctor(){
   if(state.env.exists)info('.env.local',`${state.env.names.length} recognized or custom variable names present; values hidden`);else info('.env.local','not present; optional integrations use safe fallbacks');
   const missingTemplate=expectedEnv.filter(name=>!readFileSync(join(root,'.env.example'),'utf8').includes(`${name}=`));
   if(missingTemplate.length)fail('.env.example',`missing ${missingTemplate.join(', ')}`);else pass('.env.example','expected variable names documented');
+  const providers=state.env.providers;
+  if(providers.resend.enabled&&!providers.resend.key)fail('Resend configuration','write gate is enabled but RESEND_API_KEY is not configured');
+  else if(providers.resend.enabled)warn('Resend configuration','live email writes explicitly enabled for this environment');
+  else pass('Resend configuration',providers.resend.key?'API key configured; write gate remains disabled':'not configured; live writes blocked');
+  info('Private calendar',providers.calendar.configured?'configured; local config only, provider not contacted':'not configured; conservative fallback active');
+  if(providers.turnstile.site!==providers.turnstile.secret)fail('Turnstile configuration','site and secret keys must be configured together');else info('Turnstile configuration',providers.turnstile.site?'configured; provider not contacted':'not configured; optional verification off');
+  if(providers.maps.key!==providers.maps.origin)fail('Maps configuration','server key and private origin must be configured together');else info('Maps configuration',providers.maps.key?'configured; provider not contacted':'not configured; address provider calls disabled');
   if(state.disk.freeGb<10)warn('Disk space',`${state.disk.freeGb.toFixed(1)} GiB free`);else pass('Disk space',`${state.disk.freeGb.toFixed(1)} GiB free`);
   info('Git branch',state.git.branch==='main'?'currently on main':state.git.branch);
   info('Local readiness',failed?'repair the reported failures before development':'READY LOCALLY; no dependency or browser download needed');
@@ -161,8 +179,12 @@ async function summary(){
   console.log('Secret scan integration: enabled in npm run validate; history scan is separate.');
   for(const port of state.ports)console.log(`Port ${port.port}: ${port.available?'available':`occupied by PID ${port.pid} (${port.name}); ownership unknown`}`);
   console.log(`.env.local: ${state.env.exists?`${state.env.names.length} variable names detected; values hidden`:'not present'}`);
+  console.log(`Resend: ${state.env.providers.resend.enabled&&state.env.providers.resend.key?'configured and explicitly write-enabled':state.env.providers.resend.key?'key configured; writes disabled':'not configured; writes disabled'}`);
+  console.log(`Private calendar: ${state.env.providers.calendar.configured?'configured':'not configured; conservative fallback'}`);
+  console.log(`Turnstile: ${state.env.providers.turnstile.site&&state.env.providers.turnstile.secret?'configured':state.env.providers.turnstile.site||state.env.providers.turnstile.secret?'misconfigured pair':'not configured'}`);
+  console.log(`Google Maps/address: ${state.env.providers.maps.key&&state.env.providers.maps.origin?'configured':state.env.providers.maps.key||state.env.providers.maps.origin?'misconfigured pair':'not configured'}`);
   console.log(`Disk free: ${state.disk.freeGb.toFixed(1)} GiB`);
-  console.log('Baseline: 102 Node tests (99 application + 3 supply-chain); 10 Playwright tests; lint allows 4 known no-img-element warnings.');
+  console.log('Baseline: 110 Node tests (107 application + 3 supply-chain); 10 Playwright tests; lint allows 4 known no-img-element warnings.');
   console.log('Network: not needed for healthy local checks; needed for Git operations and intentionally live provider calls.');
 }
 

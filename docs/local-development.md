@@ -117,7 +117,8 @@ The command warns about intentional tracked files at 1 MiB and rejects tracked f
 
 | Variable | Classification | Normal local behavior |
 | --- | --- | --- |
-| `RESEND_API_KEY` | Optional local, server-only | Blank disables real contact delivery. |
+| `RESEND_SEND_ENABLED` | Provider-specific server-side write gate | Keep `false`; a key alone cannot send. |
+| `RESEND_API_KEY` | Optional local, server-only | Blank disables delivery; also requires the explicit write gate. |
 | `PRIVATE_CALENDAR_ICS_URL` | Optional local, server-only | Blank uses the conservative availability fallback. |
 | `TURNSTILE_SECRET_KEY` | Optional local, server-only | Configure only with the public site key. |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Optional, intentionally browser-public | Configure only with the server secret. |
@@ -182,9 +183,9 @@ A future project foundation is incomplete until it has runtime and package-manag
 
 The complete data-handling and retention contract is in [`data-privacy.md`](data-privacy.md). Local development and automated tests must use synthetic data only; do not copy production/Client exports, provider payloads, private calendars, contact submissions, or screenshots into this checkout. Safe schemas and migrations may be versioned after review, but real database contents, backups, and exports remain private and untracked.
 
-- Local development (`npm run dev`): live integrations are disabled when their variables are blank. Supplying real values can enable real provider calls, so use deliberate development credentials and actions.
-- Automated Node tests (`npm test`): provider requests are stubbed or validated without sending real client messages, creating bookings, or mutating production data.
-- Playwright (`npm run e2e`): contact submission is intercepted by the test before network delivery. Tests do not create a Precise Petcare booking or send real email/SMS.
+- Local development (`npm run dev`): live reads are disabled when their variables are blank. Resend writes additionally require `RESEND_SEND_ENABLED=true`; keep it false for routine work and use only deliberate isolated credentials/recipients if a separately approved live diagnostic is ever needed.
+- Automated Node tests (`npm test`): provider requests use injected transports, stubs, or disabled configuration without sending real client messages, creating bookings, or mutating production data.
+- Playwright (`npm run e2e`): the E2E server forces the Resend write gate off and contact submission is intercepted before network delivery. Tests do not create a Precise Petcare booking or send real email/SMS.
 - Production-like build (`npm run build`): compiles the application and does not itself call Resend, Google, Turnstile, Precise Petcare, or a messaging provider.
 
 Resend is the only implemented email delivery integration. There is no active Dialpad or SMS-sending integration. Turnstile and Google address/routing are optional. Public analytics dispatches privacy-filtered browser events and has no external analytics backend.
@@ -236,7 +237,7 @@ Select the targeted check by risk: business decisions use the relevant business-
 npm run validate
 ```
 
-This runs the read-only repository safety and supply-chain checks, redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
+This runs the read-only repository safety, supply-chain, and integration checks, redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
 
 ## Full Validation
 

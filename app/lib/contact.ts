@@ -14,7 +14,7 @@ export function validateContact(value:Record<string,unknown>){
   return{ok:true as const,honeypot:false as const,data:{name,replyTo,phone,smsConsent,zip,topic,message,startedAt,turnstileToken}};
 }
 
-export async function contactFingerprint(data:{name:string;replyTo:string;phone:string;smsConsent:boolean;topic:string;message:string}){
-  const bytes=new TextEncoder().encode([data.name,data.replyTo,data.phone,String(data.smsConsent),data.topic,data.message].join('\n'));
+export async function contactFingerprint(data:{name:string;replyTo:string;phone:string;smsConsent:boolean;zip:string;topic:string;message:string}){
+  const bytes=new TextEncoder().encode([data.name,data.replyTo,data.phone,String(data.smsConsent),data.zip,data.topic,data.message].join('\n'));
   return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))).map(byte=>byte.toString(16).padStart(2,'0')).join('');
 }

@@ -67,7 +67,7 @@ test('start and contact flows do not send a real inquiry in browser tests',async
   await phone.fill('916-555-1212');
   await page.getByLabel(/What would you like to ask/).fill('Could you explain the service-area review process?');
   await page.getByRole('button',{name:'Send inquiry'}).click();
-  await expect(page.getByText('Thanks—your inquiry was sent to Lauren.')).toBeVisible();
+  await expect(page.getByText('Thanks—your inquiry was accepted for delivery to Lauren.')).toBeVisible();
   expect(submitted?.phone).toBe('916-555-1212');expect(submitted?.smsConsent).toBe(false);
 
   failDelivery=true;await page.reload();
@@ -87,7 +87,7 @@ test('contact form transmits affirmative SMS consent only when checked',async({p
   await phone.fill('916-555-3434');
   await page.getByLabel(/What would you like to ask/).fill('Please explain how service-related text updates work.');
   await page.getByRole('button',{name:'Send inquiry'}).click();
-  await expect(page.getByText('Thanks—your inquiry was sent to Lauren.')).toBeVisible();
+  await expect(page.getByText('Thanks—your inquiry was accepted for delivery to Lauren.')).toBeVisible();
   expect(submitted?.phone).toBe('916-555-3434');expect(submitted?.smsConsent).toBe(true);expect(submitted).not.toHaveProperty('smsConsentTimestamp');expect(submitted).not.toHaveProperty('smsConsentSource');
 });
 

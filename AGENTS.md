@@ -260,3 +260,38 @@ Future Codex sessions must:
 23. Prefer observable contract assertions and small focused helpers; avoid giant setup abstractions, broad truthy assertions, and snapshots that hide meaningful change.
 24. Preserve safe parallelism and serialize only demonstrated shared resources; no test may depend on execution order.
 25. Follow `docs/testing-quality.md` for suite ownership, regression priorities, fixtures, determinism, artifacts, targeted validation, and failure handling.
+
+## External Integration and Side-Effect Contract
+
+Future Codex sessions must:
+
+1. Read `docs/integrations-side-effects.md` before changing an external provider, network call, webhook, provider credential, or side-effecting flow.
+2. Classify every new integration as read-only, write-capable, read/write, redirect-only, or inactive and record its current status honestly.
+3. Define explicit local, automated-test, E2E, staging/sandbox, and production policies before enabling an integration.
+4. Keep production provider writes out of routine local development, builds, tests, E2E, diagnostics, and unrelated tasks.
+5. Never use production credentials, recipients, phone numbers, payment methods, Client records, or provider accounts in automated tests.
+6. Use mocks, injected transports, local stubs, or an explicitly isolated provider sandbox appropriate to the operation.
+7. Give each active write provider its own explicit server-side enablement gate; do not let credential presence alone enable a write.
+8. Keep provider secrets server-only, out of `NEXT_PUBLIC_*`, URLs, logs, errors, fixtures, screenshots, reports, and browser responses.
+9. Minimize outbound private data and map inbound provider responses to the smallest client-safe shape.
+10. Treat every provider response, webhook, imported record, and provider-controlled identifier as untrusted input.
+11. Validate important provider response shape before using it; malformed data must take the documented safe failure path.
+12. Use operation-specific bounded timeouts; do not allow an external request to hang without a deadline.
+13. Retry only when the operation semantics are safe; never retry validation, authentication/configuration errors, or unsafe non-idempotent writes automatically.
+14. Require provider-aware idempotency for every duplicate-risk write, including email, SMS, payment, booking, record creation, webhook handling, and background work.
+15. Distinguish failure before send, confirmed provider rejection, and timeout/transport failure with an unknown provider outcome.
+16. Never blindly retry an unknown write outcome without reusing the same valid idempotency key and identical payload or first reconciling provider state.
+17. Preserve duplicate protection across repeat clicks, browser retry, refresh, network ambiguity, provider retry, webhook redelivery, and concurrent processing as the risk requires.
+18. Preserve contact-flow partial-success semantics: accepted business notification is not rolled back or resent merely because visitor confirmation fails.
+19. Do not claim delivery, booking, payment, publication, or another final outcome when only the app or provider accepted a request.
+20. Normalize provider errors to safe internal categories and never reflect raw exceptions, response bodies, headers, stack traces, private origins, or payloads to users.
+21. Log only safe operational metadata such as provider, operation, duration, category, outcome, status, and bounded correlation ID.
+22. Keep Turnstile and other security verification fail-closed; never weaken bot, webhook, signature, replay, or authorization controls for test convenience.
+23. Keep local startup and standard diagnostics independent of live provider availability; live diagnostics must be separate, explicit, and non-writing by default.
+24. Preserve automated-test, E2E, and build side-effect boundaries whenever scripts, environment loading, routing, or provider adapters change.
+25. Document reconciliation and rollback limits for every write; never pretend unrelated provider calls form a transaction.
+26. Make future background writes idempotent, bounded, shutdown-safe, observable, reconcilable, and recoverable before adding workers or queues.
+27. Never modify provider accounts, dashboards, subscriptions, DNS, hosting, Sites, `.openai`, or production configuration during an unrelated application task.
+28. Never enable SMS, payment, booking, Precise Petcare mutation, Client-record mutation, or publishing without explicit authorization and provider-specific safety design.
+29. Preserve business-reference and Client-record authority; provider defaults, examples, docs, or API capabilities do not create business policy or consent.
+30. Run `npm run check:integrations`, relevant provider-failure tests, secret scanning, and the required full validation; report unresolved configuration and live-contract gaps honestly.

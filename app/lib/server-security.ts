@@ -15,10 +15,10 @@ export async function readJsonObject(request:Request,maxBytes:number,allowedKeys
   return{ok:true as const,value:object};
 }
 
-export async function fetchWithTimeout(input:RequestInfo|URL,init:RequestInit={},timeoutMs=7000){
+export async function fetchWithTimeout(input:RequestInfo|URL,init:RequestInit={},timeoutMs=7000,fetcher:typeof fetch=fetch){
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
-  try{return await fetch(input,{...init,signal:controller.signal})}finally{clearTimeout(timer)}
+  try{return await fetcher(input,{...init,signal:controller.signal})}finally{clearTimeout(timer)}
 }
 
 export function safeCalendarUrl(value:string){

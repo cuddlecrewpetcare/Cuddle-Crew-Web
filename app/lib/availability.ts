@@ -11,6 +11,7 @@ export const dateRange=(start:string,end:string)=>{const out:string[]=[];for(let
 export function publicAvailability(ics:string,days:string[],clock=()=>performance.now()){
   const started=clock();
   if(new TextEncoder().encode(ics).byteLength>MAX_ICS_BYTES)throw new Error('calendar-too-large');
+  if(!/^BEGIN:VCALENDAR\r?$/mi.test(ics)||!/^END:VCALENDAR\r?$/mi.test(ics))throw new Error('calendar-malformed');
   const events=ics.replace(/\r?\n[ \t]/g,'').split('BEGIN:VEVENT').slice(1);
   if(events.length>MAX_ICS_EVENTS)throw new Error('calendar-too-many-events');
   for(const [index,raw] of events.entries()){if(index%50===0&&clock()-started>MAX_ICS_PROCESSING_MS)throw new Error('calendar-processing-time');const event=raw.split('END:VEVENT')[0];if(/STATUS:CANCELLED/i.test(event)||/TRANSP:TRANSPARENT/i.test(event))continue;const startLine=event.match(/^DTSTART[^\r\n]*$/mi)?.[0];if(startLine)parseIcsDate(startLine)}

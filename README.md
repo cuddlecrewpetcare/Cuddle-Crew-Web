@@ -4,7 +4,7 @@ Public marketing and planning website for Cuddle Crew Pet Care, a solo Sacrament
 
 ## Local development
 
-Use the persistent Windows-first workflow in [`docs/local-development.md`](docs/local-development.md), the testing/quality contract in [`docs/testing-quality.md`](docs/testing-quality.md), the dependency/build security contract in [`docs/dependency-supply-chain.md`](docs/dependency-supply-chain.md), and the repository/history safeguards in [`CONTRIBUTING.md`](CONTRIBUTING.md). For normal daily work, read `AGENTS.md`, run `npm run doctor` and `npm run check:git-safety`, and install nothing when the doctor passes. First-time or evidence-based repair uses `npm run setup:local`.
+Use the persistent Windows-first workflow in [`docs/local-development.md`](docs/local-development.md), the external-integration contract in [`docs/integrations-side-effects.md`](docs/integrations-side-effects.md), the testing/quality contract in [`docs/testing-quality.md`](docs/testing-quality.md), the dependency/build security contract in [`docs/dependency-supply-chain.md`](docs/dependency-supply-chain.md), and the repository/history safeguards in [`CONTRIBUTING.md`](CONTRIBUTING.md). For normal daily work, read `AGENTS.md`, run `npm run doctor` and `npm run check:git-safety`, and install nothing when the doctor passes. First-time or evidence-based repair uses `npm run setup:local`.
 
 ## Configuration
 
@@ -14,7 +14,8 @@ SMS consent, disclosure, opt-out, HELP, privacy, and marketing boundaries are go
 
 Server-only environment variables:
 
-- `RESEND_API_KEY` sends contact-form messages.
+- `RESEND_SEND_ENABLED=true` explicitly enables Resend writes in an intended environment. It defaults to `false`; a credential alone cannot enable delivery.
+- `RESEND_API_KEY` authenticates contact-form delivery and remains inert while the write gate is off.
 - `PRIVATE_CALENDAR_ICS_URL` powers the privacy-preserving availability summary. Never expose this calendar URL to the browser.
 - `GOOGLE_MAPS_SERVER_KEY` powers the optional server-proxied Places Autocomplete (New), Address Validation, and Routes requests.
 - `PRIVATE_SERVICE_ORIGIN` is the private route origin used only by the server. Never expose or commit it.
