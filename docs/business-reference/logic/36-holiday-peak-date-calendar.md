@@ -78,13 +78,31 @@ This calendar does not create or change cancellation percentages or deadlines.
 Before relying on holiday pricing for a new calendar year:
 
 1. review travel-demand periods for that year;
-2. approve exact start and end dates;
-3. update this file or create the next annual section;
-4. verify PPC configuration;
-5. verify website/estimate-builder logic;
-6. publish qualifying periods before affected bookings are confirmed.
+2. review actual Cuddle Crew Pet Care booking/demand experience where available;
+3. approve exact start and end dates;
+4. update this file or create the next annual section;
+5. verify PPC configuration;
+6. verify website/estimate-builder logic;
+7. publish qualifying periods before affected bookings are confirmed.
 
 Do not automatically roll 2026 dates into a future year.
+
+### Future-Year Planning Baseline
+
+Unless actual Cuddle Crew Pet Care demand data or a deliberate owner policy decision supports a change, begin future-year planning with these same **categories**:
+
+- Martin Luther King Jr. Day weekend;
+- Presidents' Day weekend;
+- Memorial Day weekend;
+- Juneteenth weekend;
+- Independence Day weekend;
+- Labor Day weekend;
+- Thanksgiving peak period;
+- Christmas / New Year's peak period.
+
+This category list is **not an automatic future-year holiday calendar**. Exact future dates remain non-authoritative until intentionally populated and approved for that year.
+
+Do not automatically add Easter, Mother's Day, Father's Day, or another observance solely because it appears on a general calendar. Add or remove periods when actual booking demand or an owner business-policy decision supports doing so.
 
 ## 2026 Approval
 
@@ -107,6 +125,7 @@ Do not automatically roll 2026 dates into a future year.
 - Use only the exact approved periods above for 2026.
 - Do not infer additional holidays from a government or third-party calendar.
 - Do not dynamically expand a period because of weekend proximity, school schedules, observed federal dates, or demand.
+- Future-year category baselines are planning aids only; do not treat them as approved qualifying dates.
 - Do not change surcharge amounts here; use the CURRENT / APPROVED Pricing Policy.
 - Do not change cancellation terms here; use the CURRENT / APPROVED Cancellation Policy.
 - Do not duplicate the same holiday or travel-type surcharge merely because one continuous physical appointment is represented by multiple billing line items.
