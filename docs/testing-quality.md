@@ -74,7 +74,7 @@ Holiday automation stays disabled while the holiday calendar is `PLACEHOLDER`. C
 | Client-safe errors | Contact, address, availability, health, and fallback-page checks | Maintain whenever new routes/providers are added |
 | Server/client environment boundary | Feature gates, response minimization, build/supply-chain review | No automated compiled-bundle secret-name test; current secret scan/build review remains the gate |
 | External side effects | Provider-specific Resend gate, injected transports, missing-config fail-closed checks, browser contact interception, and `check:integrations` | Any new provider write requires an explicit gate, adapter, idempotency/reconciliation design, and regression tests before activation |
-| Build and repository safety | Typecheck, lint, build, artifact/deployment checks, secret scan, supply-chain and Git safety commands | Validation-only Linux CI mirrors the local full gate without production secrets or deployment capability |
+| Build, repository, and recovery safety | Typecheck, lint, build, artifact/deployment/recovery checks, secret scan, supply-chain and Git safety commands | Validation-only Linux CI mirrors the local full gate without production secrets or deployment capability |
 
 ## Side effects, mocks, fixtures, and contracts
 
@@ -141,9 +141,10 @@ Use this targeted mapping while implementing:
 | E2E runner/config | Build, targeted E2E, port cleanup check, then full E2E |
 | Dependency/toolchain | Supply-chain tests/check, manifest/lock review, then full validation |
 | Repository/security script | Its targeted tests/check plus Git safety and secret scan |
+| Recovery documentation/check | `tests/recovery-safety.test.ts`, `npm run check:recovery`, Git safety, cross-platform check, and secret scan |
 | Documentation only | Relevant structural checks and diff review; full validation when it changes the quality contract |
 
-For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain, integration, resource, and cross-platform checks, current secret scan, Node tests, typecheck, lint, and build. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
+For meaningful completion, standard validation is `npm run validate`: Git safety, supply-chain, integration, resource, cross-platform, time, deployment, and recovery checks, current secret scan, Node tests, typecheck, lint, build, and artifact validation. Full validation is `npm run validate:full`: standard validation followed by E2E. Run `doctor` and `env:summary` for the recorded environment; run the history secret scan when explicitly required by a foundation/release/incident task.
 
 The efficient failure order is structural/repository/security checks, targeted tests, full Node tests, typecheck, lint, build, then E2E. The existing commands already implement a sensible composition, so F5 adds no redundant `check:quality` or `test:summary` command. The test runner and this baseline document already provide the necessary count signal.
 

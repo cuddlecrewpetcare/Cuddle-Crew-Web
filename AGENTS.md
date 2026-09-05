@@ -492,3 +492,40 @@ Future Codex sessions must:
 30. Report host-dashboard state, production SHA, logs/retention, deployment atomicity, runtime limits, and other external configuration as unresolved unless actually verified.
 
 Use `docs/deployment-hosting.md` for the complete environment matrix, CI design, release checklist, smoke test, rollback, incident, DNS, and owner-action boundaries. A GitHub push does not authorize a Sites push or production activation.
+
+## Backup, Disaster Recovery, and Business-Continuity Contract
+
+Future Codex sessions must:
+
+1. Distinguish unique/authoritative state from reproducible, derived, transient, and cache state before proposing a backup.
+2. Never treat `node_modules`, package/browser caches, build output, framework state, coverage, or test reports as critical backup state.
+3. Never put `.env.local`, secret values, credentials, private keys, or recovery codes into Git, repository archives, normal Drive folders, or plaintext backup bundles.
+4. Never put Client records, provider exports, contact submissions, addresses, access details, medical/behavior data, travel dates, or raw incident evidence in this repository.
+5. Preserve useful redundancy between pushed GitHub history and local source, while recognizing that GitHub is not a backup of external business/provider state.
+6. Identify source and recovery points with an exact Git SHA, provider version, schema version, or dated manifest; never use `latest`, `newest`, or timestamps alone as authority.
+7. Verify backup existence, plausible size/count, checksum/integrity, compatibility, and restore behavior before trusting a copy.
+8. Restore and rehearse in an isolated/disposable target first; never overwrite canonical source, production, or the last known-good backup during a test.
+9. Preserve evidence and a rollback path before repair; do not use destructive recovery when a validated fresh clone/copy can be compared safely.
+10. Keep private/sensitive backup copies encrypted at rest where practical, least-privileged, purpose-limited, owner-controlled, and governed by explicit retention/deletion decisions.
+11. Never create a plaintext archive containing secrets or make a backup a weaker copy of production security.
+12. Keep recovery codes and encryption-key recovery outside the repository and independent of the primary device; do not store a key beside an unencrypted backup.
+13. Document business-critical account ownership, MFA/recovery, and circular dependencies without exposing account identifiers, private contacts, codes, or backup locations.
+14. Preserve domain and email DNS together during web recovery; do not overwrite MX, SPF, DKIM, or DMARC merely to repair website records.
+15. Treat Precise Petcare as the Client-record authority and never build a shadow Client database in the website or backup tooling.
+16. Require an owner-approved, minimum-necessary active-care outage method before copying Client data for continuity; do not invent or implement one from generic examples.
+17. Preserve the approved Continuity / Backup Provider Plan's Client authorization, provider-scope, accepted-responsibility, access/privacy, animal-welfare, and reconciliation rules.
+18. Preserve exact deployment and rollback SHAs plus safe environment/configuration-name changes in deployment records.
+19. Treat hosting version history and generated deployment artifacts as useful recovery layers, not source-code or provider-state backups.
+20. Preserve the F1/F7 secret/privacy incident response: stop exposure, revoke/rotate based on evidence, preserve safe evidence, and assess Git history separately.
+21. Never invent backup retention periods; use purpose-based classes and obtain owner/accountant/legal/insurer/provider decisions where applicable.
+22. Use checksums and secret-free manifests for important exports where useful, while recognizing that checksums do not provide encryption or source authenticity.
+23. Never overwrite a known-good backup with a new copy until the new copy and its isolated restore have been verified.
+24. Treat synchronization as distinct from backup; OneDrive/Drive sync may propagate deletion, corruption, ransomware, or account lockout.
+25. Never publish sensitive physical/cloud backup locations, private recovery contacts, or provider/account recovery details in repository documentation.
+26. Keep recovery procedures proportional to a solo business; do not add backup SaaS, multi-cloud systems, databases, queues, cron jobs, or encryption libraries without concrete state and authorization.
+27. Mark provider export, retention, offline access, ownership, and recovery assumptions `UNVERIFIED` or `UNRESOLVED` until the owner/provider confirms them.
+28. Commit and push important completed work promptly; never leave multi-day unique work only in an uncommitted worktree or back up whole Codex worktrees as canonical state.
+29. Run `npm run check:recovery` after recovery-foundation changes and keep it in standard validation; do not claim it proves external copies or account recoverability.
+30. Never create an external backup, Git mirror/bundle, provider export, private-data copy, hosting version, DNS change, or account-recovery change without explicit authorization.
+
+Use `docs/backup-disaster-recovery.md` for the complete state inventory, backup classifications, provider/account boundaries, qualitative RTO/RPO, restore verification, recovery drills, and unresolved decisions. Use `docs/business-continuity.md` for incident first actions and `docs/backups/README.md` only as a blank manifest/checklist template.

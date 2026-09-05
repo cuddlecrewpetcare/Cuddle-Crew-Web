@@ -238,7 +238,7 @@ Select the targeted check by risk: business decisions use the relevant business-
 npm run validate
 ```
 
-This runs the read-only repository, supply-chain, integration, resource, cross-platform, time, and deployment-configuration checks; the redacted current-tree secret scan; Node tests; typecheck; lint; the production build; and the generated build-artifact privacy/shape check.
+This runs the read-only repository, supply-chain, integration, resource, cross-platform, time, deployment-configuration, and recovery-foundation checks; the redacted current-tree secret scan; Node tests; typecheck; lint; the production build; and the generated build-artifact privacy/shape check.
 
 ## Full Validation
 

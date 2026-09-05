@@ -126,6 +126,7 @@ Confirm all of the following:
 - The unstaged and staged diffs were reviewed, and `git diff --check` passes.
 - No dependency or lockfile change slipped into a non-dependency task.
 - `npm run check:git-safety`, required tests, and secret scans pass.
+- `npm run check:recovery` passes when recovery, backup, continuity, deployment-record, provider-boundary, or restore documentation changes.
 - `npm run check:cross-platform` passes for path, filename, case, encoding, link, and shell portability changes.
 - Public files contain no credentials, private/client/school/source material, internal decision logic, databases, dumps, backups, exports, generated artifacts, unapproved claims, or unlicensed assets; ambiguous content is `PRIVATE / MANUAL REVIEW`.
 - The push names the destination explicitly, for example `git push github codex/example-task`.

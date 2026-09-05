@@ -51,6 +51,7 @@ const largeReject=[];
 const guarded=(name)=>{
   const path=normalized(name);
   if(path==='.env.example')return false;
+  if(path==='docs/backups/README.md')return false;
   return /(^|\/)(node_modules|\.next|\.vinext|dist|coverage|playwright-report|test-results|\.cache)(\/|$)/i.test(path)
     || /(^|\/)\.env(?:\.|$)/i.test(path)
     || /\.(?:db|sqlite|sqlite3|dump|bak|backup|p12|pfx|pem|key|log|zip|7z|rar|tar|tgz|gz)$/i.test(path)
