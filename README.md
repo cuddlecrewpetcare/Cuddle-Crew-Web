@@ -4,7 +4,7 @@ Public marketing and planning website for Cuddle Crew Pet Care, a solo Sacrament
 
 ## Local development
 
-Use the persistent Windows-first workflow in [`docs/local-development.md`](docs/local-development.md), the dependency/build security contract in [`docs/dependency-supply-chain.md`](docs/dependency-supply-chain.md), and the repository/history safeguards in [`CONTRIBUTING.md`](CONTRIBUTING.md). For normal daily work, read `AGENTS.md`, run `npm run doctor` and `npm run check:git-safety`, and install nothing when the doctor passes. First-time or evidence-based repair uses `npm run setup:local`.
+Use the persistent Windows-first workflow in [`docs/local-development.md`](docs/local-development.md), the testing/quality contract in [`docs/testing-quality.md`](docs/testing-quality.md), the dependency/build security contract in [`docs/dependency-supply-chain.md`](docs/dependency-supply-chain.md), and the repository/history safeguards in [`CONTRIBUTING.md`](CONTRIBUTING.md). For normal daily work, read `AGENTS.md`, run `npm run doctor` and `npm run check:git-safety`, and install nothing when the doctor passes. First-time or evidence-based repair uses `npm run setup:local`.
 
 ## Configuration
 

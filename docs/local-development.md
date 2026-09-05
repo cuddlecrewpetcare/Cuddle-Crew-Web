@@ -228,13 +228,15 @@ npx playwright test -g "contact form"
 
 Use the narrowest relevant check while editing. Do not repeatedly run a full build and E2E suite after tiny changes.
 
+Select the targeted check by risk: business decisions use the relevant business-rule/care-planner file; API changes use route, negative security/privacy, and type checks; critical UI changes use the relevant Node contract and focused browser flow; dependency/tooling changes use supply-chain checks before full validation. The complete mapping and failure policy are in [`testing-quality.md`](testing-quality.md).
+
 ## Standard Validation
 
 ```powershell
 npm run validate
 ```
 
-This runs the read-only repository safety check, redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
+This runs the read-only repository safety and supply-chain checks, redacted current-tree secret scan, Node tests, typecheck, lint, and the production build.
 
 ## Full Validation
 

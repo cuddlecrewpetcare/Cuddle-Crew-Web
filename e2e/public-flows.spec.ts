@@ -1,10 +1,6 @@
 import {expect,test} from '@playwright/test';
 
-const futureDate=()=>{
-  const date=new Date();
-  date.setDate(date.getDate()+21);
-  return date.toISOString().slice(0,10);
-};
+const futureDate='2099-01-02';
 
 test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=>{
   await page.goto('/');
@@ -16,8 +12,8 @@ test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=
 
   const zip=page.locator('.checker').getByLabel('Service ZIP');
   await expect(zip).toBeEditable();
-  await page.waitForTimeout(500);
   await zip.fill('95821');
+  await expect(zip).toHaveValue('95821');
   await page.getByRole('button',{name:'Check ZIP'}).click();
   await expect(page.locator('.checker .result')).toContainText('Personalized travel review required');
   await zip.fill('95660');
@@ -25,7 +21,7 @@ test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=
 });
 
 test('estimator and planner retain preliminary, non-booking boundaries',async({page})=>{
-  const date=futureDate();
+  const date=futureDate;
   let availabilityPayload:Record<string,unknown>|undefined;
   await page.route('**/api/availability',route=>{expect(route.request().method()).toBe('POST');expect(new URL(route.request().url()).search).toBe('');availabilityPayload=route.request().postDataJSON() as Record<string,unknown>;return route.fulfill({contentType:'application/json',body:JSON.stringify({state:'Limited Availability'})})});
   await page.goto('/');
@@ -109,8 +105,8 @@ test('anonymous progress survives refresh without retaining dates or safety deta
   await expect(page.locator('.estimate-fields')).toBeVisible();
   await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
   await page.getByLabel('9 AM–12 PM').check();
-  await page.getByLabel('First service date').fill(futureDate());
-  await page.getByLabel('Last service date').fill(futureDate());
+  await page.getByLabel('First service date').fill(futureDate);
+  await page.getByLabel('Last service date').fill(futureDate);
   await page.reload();
   await expect(page.locator('.estimate-fields').getByLabel('Service ZIP')).toHaveValue('95821');
   await expect(page.getByLabel('9 AM–12 PM')).toBeChecked();

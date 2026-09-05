@@ -230,3 +230,33 @@ Future Codex sessions must:
 23. Treat `.next`, `.vinext`, `dist`, `.wrangler`, coverage, reports, traces, logs, and other generated output as ignored, regenerable, and non-authoritative.
 24. Follow the recovery ladder in `docs/dependency-supply-chain.md` before replacing the dependency tree or clearing caches.
 25. Keep dependency upgrades, CI/bots, SBOM infrastructure, deployment, and hosting changes out of unrelated work; report all limitations and unresolved findings accurately.
+
+## Testing and Quality Contract
+
+Future Codex sessions must:
+
+1. Read `docs/testing-quality.md` and run the narrowest relevant tests during implementation.
+2. Run the required standard or full final validation before completion and report the commands, counts, warnings, and failures explicitly.
+3. Treat an unexpected Node or E2E test-count decrease as a stop-and-investigate event; document every intentional removal or consolidation and how coverage is preserved.
+4. Never delete tests merely to make a suite pass, weaken assertions to hide a defect, or make inaccessible/nonfunctional behavior authoritative through snapshots.
+5. Keep fixtures obviously synthetic and private-safe; never use production exports, real Clients, private addresses, travel dates, care/medical data, access details, or payment metadata.
+6. Prevent automated tests from sending email or SMS, charging payments, creating bookings/records, mutating third-party or Client data, or publishing content.
+7. Restore mocked globals and environment variables, reset shared state, isolate browser storage, and clean only owned temporary artifacts.
+8. Keep tests deterministic where practical: inject clocks, use fixed dates/stable ordering, avoid randomness and locale assumptions, and do not depend on external provider networks.
+9. Never use arbitrary sleeps. Wait for observable conditions and use targeted bounded timeouts only when the boundary justifies them.
+10. Use retries intentionally; never add or increase retries as a substitute for reproducing and fixing flakiness.
+11. Investigate flaky tests by reproducing, classifying timing/state/environment causes, removing nondeterminism, and preserving assertion strength.
+12. Do not permanently skip or quarantine a failing test without a documented temporary issue, owner, deadline/removal criteria, and an explicit non-green suite status.
+13. Mock dangerous/unavailable provider behavior, but do not mock away business logic, server validation, security/privacy boundaries, or meaningful integration contracts.
+14. Preserve the E2E runner's isolated port 3100, explicit occupied-port failure, exact process-tree ownership, and cleanup after success/failure.
+15. Keep failure screenshots, traces, reports, and logs ignored and private-safe; never dump secrets, complete payloads, Client data, private URLs, or internal decision reasons.
+16. Distinguish unchanged baseline warnings from new warnings or failures; known warnings remain visible and do not authorize new ones.
+17. Treat the most specific applicable `CURRENT / APPROVED` business reference as authority over implementation and stale test expectations.
+18. Add meaningful negative tests for critical input, security, privacy, and provider-failure paths without creating combinatorial noise.
+19. Preserve the package lock, test toolchain, Node/npm, Playwright, browser cache, and dependency graph during quality-only work.
+20. Keep standard validation reasonably fast; reserve the build/browser lifecycle and other expensive checks for the documented full/final gate where appropriate.
+21. Do not claim fully green when required validation was skipped, interrupted, unavailable, or passed only after an unexplained rerun.
+22. Keep each layer's proof distinct: tests, typecheck, lint, build, E2E, security scans, supply-chain checks, and repository safety do not substitute for one another.
+23. Prefer observable contract assertions and small focused helpers; avoid giant setup abstractions, broad truthy assertions, and snapshots that hide meaningful change.
+24. Preserve safe parallelism and serialize only demonstrated shared resources; no test may depend on execution order.
+25. Follow `docs/testing-quality.md` for suite ownership, regression priorities, fixtures, determinism, artifacts, targeted validation, and failure handling.

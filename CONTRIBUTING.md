@@ -39,7 +39,9 @@ Never use broad staging until every changed and untracked path has been reviewed
 
 ## Validation and Merge Policy
 
-Run targeted checks while editing and `npm run validate:full` before completing a meaningful branch. `npm run validate` includes the read-only Git safety check and current-tree secret scan. Run `npm run scan:secrets:history` for migrations, suspected exposure, or public-release preparation.
+Run targeted checks while editing and `npm run validate:full` before completing a meaningful branch. `npm run validate` includes Git safety, supply-chain validation, the current-tree secret scan, Node tests, typecheck, lint, and build. Run `npm run scan:secrets:history` for migrations, suspected exposure, or public-release preparation. The suite ownership, count-loss rule, failure policy, and targeted-validation map are in [`docs/testing-quality.md`](docs/testing-quality.md).
+
+An unexpected decrease in the Node or E2E test count is a stop-and-investigate event. Never delete tests, weaken assertions, add retries, or expand timeouts merely to obtain a green run. Any intentional consolidation must identify the removed cases and explain how behavioral coverage is preserved or improved.
 
 The established merge flow is:
 

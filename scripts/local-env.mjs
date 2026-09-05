@@ -162,7 +162,7 @@ async function summary(){
   for(const port of state.ports)console.log(`Port ${port.port}: ${port.available?'available':`occupied by PID ${port.pid} (${port.name}); ownership unknown`}`);
   console.log(`.env.local: ${state.env.exists?`${state.env.names.length} variable names detected; values hidden`:'not present'}`);
   console.log(`Disk free: ${state.disk.freeGb.toFixed(1)} GiB`);
-  console.log('Baseline: 99 Node tests (96 application + 3 supply-chain); 10 Playwright tests; lint allows 4 known no-img-element warnings.');
+  console.log('Baseline: 102 Node tests (99 application + 3 supply-chain); 10 Playwright tests; lint allows 4 known no-img-element warnings.');
   console.log('Network: not needed for healthy local checks; needed for Git operations and intentionally live provider calls.');
 }
 
