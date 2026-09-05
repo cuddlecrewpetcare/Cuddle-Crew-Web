@@ -51,11 +51,23 @@ Use the most specific applicable `CURRENT / APPROVED` file. In particular:
 - SMS consent, A2P/10DLC website behavior, canonical disclosure, consent records, STOP/HELP handling, mobile-information privacy, and marketing-SMS boundaries → `guidance/sms-communications-consent-compliance.md`.
 - Source precedence and conflict resolution → `guidance/source-of-truth-document-hierarchy.md`.
 - Exact public rates, fees, and pricing modifiers → `core/03-pricing-fees-surcharge-policy.md`.
-- PPC base/modifier configuration, 15-minute supplemental care, same-arrival modifier treatment, Overnight + midday pricing implementation, reservation-payment quote default, and view-only quote workflow → `logic/38-ppc-pricing-quote-implementation.md`.
-- Exact 2026 holiday and peak-date qualifying periods → `logic/36-holiday-peak-date-calendar.md`.
+- PPC base/modifier configuration, 15-minute supplemental care, mixed-species pricing hierarchy, same-arrival modifier treatment, Overnight + midday pricing implementation, small-animal-only Overnight benchmark logic, Extended/Far Extended Overnight review, large/complex household pricing order, care beyond 90 minutes, reservation-payment quote default, QuickBooks view-only Estimate workflow, and future holiday-year planning baseline → `logic/38-ppc-pricing-quote-implementation.md`.
+- Exact approved holiday and peak-date qualifying periods → `logic/36-holiday-peak-date-calendar.md`.
+- Overnight suitability and acceptance, including Extended/Far Extended Overnight acceptance review → `logic/20-overnight-acceptance.md`.
+- Seven-or-more-night sustainability review and confirmation that length alone creates no automatic surcharge or discount → `logic/21-long-stay-review.md`.
 - Cancellation, refund, and booking-change terms → `core/02-cancellation-booking-change-refund-policy.md`.
-- Internal custom-quote and personalized-scope review triggers → `logic/33-custom-quote-scope-review.md`.
+- Internal custom-quote and personalized-scope review triggers, including large/complex households and routines that may not fit within 90 minutes → `logic/33-custom-quote-scope-review.md`.
 - Other internal booking, scope, safety, capacity, and suitability decisions → the applicable `logic/` reference.
+
+### Pricing Edge-Case Routing
+
+For implementation, do not infer a price merely because a numeric benchmark exists internally.
+
+- **Small-animal-only Overnight:** website result must be personalized review. The $80 cat-only Overnight amount may be used only as the internal starting benchmark described in `logic/38`; it is not a published or guaranteed small-animal Overnight rate.
+- **Extended/Far Extended Overnight:** website result must be personalized review. Do not invent an automatic +$10/+20 per-night travel ladder; use `logic/20` and `logic/38`.
+- **Large/complex households:** review trigger first. Do not invent a generic complexity surcharge; use correct duration/service structure before considering genuine custom scope.
+- **Care beyond 90 minutes:** do not publish a standard 2-hour daytime rate. Route extended continuous daytime needs to personalized review under `logic/33` and `logic/38`.
+- **Future holiday years:** the prior-year category set is only a planning baseline. Exact dates are not active until intentionally approved in the annual holiday calendar.
 
 SMS-specific implementation must read the canonical SMS reference before changing phone-number collection, communications consent, disclosure text, notification preferences, opt-out or HELP behavior, SMS Privacy Policy language, or marketing-SMS behavior. Existing website behavior, form fields, CRM data, or possession of a phone number does not override that reference or establish consent. Higher-authority signed contractual or legal requirements still control where applicable.
 
@@ -66,7 +78,7 @@ SMS-specific implementation must read the canonical SMS reference before changin
 - Flag conflicts for human review.
 - Do not treat placeholder text or TODOs as authoritative.
 - Do not expose confidential, security-sensitive, or internal-only information.
-- Do not expose internal risk scoring, acceptance criteria, thresholds, capacity calculations, or decision-making rubrics unless specifically approved.
+- Do not expose internal risk scoring, acceptance criteria, thresholds, capacity calculations, internal pricing benchmarks, or decision-making rubrics unless specifically approved.
 - Public website language should be clear and client-friendly while remaining faithful to the authoritative source.
 - Website estimates must remain estimates unless an authoritative source explicitly says otherwise.
 - A website estimate must never override a final Precise Petcare quote, invoice, or confirmed booking.
