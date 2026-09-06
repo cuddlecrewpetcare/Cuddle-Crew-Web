@@ -143,6 +143,20 @@ footer {
   background: #fff0df;
 }
 
+.estimate-result .estimate-copy {
+  border-color: #fffaf5;
+  color: #fffaf5;
+}
+
+.estimate-result .estimate-copy:hover {
+  background: #fff6ec;
+  color: #3b241a;
+}
+
+.estimate-result .estimate-copy:focus-visible {
+  outline-color: #fffaf5;
+}
+
 @media (max-width: 480px) {
   .shell {
     width: min(1160px, calc(100% - 32px));
