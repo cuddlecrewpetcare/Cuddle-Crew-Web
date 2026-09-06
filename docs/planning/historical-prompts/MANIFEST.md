@@ -1,0 +1,26 @@
+# Manifest
+
+- `README.md`
+- `CURRENT-RECONCILIATION.md`
+- `foundation/F0-local-development.md`
+- `foundation/F1-secrets.md`
+- `foundation/F10-time-locale-determinism.md`
+- `foundation/F11-accessibility-responsive.md`
+- `foundation/F12-cicd-hosting-security.md`
+- `foundation/F13-backup-disaster-recovery.md`
+- `foundation/F14-final-go-no-go.md`
+- `foundation/F2-git-repository-safety.md`
+- `foundation/F3-data-privacy.md`
+- `foundation/F4-supply-chain.md`
+- `foundation/F5-testing-quality.md`
+- `foundation/F6-integrations-side-effects.md`
+- `foundation/F7-observability-recovery.md`
+- `foundation/F8-performance-resources.md`
+- `foundation/F9-cross-platform-filesystem.md`
+- `phase-11/phase-11-reconstructed.md`
+- `phase-12/12A-governance-reconstructed.md`
+- `phase-12/12B-business-logic-reconstructed.md`
+- `phase-12/12C-sms-a2p-reconstructed.md`
+- `phase-12/12D-accessibility-reconciliation.md`
+- `phase-12/FUTURE-PLANS.md`
+- `phase-12/roadmap-recovery-with-dirty-work.md`
