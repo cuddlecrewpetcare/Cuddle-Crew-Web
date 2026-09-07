@@ -56,6 +56,8 @@ Client-specific information should be maintained in Precise Petcare rather than 
 - [ ] Relevant medical conditions, allergies, sensitivities, medications, and behavior information have been recorded.
 - [ ] Feeding, water, elimination, exercise/enrichment, and other routine care information is sufficiently documented.
 - [ ] Relevant separation, confinement, escape, handling, or compatibility needs are documented.
+- [ ] Each pet’s maximum safe and comfortable alone time is recorded accurately.
+- [ ] Separation anxiety, isolation distress, destructive behavior, vocalization, escape risk, puppy or senior needs, medication, feeding, elimination, and nighttime factors affecting alone time are documented where applicable.
 
 Do not treat an incomplete pet profile as ready merely because pricing can be calculated.
 
@@ -128,7 +130,10 @@ A planned access method should not be considered ready merely because instructio
 - [ ] Requested care frequency has been reviewed and is considered adequate for the pet’s welfare.
 - [ ] Requested Service duration realistically fits the complete care routine.
 - [ ] Any separate daytime, overnight, walk, medication, feeding, elimination, enrichment, or other needs have been accounted for.
+- [ ] The planned gaps and any Standard Overnight departures fit the shortest disclosed maximum safe and comfortable alone-time limit.
 - [ ] If the requested routine does not reasonably fit the selected duration, a longer Service, additional Service, revised plan, or personalized review has been completed.
+
+When a dedicated consecutive block is the correct care fit, consider the approved 3–8 hour Continuous Care ladder or limited 24-Hour Continuous Care through personalized review. Do not default to stacked ordinary visits that overlap the same period, and do not treat Continuous Care as categorically unavailable.
 
 An automatic feeder, fountain, camera, self-cleaning litter box, or other device may support a care plan but does not automatically replace appropriate in-person welfare checks.
 
@@ -325,6 +330,8 @@ Where the website collects preliminary inquiry information:
 3. do not treat preliminary website data as automatically approved care instructions;
 4. do not silently overwrite current Precise Petcare records;
 5. do not expose Precise Petcare data publicly.
+
+Precise Petcare should hold the authoritative per-pet maximum safe and comfortable alone-time disclosures, related factors, confirmed Service type, approved departures if any, and final care plan.
 
 ### Booking Logic
 

@@ -265,9 +265,11 @@ Standard Overnight Care generally covers approximately 6:00 PM–8:00 AM and is 
 - [ ] Personal schedule impact reviewed.
 - [ ] Other Client obligations reviewed.
 
-Continuous care is not a standard launch Service.
+Continuous Care is a limited-capacity Service offered at the Client’s residence through the approved 3–8 hour fixed block ladder. Routine care is bundled for the household, the sitter generally remains except for an emergency or a departure specifically discussed and approved, and ordinary per-pet or hourly multiplication does not apply.
 
-Use personalized review and expect that the request may be unavailable or require referral.
+The approved block rates are 3 hours $90, 4 hours $120, 5 hours $145, 6 hours $165, 7 hours $185, and an 8-hour Extended Day $200. Limited 24-Hour Continuous Care may be offered by request and starts at $300 per 24-hour period. It is not calculated as $30 multiplied by 24, and ordinary rest is included.
+
+Use personalized review for capacity, safety, service scope, schedule, travel, and household intensity. A request may be modified, custom quoted, referred, or declined after that review, but Continuous Care must not be treated as categorically unavailable or automatically referred solely because continuous presence is requested. Neither model is boarding, daycare, veterinary monitoring, or a second-by-second observation guarantee.
 
 ## 12. Pet Transportation Request
 
@@ -332,9 +334,9 @@ The outcome may be:
 - referral;
 - or decline.
 
-## 15. Routine May Not Fit Within 90 Minutes
+## 15. Routine May Not Fit Within an Ordinary 90-Minute Visit
 
-Ninety (90) minutes is the maximum standard public daytime Service duration at launch.
+Ninety (90) minutes is the maximum ordinary Drop-In or Dog Walk duration. It is not a maximum on all daytime care because Continuous Care is a separate 3–8 hour dedicated-block Service.
 
 If the complete routine may not fit:
 
@@ -354,6 +356,7 @@ Possible outcomes include:
 - multiple separate Services;
 - different care frequency;
 - Overnight Care where appropriate;
+- 3–8 hour Continuous Care where a dedicated block is the correct fit;
 - personalized/custom care;
 - modified scope;
 - referral;
@@ -477,6 +480,8 @@ Possible structures include:
 - Overnight + longer daytime Service;
 - Overnight + Dog Walk;
 - multiple daytime Services;
+- 3–8 hour Continuous Care at the approved block rate;
+- limited 24-Hour Continuous Care starting at $300 per period;
 - or personalized/custom care.
 
 Do not begin with a desired dollar amount and work backward into an inadequate Service plan.
@@ -651,7 +656,7 @@ Examples may include:
 - severe handling risk cannot be mitigated;
 - transportation is not covered;
 - required route/capacity is impossible;
-- continuous care is unavailable;
+- the requested Continuous Care schedule or scope cannot be safely or operationally accommodated after review;
 - or specialized care remains outside competence.
 
 Do not quote a price for care Cuddle Crew should not provide.
@@ -815,12 +820,14 @@ The website should only present a definitive final quote where:
 
 Do not create a standard 120-minute daytime Service to avoid review.
 
-Current public daytime ladder is:
+Current ordinary visit ladder is:
 
 - 30 minutes;
 - 60 minutes;
 - 90 minutes;
 - personalized/custom review.
+
+The separate Continuous Care ladder is 3, 4, 5, 6, 7, and 8 consecutive hours at the approved fixed block rates. Do not insert an ordinary 120-minute visit into either ladder.
 
 ### Additional-Pet Logic
 
@@ -868,11 +875,9 @@ Do not automatically apply daytime travel surcharges to Overnight Care.
 
 ### Continuous Care
 
-Continuous or 24-hour care is not a standard launch Service.
+The website may calculate the approved fixed 3–8 hour Continuous Care block rates while still returning **Personalized review required** for capacity, safety, scope, and acceptance. It must show 24-Hour Continuous Care only as starting at $300 per period and must route that request to individualized review.
 
-Do not let the website create a standard continuous-care price.
-
-Route to personalized review or indicate that the Service may be unavailable.
+Do not multiply $30 by duration, apply ordinary per-pet modifiers, or imply that a calculable block price guarantees availability. A request may be unavailable only after the actual schedule and scope are reviewed.
 
 ### Transportation
 
@@ -995,7 +1000,7 @@ If this document conflicts with a CURRENT / APPROVED Client-facing policy, the C
 - Do not invent a standard 2-hour daytime Service.
 - Do not invent a >45-minute travel fee.
 - Do not automatically price complex/extended-area Overnight travel.
-- Do not automatically price continuous/24-hour care.
+- Do not automatically confirm Continuous Care. The estimator may display the approved 3–8 hour fixed block ladder and the $300 starting price for 24-Hour Continuous Care while withholding a final total pending review.
 - Do not automatically price pet transportation.
 - Do not create a generic risk surcharge.
 - Do not create a generic medical-complexity surcharge.

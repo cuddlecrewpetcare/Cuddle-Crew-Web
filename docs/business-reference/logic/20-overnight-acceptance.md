@@ -31,10 +31,14 @@ Before accepting an Overnight booking, review each applicable category below.
 - [ ] Requested Service fits the standard Overnight framework.
 - [ ] Client understands that standard Overnight Care generally covers approximately 6:00 PM through 8:00 AM.
 - [ ] Client understands that standard Overnight Care is not twenty-four-hour or continuous presence.
+- [ ] Client understands that Standard Overnight Care bundles the core overnight stay and may include reasonable departures when compatible with the confirmed care plan.
+- [ ] Each pet’s maximum safe and comfortable alone time has been accurately disclosed and evaluated.
 - [ ] Requested tasks are compatible with the Overnight Service scope.
 - [ ] The booking does not require continuous daytime presence unless a separate Service or custom arrangement has been specifically reviewed and approved.
 
-If the Client expects uninterrupted 24-hour presence, constant supervision, or another scope materially beyond the standard Overnight structure, the request requires personalized review.
+If the Client expects twenty-four-hour presence or another scope materially beyond the Standard Overnight structure, evaluate the separate limited 24-Hour Continuous Care Service through personalized review. Do not treat it as Standard Overnight Care, but do not call it categorically unavailable solely because continuous presence is requested.
+
+The separately approved 3–8 hour Continuous Care ladder also remains available for dedicated daytime blocks. Continuous Care generally requires the sitter to remain at the residence except for an emergency or a departure specifically discussed and approved. It is not boarding, daycare, veterinary monitoring, or a second-by-second guarantee.
 
 ## 2. Daytime Care Needs
 
@@ -53,6 +57,7 @@ A midday dog walk should use the applicable Dog Walk Service.
 
 - [ ] The complete Overnight + daytime care plan provides adequate welfare coverage for the pets.
 - [ ] Feeding, water, elimination, medication, monitoring, and companionship needs are reasonably covered.
+- [ ] Separation anxiety or isolation distress, destructive behavior, vocalization, escape risk, puppy or senior needs, feeding, elimination, medication, and nighttime needs have been considered when relevant.
 - [ ] The care plan does not rely on the Overnight alone where daytime welfare needs require additional care.
 - [ ] Any prolonged gap without responsible in-person care has been reviewed.
 
@@ -597,6 +602,7 @@ Do not expose internal labels or private reasoning.
 Final Client-specific Overnight information should be maintained in Precise Petcare, including:
 
 - pet routines;
+- each pet’s maximum safe and comfortable alone time and related factors;
 - daytime care plan;
 - access details;
 - medication information;
@@ -626,6 +632,8 @@ If this document conflicts with a CURRENT / APPROVED Client-facing agreement or 
 - Treat the Authoritative Content section of this CURRENT / APPROVED document as the source of truth for internal Overnight acceptance logic.
 - Do not publish this full internal checklist.
 - Do not represent standard Overnight Care as 24-hour or continuous care.
+- Do not represent Standard Overnight Care as uninterrupted or prohibit all reasonable departures where the confirmed care plan allows them.
+- Do not collapse the separately approved 3–8 hour or limited 24-Hour Continuous Care Services into Standard Overnight Care.
 - Do not assume daytime care is included in the Overnight.
 - Do not automatically approve a booking merely because the Overnight base price can be calculated.
 - Do not automatically approve an Overnight outside the Standard travel zone.

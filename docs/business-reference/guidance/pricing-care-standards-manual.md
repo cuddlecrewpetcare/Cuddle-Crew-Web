@@ -1,36 +1,5 @@
 # Pricing & Care Standards Manual
 
-> Status: PLACEHOLDER
-> Classification: INTERNAL REFERENCE
-> Authority: NOT AUTHORITATIVE UNTIL POPULATED AND MARKED CURRENT / APPROVED
-> Website use: Broad internal operational source of truth supporting pricing, service design, care standards, welfare requirements, booking decisions, edge cases, review triggers, and website consistency.
-
-## Purpose
-
-TODO: Add authoritative source content.
-
-## Authoritative Content
-
-TODO: Paste the approved/current version here.
-
-## Website Implementation Notes
-
-TODO: Record any website pages, components, estimator logic, booking logic, FAQ content, warnings, conditional UX, admin behavior, or Precise Petcare handoff behavior that should be derived from this document.
-
-## Codex Guardrails
-
-- Do not infer missing policies.
-- Do not treat TODOs or placeholder text as business rules.
-- Do not convert internal rules into public promises without explicit instruction.
-- Do not expose private operational details merely because they appear in this file.
-- Do not expose internal thresholds, risk logic, capacity calculations, or decline criteria publicly unless explicitly approved.
-- If website behavior conflicts with this document after it is marked CURRENT / APPROVED, flag the conflict rather than changing the business rule to match existing code.
-- Treat CURRENT / APPROVED authoritative content as the source of truth for topics covered by this file.
-- Do not alter an authoritative business rule merely to make implementation easier.
-- When internal logic requires review, prefer a client-facing result such as "Personalized review required" instead of exposing private internal reasoning.
-
-# Pricing & Care Standards Manual
-
 > Status: CURRENT / APPROVED
 >
 > Classification: INTERNAL REFERENCE
@@ -39,7 +8,7 @@ TODO: Record any website pages, components, estimator logic, booking logic, FAQ 
 >
 > Website use: Broad internal operational source of truth supporting pricing, service design, care standards, welfare requirements, booking decisions, edge cases, review triggers, and website consistency.
 >
-> Source version: Pricing & Care Standards Manual v15 FINAL — CONTENT FREEZE EDITION • September 2026
+> Source version: Pricing & Care Standards Manual v15 FINAL — CONTENT FREEZE EDITION • September 2026, reconciled with final owner Continuous Care and approved 2026–2028 holiday decisions on September 7, 2026
 
 ## Purpose
 
@@ -194,6 +163,24 @@ Standard Overnight Care generally covers approximately:
 
 It is not continuous 24-hour care.
 
+It bundles the core overnight stay rather than fourteen hourly units. Reasonable departures for another pet-care visit, a meal, school, or another ordinary responsibility may occur when compatible with each pet’s disclosed maximum safe and comfortable alone time and confirmed care plan. Daytime care remains separate.
+
+## Continuous Care
+
+Continuous Care is a dedicated consecutive block at the Client’s residence. The sitter generally remains except for an emergency or a departure specifically discussed and approved. Routine household care is bundled.
+
+| Service | Household Rate |
+| --- | ---: |
+| 3 hours | $90 |
+| 4 hours | $120 |
+| 5 hours | $145 |
+| 6 hours | $165 |
+| 7 hours | $185 |
+| 8-hour Extended Day | $200 |
+| 24-Hour Continuous Care | Starts at $300 per 24-hour period |
+
+Do not calculate the ladder as hours multiplied by $30. Do not apply ordinary per-pet modifiers. The 24-hour model is limited-capacity and requires individualized review. Continuous Care is not boarding, daycare, veterinary monitoring, or a second-by-second observation guarantee; ordinary rest is included in a 24-hour period.
+
 ## Standard Midday Care During Overnight
 
 The standard midday add-on is **one separate 30-minute daytime care visit**.
@@ -220,19 +207,19 @@ Do not treat the standard midday add-on as:
 
 ---
 
-# 3. Public Daytime Duration Ladder
+# 3. Public Ordinary Visit and Continuous Care Ladders
 
 Use:
 
 **30 minutes → 60 minutes → 90 minutes → personalized/custom care**
 
-Ninety minutes is the maximum standard public daytime duration at launch.
+Ninety minutes is the maximum ordinary Drop-In or Dog Walk duration. It is not a maximum on all daytime care because Continuous Care is a separate 3–8 hour dedicated-block Service.
 
 Do not publicly create a standard 2-hour daytime Service merely because a routine exceeds 90 minutes.
 
 Where even 90 minutes may not fit:
 
-**Personalized review required.**
+consider the separately approved Continuous Care ladder when a dedicated consecutive block is the correct fit, or use **Personalized review required** for another care structure. Do not invent an ordinary 120-minute visit.
 
 ---
 
@@ -243,6 +230,8 @@ Current approved additional-pet structure:
 - Additional dog: **+$10**
 - Additional cat: **+$5**
 - Additional small animal: **+$5 where appropriate**
+
+These ordinary modifiers do not apply to Continuous Care. A large or intensive Continuous Care household requires review of the actual Service and scope rather than pet-count multiplication.
 
 These charges apply:
 
@@ -314,9 +303,7 @@ Current approved modifier amounts:
 - Holiday daytime: **+$15 per qualifying visit**
 - Holiday Overnight: **+$30 per qualifying night**
 
-The exact qualifying dates/periods are controlled by the CURRENT / APPROVED Holiday / Peak-Date Calendar.
-
-Until that calendar is populated and approved, do not invent holiday periods.
+The exact qualifying dates/periods are controlled by the CURRENT / APPROVED 2026–2028 Holiday / Peak-Date Calendar, including its final crossover through January 3, 2029. A 3–8 hour Continuous Care block uses the daytime +$15 classification; a 24-Hour Continuous Care period uses the Overnight +$30 classification. Standard Overnight uses its start date. One physical service arrival or capacity period receives one surcharge, while a separate daytime arrival and Overnight may each qualify.
 
 Holiday pricing does not create capacity.
 
@@ -371,6 +358,10 @@ Future onboarding appointments remain subject to availability.
 ---
 
 # 9. Care-Frequency Standards
+
+Collect and evaluate each pet’s maximum safe and comfortable alone time. Consider separation anxiety or isolation distress, destructive behavior, vocalization, escape risk, puppy or senior needs, medication, feeding, elimination, nighttime needs, and the complete absence period. Do not infer a longer limit from species, age, an automatic device, or a quiet presentation.
+
+Scheduled visits are usually the more affordable fit when every pet can safely remain alone between care periods. If not, consider Continuous Care or another approved plan through personalized review. This is care-fit guidance, not an automatic upsell or surcharge.
 
 Care frequency is a welfare decision before it is a pricing decision.
 
@@ -589,6 +580,10 @@ Appropriate where the pet/household benefits from:
 
 - Overnight presence;
 - plus a separate daytime welfare/potty/care appointment.
+
+## Continuous Care
+
+Appropriate for a dedicated 3–8 hour block where ordinary visits would not safely or appropriately meet the disclosed alone-time limit or care plan. Limited 24-Hour Continuous Care is a separate request. Both require personalized capacity and scope review even when the approved starting price can be displayed.
 
 ## Personalized Review
 
@@ -834,7 +829,7 @@ Examples include:
 - forceful restraint;
 - high-risk treatment;
 - large-scale cleanup unrelated to routine pet accidents;
-- continuous supervision / 24-hour presence;
+- continuous supervision / 24-hour presence unless specifically booked and approved as the separate Continuous Care Service;
 - meeting contractors;
 - errands;
 - shopping;
@@ -951,6 +946,8 @@ It is not:
 - unlimited daytime care;
 - or automatic midday coverage.
 
+It is also not a fourteen-hour hourly product or an uninterrupted-presence promise. Reasonable departures may occur when compatible with every pet’s disclosed maximum safe and comfortable alone time, feeding, elimination, medication/timing, behavior, nighttime needs, and confirmed care plan.
+
 Daytime needs must be identified separately.
 
 Review:
@@ -978,7 +975,7 @@ Do not automatically apply daytime Extended/Far Extended travel surcharges to Ov
 
 # 25. Long Stays
 
-Seven or more consecutive Overnights trigger internal capacity/sustainability review.
+Seven or more consecutive Overnights or 24-Hour Continuous Care periods trigger internal capacity/sustainability review.
 
 Long stay does **not** automatically mean:
 
@@ -1074,13 +1071,13 @@ Current default:
 
 # 29. Continuous / 24-Hour Care
 
-Continuous or 24-hour presence is not a standard launch Service.
+Continuous Care is the separate household-based, dedicated-block Service defined in the current service menu. The sitter generally remains at the Client residence except for an emergency or a departure specifically discussed and approved.
 
-Do not automatically quote it.
+Use the fixed 3–8 hour ladder: $90, $120, $145, $165, $185, and $200. Limited 24-Hour Continuous Care starts at $300 per 24-hour period. Do not multiply $30 by duration or apply ordinary per-pet modifiers.
 
-Review / likely unavailable.
+Every request receives individualized capacity, safety, scope, schedule, travel, and household-intensity review. A request may be modified, custom quoted, referred, or declined after review, but it is not categorically unavailable and a 24-hour request is not automatically referred solely because continuous presence is requested.
 
-Do not misrepresent standard Overnight Care as continuous care.
+Do not misrepresent Standard Overnight Care as Continuous Care. Do not represent Continuous Care as boarding, daycare, veterinary monitoring, or a second-by-second guarantee.
 
 ---
 
@@ -1155,17 +1152,18 @@ Do not promise lifetime grandfathered rates.
 
 # 32. Rate Review
 
-Review rates approximately six months after launch and then at least annually.
+Review rates approximately six months after launch and then at least annually. Use current Pet Sitters International-informed business methodology together with Cuddle Crew’s actual operating data; this methodology governs future review and does not reopen the current final launch rates.
 
 Consider:
 
-- actual door-to-door time;
+- owner labor and actual direct/door-to-door service time;
 - drive time;
 - route density;
-- journal/admin;
-- payment processing;
-- overhead;
-- vehicle/fuel burden;
+- journal and administrative time;
+- payment-processing burden;
+- fixed and variable overhead;
+- software, insurance, licensing, professional memberships, domain/website, marketing, and supplies;
+- vehicle, fuel, and mileage burden;
 - cancellations;
 - unbooked gaps;
 - demand;
@@ -1174,7 +1172,7 @@ Consider:
 - Services routinely exceeding duration;
 - effective labor compensation;
 - profit;
-- professional local-market pricing;
+- professional local Sacramento market pricing;
 - travel zones;
 - capacity rules.
 
@@ -1280,9 +1278,7 @@ Some have since been superseded by more current dedicated references.
 
 ## Exact Holiday Dates
 
-Still pending until the Holiday / Peak-Date Calendar is populated and approved.
-
-Do not infer dates.
+Resolved for 2026–2028 by the CURRENT / APPROVED Holiday / Peak-Date Calendar, including the final approved crossover through January 3, 2029. Later years remain pending until deliberately approved; do not infer later dates.
 
 ## Client-Facing Cancellation Rules
 
@@ -1316,7 +1312,7 @@ Do not auto-price.
 
 ## Continuous / 24-Hour Care
 
-Not a standard launch Service.
+Resolved by the approved fixed 3–8 hour household ladder and limited 24-Hour Continuous Care starting at $300, with individualized review and final PPC confirmation.
 
 ## Referral Reward
 
@@ -1452,6 +1448,8 @@ Do not duplicate rate constants across:
 
 The estimator may calculate standard pricing only where scope is sufficiently clear.
 
+It may display the approved fixed 3–8 hour Continuous Care block amount and the $300 starting amount for 24-Hour Continuous Care while still withholding a final total and requiring personalized review.
+
 It must preserve:
 
 - review triggers;
@@ -1485,6 +1483,8 @@ Website logic may recommend:
 - 60 minutes;
 - 90 minutes;
 - or personalized review.
+
+Where the disclosed maximum safe and comfortable alone time cannot be met through ordinary visits or Standard Overnight Care, the website may present Continuous Care as a care-fit option. It must not create overlapping ordinary visits during the same dedicated block or present the option as an automatic upsell.
 
 Do not automatically create a 120-minute standard Service.
 
@@ -1581,11 +1581,11 @@ It does not prevent:
 - Do not let this document override a more specific CURRENT / APPROVED Client-facing policy on its subject.
 - Do not use stale cancellation recommendations from the underlying manual when the CURRENT / APPROVED Cancellation Policy differs.
 - Do not use stale payment timing from the underlying manual when CURRENT / APPROVED Client-facing policy differs.
-- Do not infer exact holiday dates.
+- Do not infer holiday dates beyond the exact CURRENT / APPROVED 2026–2028 calendars and their final stated crossover through January 3, 2029.
 - Do not offer pet transportation without verified coverage and approved scope.
 - Do not infer advanced medication capability.
 - Do not infer training or insurance status.
-- Do not auto-price continuous / 24-hour care.
+- Do not automatically confirm Continuous Care. The estimator may show the approved fixed 3–8 hour block prices and the $300 starting price for a 24-hour period while routing final scope and acceptance to review.
 - Do not auto-price Overnight Care outside approved standard scope.
 - Do not auto-quote when a stop/review trigger applies.
 - Do not turn review triggers into automatic declines.

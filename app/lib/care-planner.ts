@@ -3,7 +3,7 @@ import {plannerCareGap} from './business-rules.ts';
 
 export type LifeStage='puppy'|'adult'|'senior'|'mixed';
 export type MedicationNeed='none'|'routine'|'timed'|'complex'|'procedure';
-export type BehaviorNeed='none'|'fear'|'reactive'|'aggressive'|'escape';
+export type BehaviorNeed='none'|'fear'|'reactive'|'aggressive'|'escape'|'alone-distress';
 export type RoutineComplexity='simple'|'moderate'|'complex'|'unclear';
 export type SeparationNeed='none'|'feeding'|'handling'|'unclear';
 export type VisitFit='30'|'60'|'90'|'neither'|'unknown';
@@ -54,6 +54,7 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   if(input.behavior==='reactive')reviewReasons.push('Reactive behavior and trigger management require private review.');
   if(input.behavior==='aggressive')reviewReasons.push('Aggression, bite risk, or handling sensitivity requires private safety review and may not be accepted.');
   if(input.behavior==='escape')reviewReasons.push('Escape risk requires private access and handling planning.');
+  if(input.behavior==='alone-distress')reviewReasons.push('Separation anxiety, isolation distress, destructive behavior, or vocalization while alone requires a private care-frequency and service-fit review.');
   if(input.lifeStage==='puppy'||input.lifeStage==='mixed')reviewReasons.push('Very young pets may need shorter intervals and an individually reviewed routine.');
   if(input.lifeStage==='senior'||input.lifeStage==='mixed')factors.push('Senior-pet comfort and mobility needs can affect visit length and timing.');
   if(input.routineComplexity==='complex')reviewReasons.push('A complex routine needs human confirmation of sequence, timing, and service fit.');
@@ -65,7 +66,7 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   if(total>=5)reviewReasons.push('A larger household needs confirmation that all care tasks fit the selected service duration.');
   if(input.feedingFrequency>=3)factors.push('Frequent feeding may require timing coordination within flexible service windows.');
   if(!gap)reviewReasons.push('No service window or overnight coverage is selected, so a care gap cannot be evaluated.');
-  else if(!gapWithinEnteredLimits)reviewReasons.push(`The longest plausible ${gap.maximum}-hour gap exceeds the entered ${effectiveLimit}-hour care limit.`);
+  else if(!gapWithinEnteredLimits)reviewReasons.push(`The longest plausible ${gap.maximum}-hour gap exceeds the entered ${effectiveLimit}-hour care limit. Continuous Care or another approved plan may be needed when scheduled visits or Standard Overnight Care cannot safely meet that limit.`);
 
   warnings.push('Service windows are flexible arrival ranges, not exact appointment times.');
   warnings.push(`Gap calculations use repeating local wall-clock windows in ${business.timezone}; daylight-saving transitions can change elapsed time and are confirmed during scheduling.`);
@@ -74,12 +75,12 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   warnings.push('Final suitability, timing, availability, and service acceptance are determined through consultation.');
 
   const suitability=reviewReasons.length?'consultation-required':'starting-point';
-  const suggestedStartingPoint=durationMinutes===null?'A standard duration cannot be selected from these answers. Lauren will need to review the requested routine.':suitability==='consultation-required'?`Use the ${durationMinutes}-minute option only as a discussion starting point; Lauren must review the complete routine.`:`A ${durationMinutes}-minute visit may be a useful starting point for consultation.`;
+  const suggestedStartingPoint=durationMinutes===null?'A standard duration cannot be selected from these answers. Lauren will need to review the requested routine.':!gapWithinEnteredLimits&&gap?`The selected schedule does not meet the entered care limit. Discuss Continuous Care or another approved plan rather than adding visits that still leave an unsafe gap.`:suitability==='consultation-required'?`Use the ${durationMinutes}-minute option only as a discussion starting point; Lauren must review the complete routine.`:`A ${durationMinutes}-minute visit may be a useful and usually more affordable starting point when every pet can safely remain alone between care periods.`;
   if(gap)reasons.push(`The selected flexible windows produce a longest plausible care gap of approximately ${gap.maximum} hours.`);
 
   return{durationMinutes,suitability,longestPlausibleGapHours:gap?.maximum??null,gapWithinEnteredLimits,timezone:business.timezone,suggestedStartingPoint,reasons:unique(reasons),assumptions:[
     'Selected windows repeat each service day and a visit may begin anywhere within its listed arrival window.',
-    'The entered comfortable-alone and bathroom/walk intervals are planning limits supplied by the household, not medical guidance.',
-    'Overnight care uses the published approximate overnight coverage; selected daytime windows are included only when intentionally chosen.',
+    'The entered alone-time value is the shortest maximum safe and comfortable limit for any pet in the household, supplied by the Client rather than inferred as medical guidance.',
+    'Standard Overnight Care uses the published approximate overnight coverage, may include reasonable compatible departures, and includes selected daytime windows only when intentionally chosen.',
   ],warnings:unique(warnings),reviewReasons:unique(reviewReasons),factors:unique(factors)};
 }

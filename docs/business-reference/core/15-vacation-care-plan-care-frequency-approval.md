@@ -6,7 +6,7 @@
 > Website use: Care-frequency expectations and personalized-review messaging.
 
 ## Purpose
-This form confirms the in-person care plan for a Client's absence and helps prevent misunderstandings about first/last visits, daily frequency, long gaps, other caregivers, meals, medication, and welfare needs. Precise Pet Care ("PPC") remains the source of truth for the confirmed service schedule and pet-care instructions.
+This form confirms the in-person care plan for a Client's absence and helps prevent misunderstandings about first/last visits, daily frequency, long gaps, other caregivers, meals, medication, and welfare needs. Precise Petcare ("PPC") remains the source of truth for the confirmed service schedule and pet-care instructions.
 
 ## Authoritative Content
 
@@ -27,8 +27,8 @@ The Client is responsible for accurately stating when the pet will last receive 
 
 The Client should notify Cuddle Crew promptly if departure or return plans change in a way that affects pet care. Additional service remains subject to availability and applicable pricing.
 
-### 4. Longest Care Gap
-The Client must disclose the expected longest period the pet will go without in-person care and any material constraints such as medication windows, meal timing, elimination needs, senior/medical needs, or separation distress.
+### 4. Maximum Safe and Comfortable Alone Time / Longest Care Gap
+The Client must separately disclose for each pet the maximum period the pet can safely and comfortably remain alone, plus the expected longest period without in-person care under the proposed plan. Relevant constraints include separation anxiety or isolation distress, destructive behavior, vocalization, escape risk, puppy or senior needs, medication windows, feeding, elimination, and nighttime needs.
 
 Cuddle Crew may require personalized review when the proposed gap is inconsistent with the pet's disclosed needs or normal routine.
 
@@ -36,7 +36,9 @@ Cuddle Crew may require personalized review when the proposed gap is inconsisten
 If another person or provider shares responsibility, that arrangement must be disclosed and may also require the Shared Care / Third-Party Care Agreement. The Client must clearly identify the other caregiver's responsibilities rather than assuming Cuddle Crew will cover any missed third-party care automatically.
 
 ### 6. Overnight Care
-When Overnight Care is booked, the Client acknowledges that the standard overnight service generally covers approximately 6:00 PM–8:00 AM and is not 24-hour continuous care. Daytime needs outside that window must be addressed separately in the approved care plan.
+When Overnight Care is booked, the Client acknowledges that the standard overnight service generally covers approximately 6:00 PM–8:00 AM and is not 24-hour continuous care. The core overnight stay may include reasonable departures when compatible with every pet’s disclosed maximum safe and comfortable alone time and the confirmed care plan. Daytime needs outside that window must be addressed separately.
+
+When 3–8 hour or 24-Hour Continuous Care is proposed, the Client acknowledges that it is a separate dedicated-block Service subject to individualized review and limited capacity. The sitter generally remains at the residence except for an emergency or a departure specifically discussed and approved. It is not boarding, daycare, veterinary monitoring, or a second-by-second guarantee.
 
 ### 7. Supplies
 The Client must provide adequate food, medication, litter/enclosure supplies, cleaning supplies, and other pet-care necessities for the entire absence plus a reasonable contingency amount when practicable.
@@ -59,6 +61,7 @@ By submitting this form, the Client confirms that the care-frequency information
 - Daily care pattern / overnight pattern.
 - Other caregiver(s) and responsibilities.
 - Longest expected gap between in-person care.
+- Maximum safe and comfortable alone time for each pet and factors that affect it.
 - Meal/medication timing constraints.
 - Special welfare concerns.
 - Expected return/resumption of care.

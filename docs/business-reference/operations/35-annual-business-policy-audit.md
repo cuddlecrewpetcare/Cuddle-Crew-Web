@@ -62,28 +62,31 @@ Examples of material changes may include:
 
 Review current pricing and whether the business remains financially sustainable.
 
+Use a Pet Sitters International-informed professional-business methodology together with Cuddle Crew’s actual operating data. This methodology applies to future reviews; it does not reopen the current final launch pricing without a separate owner decision.
+
 - [ ] Current standard Service rates reviewed.
 - [ ] Additional-pet pricing reviewed.
 - [ ] Travel fees reviewed.
 - [ ] Holiday modifiers reviewed.
 - [ ] Short-notice / same-day modifiers reviewed.
 - [ ] Overnight pricing reviewed.
+- [ ] Continuous Care 3–8 hour ladder and 24-hour starting price reviewed.
 - [ ] Midday add-on pricing reviewed.
 - [ ] Custom pricing practices reviewed.
-- [ ] Labor compensation reviewed.
-- [ ] Actual Service duration reviewed.
-- [ ] Average drive time / route density reviewed.
-- [ ] Journal/admin burden reviewed.
-- [ ] Payment-processing costs reviewed.
-- [ ] Fixed overhead reviewed.
-- [ ] Vehicle/fuel burden reviewed.
+- [ ] Owner labor and effective labor compensation reviewed.
+- [ ] Actual direct Service time and door-to-door time reviewed.
+- [ ] Average drive time and route density reviewed.
+- [ ] Journal and administrative burden reviewed.
+- [ ] Payment-processing burden reviewed.
+- [ ] Fixed and variable overhead reviewed.
+- [ ] Software, insurance, licensing, professional memberships, domain/website, marketing, and supplies reviewed.
+- [ ] Vehicle, fuel, and mileage burden reviewed.
 - [ ] Cancellation / unbooked-gap impact reviewed.
 - [ ] Demand / repeat bookings reviewed.
 - [ ] Work declined because of capacity reviewed.
 - [ ] Services routinely exceeding booked duration reviewed.
-- [ ] Effective labor compensation reviewed.
 - [ ] Profit / cash-reserve goals reviewed.
-- [ ] Professional local-market pricing reviewed.
+- [ ] Professional local Sacramento market pricing reviewed.
 
 Do not change Client-facing pricing merely because a number appears lower or higher than another provider.
 

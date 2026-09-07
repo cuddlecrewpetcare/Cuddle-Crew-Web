@@ -164,6 +164,8 @@ Standard 30-minute midday add-on during Overnight Care:
 
 Longer midday care uses the applicable normal 60- or 90-minute daytime rate. A midday dog walk uses the applicable normal Dog Walk rate.
 
+Standard Overnight Care is the approximately 6:00 PM–8:00 AM core overnight stay, not fourteen hourly units or uninterrupted presence. PPC care instructions must record each pet’s maximum safe and comfortable alone time and any departure limits needed for the confirmed plan. Reasonable departures may occur when compatible with that plan. True 24-Hour Continuous Care is a separate service.
+
 ### Separate Service-Unit Rule
 
 An Overnight and a separate midday/daytime arrival are distinct services.
@@ -257,7 +259,7 @@ These are **review triggers, not automatic complexity surcharges**.
 
 When a large or complex household is reviewed, use this order:
 
-1. determine whether the complete routine safely fits a standard 30-, 60-, or 90-minute Service;
+1. determine whether the complete routine safely fits a standard 30-, 60-, or 90-minute ordinary Service or the separate approved Continuous Care structure;
 2. if more time is needed, move to the appropriate longer standard Service;
 3. if one visit is still insufficient, use an additional normal Service or different care frequency where appropriate;
 4. apply normal additional-pet pricing only where the additional pets' routines genuinely fit the booked time;
@@ -266,9 +268,9 @@ When a large or complex household is reviewed, use this order:
 
 Do **not** add a generic "complexity fee," "large household fee," "medical risk fee," or similar surcharge merely because a review trigger exists.
 
-## 11. Care Beyond the Standard 90-Minute Structure
+## 11. Continuous Care and Care Beyond an Ordinary 90-Minute Visit
 
-Ninety minutes remains the maximum **standard public daytime Service** at launch.
+Ninety minutes remains the maximum ordinary public Drop-In or Dog Walk duration. It is not a maximum on all daytime care.
 
 Do not add a public 2-hour or 120-minute service solely to make the estimator handle uncommon requests.
 
@@ -278,22 +280,34 @@ If care may exceed 90 minutes:
 2. use standard service blocks where they accurately represent the care;
 3. a staff-only 15-minute Supplemental Care block may be paired with a standard service only when it represents a genuinely defined supplemental routine and the same-arrival rules are satisfied;
 4. use multiple separate Services where separate care periods/arrivals are appropriate;
-5. if the Client truly needs more than the standard structure as one extended continuous daytime presence, route to **Personalized review required** rather than publishing an automatic 2-hour rate.
+5. if the Client needs one dedicated consecutive daytime block, use the separate 3–8 hour Continuous Care service where appropriate and route the request to **Personalized review required** for capacity and acceptance.
 
-Continuous/extended daytime presence is not automatically the same product as a Drop-In and should be reviewed for capacity, scope, other Client commitments, and sustainability.
+Continuous Care is not a stacked Drop-In. Configure separate requestable PPC service items for 3 hours ($90), 4 hours ($120), 5 hours ($145), 6 hours ($165), 7 hours ($185), and the 8-hour Extended Day ($200). Each item uses its fixed household base price, includes ordinary routine care, and has no automatic normal per-pet modifiers. Do not implement the ladder as duration multiplied by $30.
+
+Configure 24-Hour Continuous Care as a separate limited-capacity, staff-quoted/manual-approval request item starting at $300 per 24-hour period. Do not calculate it as $30 multiplied by 24. Do not present it as guaranteed inventory. Ordinary rest is included, and the scope is not second-by-second monitoring.
+
+All Continuous Care requests remain subject to capacity, scope, other Client commitments, sustainability, travel, and safety review. The sitter generally remains at the Client residence except for an emergency or a departure specifically discussed and approved. The service is not boarding, daycare, or veterinary monitoring. Large or intensive households are handled through review, Service choice, modified scope, custom quote, referral, or decline—not ordinary per-pet or hourly multiplication.
+
+PPC should store the final Client-specific schedule, approved departures if any, maximum safe and comfortable alone-time disclosures for each pet, care scope, final quote, and confirmation. Do not create a second booking system outside PPC.
 
 ## 12. Holiday / Peak-Date Implementation
 
 Use `logic/36-holiday-peak-date-calendar.md` to determine whether a service date qualifies.
 
+The current calendar contains exact approved periods for 2026, 2027, and 2028, including the 2028 Christmas / New Year's period through January 3, 2029. PPC should configure those periods from `logic/36`; dates after that crossover remain inactive until separately approved.
+
 - daytime qualifying appointment: +$15;
 - qualifying Overnight: +$30/night.
+- qualifying 3–8 hour Continuous Care block: +$15 per block/service arrival;
+- qualifying 24-Hour Continuous Care period: +$30 per 24-hour period.
 
 For an Overnight, use the date the Overnight begins unless the approved calendar states otherwise.
 
 An Overnight and a separate midday arrival are separate service events and can each qualify.
 
 Multiple internal line items representing one continuous daytime appointment do not create multiple holiday surcharges solely because of the line-item count.
+
+For cancellation configuration and staff handling, 3–8 hour Continuous Care uses the daytime framework, including the holiday daytime framework when applicable. A 24-Hour Continuous Care booking uses the Overnight/multi-day capacity framework, including the holiday Overnight framework; seven or more consecutive 24-hour periods use the Extended Booking framework. Preserve compassionate-exception discretion.
 
 ## 13. Reservation Payment Working Rule
 
@@ -355,6 +369,8 @@ Client-facing Estimates should show understandable final service lines, for exam
 - 3 Overnight Stays — Dog + 2 Cats;
 - 3 Dedicated 30-Minute Dog Walks;
 - 3 Cat Care Visits;
+- 1 Five-Hour Continuous Care Block — Household;
+- 2 24-Hour Continuous Care Periods — starting-price request pending final review;
 - Extended Service Area — 3 daytime arrivals;
 - Holiday / Peak-Date Fee where applicable;
 - Estimated Total;
@@ -374,7 +390,7 @@ Use "generally required" rather than representing 25% as an inflexible legal min
 
 ## 18. Future Holiday-Year Planning
 
-For future calendar years, begin annual planning with the same core travel-demand categories used for 2026 unless actual Cuddle Crew Pet Care demand data or an owner policy decision supports a change:
+Exact periods for 2026–2028 are approved in `logic/36-holiday-peak-date-calendar.md`. For calendar years after 2028, begin annual planning with the same core travel-demand categories unless actual Cuddle Crew Pet Care demand data or an owner policy decision supports a change:
 
 - Martin Luther King Jr. Day weekend;
 - Presidents' Day weekend;
@@ -385,7 +401,7 @@ For future calendar years, begin annual planning with the same core travel-deman
 - Thanksgiving peak period;
 - Christmas / New Year's peak period.
 
-This is a **planning baseline only**. Exact dates must be deliberately approved for each year in `logic/36-holiday-peak-date-calendar.md` before the website, estimator, PPC configuration, or cancellation classification treats them as qualifying dates.
+For years after 2028, this is a **planning baseline only**. Other than the approved 2028 Christmas / New Year's crossover through January 3, 2029, exact later dates must be deliberately approved in `logic/36-holiday-peak-date-calendar.md` before the website, estimator, PPC configuration, or cancellation classification treats them as qualifying dates.
 
 Do not automatically add Easter, Mother's Day, Father's Day, or other observances unless actual demand data or a new owner decision supports doing so.
 
@@ -397,7 +413,9 @@ Do not automatically add Easter, Mother's Day, Father's Day, or other observance
 - Small-animal-only Overnight Care must return personalized review; $80 is an internal benchmark, not a public guaranteed rate.
 - Extended/Far Extended Overnights must return personalized review; do not invent an automatic zone-based per-night travel fee.
 - Large/complex-household triggers do not create automatic complexity surcharges; solve legitimate workload first through appropriate time/service structure.
-- Ninety minutes is the maximum standard public daytime duration at launch; do not invent a public 2-hour rate.
+- Ninety minutes is the maximum ordinary Drop-In or Dog Walk duration; do not invent a public 2-hour ordinary visit. Use the separate approved 3–8 hour Continuous Care ladder only when a dedicated consecutive block is the correct fit.
+- Do not add ordinary per-pet modifiers to Continuous Care or calculate its fixed blocks by multiplying an hourly rate.
+- Do not mark Continuous Care categorically unavailable or automatically refer a 24-hour request solely because it seeks continuous presence; perform the required review.
 - The 15-minute service is internal supplemental care only; do not publish it as a standalone client-requestable visit without a new owner decision.
 - Do not make pricing depend on the order in which mixed-species pets are selected.
 - Do not duplicate trip-based fees merely because a single continuous appointment is represented by multiple service line items.

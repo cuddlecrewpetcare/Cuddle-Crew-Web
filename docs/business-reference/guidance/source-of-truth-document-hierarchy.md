@@ -627,7 +627,7 @@ do not treat its incomplete fields as current policy.
 
 Examples currently include areas such as:
 
-- exact holiday dates until approved;
+- future-year holiday dates until each annual calendar is approved;
 - unresolved credential/insurance rows until populated.
 
 Where needed:
@@ -902,7 +902,7 @@ Codex should flag cases such as:
 - Precise Petcare Service differs from approved Service scope;
 - website advertises transportation while coverage is unresolved;
 - FAQ claims a credential not verified in the Training Matrix;
-- holiday dates are hardcoded despite Holiday Calendar remaining unresolved;
+- holiday dates are hardcoded without exactly matching a CURRENT / APPROVED annual Holiday Calendar;
 - estimator auto-quotes a Custom Quote review case;
 - calendar displays availability that conflicts with capacity rules.
 - phone-number collection or website submission is treated as SMS consent;

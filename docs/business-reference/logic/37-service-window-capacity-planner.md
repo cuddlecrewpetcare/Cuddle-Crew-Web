@@ -82,6 +82,12 @@ Where appropriate, drive time should include:
 
 Do not evaluate capacity using hands-on care time alone.
 
+### Continuous Care Capacity
+
+A confirmed 3–8 hour Continuous Care block reserves one dedicated consecutive period at the Client residence. Do not schedule ordinary visits or other work inside that same period unless a departure was specifically discussed, approved, and remains compatible with the confirmed Continuous Care scope. A 24-Hour Continuous Care period is an Overnight/multi-day capacity commitment and requires individualized review of the entire period and adjacent commitments.
+
+The existence of a fixed block price does not create capacity. Public availability may show **Request for review** or **Personalized review required** without exposing private schedule, route, or capacity calculations.
+
 ## 4. Appointment Load Components
 
 For each appointment, consider:

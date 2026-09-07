@@ -73,7 +73,8 @@ A higher price must not be used to make an otherwise out-of-scope Service accept
 - [ ] Is the requested care frequency adequate while the Client is away?
 - [ ] Are feeding, water, elimination, medication, companionship, monitoring, and other welfare needs reasonably covered?
 - [ ] Is the gap between responsible in-person care appropriate for the specific pet and circumstances?
-- [ ] Have age, medical condition, routine, anxiety, mobility, continence, housetraining, species, and other relevant factors been considered?
+- [ ] Has each pet’s maximum safe and comfortable alone time been accurately disclosed?
+- [ ] Have separation anxiety or isolation distress, destructive behavior, vocalization, escape risk, age, medical condition, medication, feeding, elimination, nighttime routine, mobility, continence, housetraining, species, and other relevant factors been considered?
 
 Automated feeders, water fountains, cameras, self-cleaning litter boxes, or similar equipment may support a care plan but do not automatically replace appropriate in-person welfare checks.
 
@@ -93,6 +94,7 @@ Do not approve an inadequate care plan merely because it is cheaper.
 - [ ] Does the routine require 30, 60, or 90 minutes?
 - [ ] Does the routine require multiple Services?
 - [ ] Does the routine require Overnight Care plus separate daytime care?
+- [ ] Does the routine require a separate 3–8 hour Continuous Care block or limited 24-Hour Continuous Care?
 - [ ] Does the requested scope exceed the standard daytime structure?
 
 General duration guidance:
@@ -117,7 +119,7 @@ Use personalized review when:
 - behavior or medical needs materially change scope;
 - separation or rotation requirements are complex;
 - unusual species or husbandry are involved;
-- continuous care is requested;
+- Continuous Care is requested and requires capacity/scope review;
 - or another unusual condition materially changes the standard Service structure.
 
 Do not shorten the Service below what the care routine reasonably requires solely to reduce price.
@@ -340,6 +342,7 @@ For Overnight requests:
 
 - [ ] Requested scope fits the standard Overnight framework.
 - [ ] Client understands Overnight Care is generally approximately 6:00 PM–8:00 AM and is not 24-hour continuous care.
+- [ ] Client understands the core Standard Overnight stay may include reasonable departures compatible with each pet’s disclosed maximum safe and comfortable alone time and confirmed care plan.
 - [ ] Separate daytime needs have been identified.
 - [ ] Home sleeping/bathroom/HVAC requirements are workable.
 - [ ] Cameras/audio devices do not create unreasonable privacy concerns.
@@ -352,7 +355,7 @@ Overnight Care outside the Standard travel zone requires individualized review.
 
 ## 18. Long-Stay Review
 
-Where the booking consists of seven or more consecutive Overnights:
+Where the booking consists of seven or more consecutive Overnights or 24-Hour Continuous Care periods:
 
 - [ ] Long-Stay Review completed.
 - [ ] Personal schedule sustainability reviewed.
@@ -396,9 +399,9 @@ Do not accept unfamiliar or unsupported husbandry solely because the task appear
 - [ ] Does the requested care materially exceed the normal Overnight or daytime Service structure?
 - [ ] Is the requested scope operationally sustainable?
 
-Continuous care is not part of the normal standard Overnight Service.
+Continuous Care is separate from Standard Overnight Care. Approved household block rates are 3 hours $90, 4 hours $120, 5 hours $145, 6 hours $165, 7 hours $185, and 8 hours $200. Limited 24-Hour Continuous Care starts at $300 per 24-hour period.
 
-Continuous-care requests require personalized review and may be unavailable.
+Continuous Care requests require personalized capacity, safety, scope, schedule, travel, and household-intensity review. They may be modified, custom quoted, referred, or declined after review, but must not be treated as categorically unavailable or automatically referred solely because continuous presence is requested. Do not apply ordinary per-pet or hourly multiplication.
 
 ## 22. Pricing and Scope Confirmation
 

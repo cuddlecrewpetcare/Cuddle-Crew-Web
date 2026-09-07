@@ -12,23 +12,24 @@ This document is the durable testing contract for Cuddle Crew Pet Care. It descr
 
 ## Current inventory
 
-The F14 baseline contains 142 Node tests and 21 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
+The current baseline contains 157 Node tests and 22 Playwright tests. The executable owning-suite counts are exact and non-overlapping:
 
 | Owning suite | Count | Primary purpose |
 | --- | ---: | --- |
 | `tests/api-security.test.ts` | 38 | Request/response bounds and deadlines, API contracts, provider adapters, idempotency/partial failure, security/privacy boundaries, rate/state limits, and side-effect isolation |
-| `tests/business-rules.test.ts` | 22 | Pricing, travel, short-notice, holiday-placeholder, estimator, and planner decision logic |
-| `tests/care-planner.test.ts` | 23 | Care-plan suitability, duration, care-gap, and review-boundary behavior |
+| `tests/business-rules.test.ts` | 27 | Pricing, travel, short-notice, approved 2026–2028 holiday boundaries, Continuous Care, estimator, and planner decision logic |
+| `tests/care-planner.test.ts` | 24 | Care-plan suitability, duration, care-gap, alone-time/behavior, and review-boundary behavior |
 | `tests/deployment-safety.test.ts` | 4 | CI, deployment, preview, release-provenance, and production-safety policy guards |
-| `tests/feature-completion.test.ts` | 15 | Address parsing, bounded planning state, privacy-safe persistence, and feature gates |
+| `tests/feature-completion.test.ts` | 16 | Address parsing, bounded planning state including Continuous Care, privacy-safe persistence, holiday configuration, and feature gates |
 | `tests/filesystem-safety.test.ts` | 5 | POSIX/Windows containment, cleanup allowlisting, link/junction refusal, filename rules, and import-path construction |
 | `tests/growth-features.test.ts` | 6 | Referral allowlisting, public analytics minimization, and manifest safety |
-| `tests/production-reliability.test.ts` | 12 | Health contract plus source/build/config regression guards for critical public behavior |
+| `tests/local-env.test.ts` | 6 | Doctor/setup environment detection, version/fingerprint checks, dependency and Playwright readiness |
+| `tests/production-reliability.test.ts` | 13 | Health contract plus source/build/config and public Continuous/holiday regression guards |
 | `tests/observability.test.ts` | 4 | Structured redaction schema, correlation IDs, and bounded application error taxonomy |
 | `tests/supply-chain.test.ts` | 3 | Lockfile, package-source, integrity, and lifecycle-review guard behavior |
-| `tests/time-determinism.test.ts` | 6 | Business timezone, DST ambiguity, date-only arithmetic, wall-clock notice, and sitemap determinism |
+| `tests/time-determinism.test.ts` | 7 | Business timezone, DST ambiguity, date-only arithmetic, wall-clock notice, approved holiday boundaries, and sitemap determinism |
 | `tests/recovery-safety.test.ts` | 4 | Backup/recovery boundary, manifest, runbook, and no-private-copy policy guards |
-| `e2e/public-flows.spec.ts` | 7 | Critical home, estimator, planner, contact, consent, responsive, and session-state browser journeys |
+| `e2e/public-flows.spec.ts` | 8 | Critical home, estimator, Continuous Care, holiday, planner, contact, consent, responsive, and session-state browser journeys |
 | `e2e/launch-review.spec.ts` | 5 | Route/status smoke, public progressive content, deployment headers, preview indexing, keyboard/reflow, and reduced-motion paths |
 | `e2e/accessibility.spec.ts` | 9 | Axe scans, navigation/focus, combobox keyboard behavior, touch, reduced motion, visible focus, and six-width reflow |
 
@@ -41,7 +42,7 @@ The requested semantic categories overlap by design:
 | Security | Strict JSON limits, untrusted-IP handling, SSRF-oriented calendar URL validation, rate limiting, input rejection, bounded fetches, and supply-chain guards |
 | Privacy | Coarse calendar output, no-store responses, safe errors, URL/storage/analytics minimization, server-created consent metadata, and public response shaping |
 | Business-rule | Pricing, pet modifiers, travel, short notice, overnight, review gates, care suitability, cancellation-copy, and authority-linkage regressions |
-| E2E/smoke | 21 browser cases covering critical journeys, all public routes, redirects, progressive rendering, deployment headers/indexing, failure-safe contact UX, and accessibility/responsive regressions |
+| E2E/smoke | 22 browser cases covering critical journeys, all public routes, redirects, progressive rendering, Continuous Care/holiday behavior, deployment headers/indexing, failure-safe contact UX, and accessibility/responsive regressions |
 | Accessibility | 9 focused browser checks plus relevant public-flow/launch cases cover representative Axe scans, keyboard/focus, touch, reduced motion, and reflow; automated coverage is not WCAG certification |
 | Build/config | Source-level public-content guards, metadata/manifest behavior, typecheck, lint, and production build |
 | Supply chain | 3 unit guards plus `check:supply-chain` for the installed graph and lockfile |
@@ -62,7 +63,7 @@ Build/config checks prove that source and configuration compile into deployable 
 
 Before changing a business-rule test, read `docs/business-reference/README.md`, the source hierarchy, and the most specific applicable `CURRENT / APPROVED` reference. Tests reflect approved references; stale test expectations never make stale implementation behavior authoritative. If implementation or a test conflicts with an approved source, investigate and correct the authorized implementation. If two controlling approved sources materially conflict, stop for human review. Never edit an authoritative reference merely to make a test pass.
 
-Holiday automation stays disabled while the holiday calendar is `PLACEHOLDER`. Client-facing failure/review output remains neutral, normally `Personalized review required`, without exposing private thresholds or review reasons.
+Holiday automation uses only the exact CURRENT / APPROVED 2026–2028 calendars and their stated crossovers through January 3, 2029. Dates after that final approved crossover stay disabled pending future approval. Client-facing failure/review output remains neutral, normally `Personalized review required`, without exposing private thresholds or review reasons.
 
 ## Critical regression matrix
 
@@ -73,7 +74,7 @@ Holiday automation stays disabled while the holiday calendar is `PLACEHOLDER`. C
 | Rate limiting and duplicates | Deterministic helper boundaries and contact duplicate route behavior | Multi-instance/distributed limits require a future persistence design |
 | Availability privacy | POST body only, no-store, coarse output, bounded calendar parsing, safe provider fallback | Live calendar provider contract is deliberately not exercised |
 | Estimator/planner | Extensive logic matrices, negative route inputs, neutral review output, critical browser flows | Re-audit whenever approved business references change |
-| Pricing/travel/short notice/overnight | Unit and source-linkage regressions | Exact holiday dates remain unresolved because the calendar is not approved |
+| Pricing/travel/short notice/Overnight/Continuous Care/holidays | Unit, boundary, source-linkage, and browser regressions | Future holiday years require explicit annual approval; booking acceptance remains human-reviewed |
 | Address integration | Parser/feature gates and fail-closed no-configuration route tests | Successful Google response contracts are deferred until adapter churn justifies fixtures |
 | Client-safe errors | Contact, address, availability, health, and fallback-page checks | Maintain whenever new routes/providers are added |
 | Server/client environment boundary | Feature gates, response minimization, build/supply-chain review | No automated compiled-bundle secret-name test; current secret scan/build review remains the gate |

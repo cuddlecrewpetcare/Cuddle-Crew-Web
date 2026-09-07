@@ -6,15 +6,17 @@
 >
 > Authority: AUTHORITATIVE FOR THE INTERNAL LONG-STAY CAPACITY AND SUSTAINABILITY REVIEW LOGIC COVERED BY THIS DOCUMENT
 >
-> Website use: Internal review logic for seven or more consecutive Overnights. Do not imply an automatic long-stay surcharge or discount.
+> Website use: Internal review logic for seven or more consecutive Standard Overnights or 24-Hour Continuous Care periods. Do not imply an automatic long-stay surcharge or discount.
 
 ## Purpose
 
-This document defines the internal review required for Cuddle Crew Pet Care LLC bookings consisting of seven (7) or more consecutive Overnight Services.
+This document defines the internal review required for Cuddle Crew Pet Care LLC bookings consisting of seven (7) or more consecutive Standard Overnight Services or seven (7) or more consecutive 24-Hour Continuous Care periods.
 
 The purpose of the Long-Stay Review is to determine whether the full booking remains safe, sustainable, operationally workable, and compatible with the pets’ needs, the Client’s expectations, Cuddle Crew’s schedule, route obligations, supplies, emergency planning, and other confirmed commitments.
 
-Seven or more consecutive Overnights trigger this review because a longer booking reserves a substantial block of time and can create cumulative scheduling, route, supply, continuity, and workload considerations that may not be apparent when reviewing a single Overnight.
+Seven or more consecutive Overnights or 24-hour Continuous Care periods trigger this review because a longer booking reserves a substantial block of time and can create cumulative scheduling, route, supply, continuity, and workload considerations that may not be apparent when reviewing a single period.
+
+Where this checklist refers to an Overnight, the equivalent capacity, sustainability, supply, continuity, safety, and payment review also applies to a qualifying 24-Hour Continuous Care booking. Standard Overnight may include reasonable departures compatible with the confirmed care plan; 24-Hour Continuous Care generally requires remaining at the residence except for an emergency or specifically discussed and approved departure. Do not conflate the two Services.
 
 This is a review trigger only.
 
@@ -34,7 +36,7 @@ Precise Petcare should remain the operational source of truth for current Client
 
 # LONG-STAY REVIEW CHECKLIST
 
-Complete this review for any booking consisting of seven (7) or more consecutive Overnight Services.
+Complete this review for any booking consisting of seven (7) or more consecutive Overnight Services or 24-Hour Continuous Care periods.
 
 ## 1. Booking Dates and Length
 
@@ -43,6 +45,7 @@ Record internally:
 - first Overnight date;
 - final Overnight date;
 - total number of consecutive nights;
+- or first and final 24-Hour Continuous Care period and total number of consecutive periods;
 - any separate daytime Services;
 - any midday visits;
 - any Dog Walks;
@@ -76,7 +79,7 @@ The full duration should be considered as one sustained commitment.
 - [ ] Feeding or elimination needs outside the Overnight window have been identified.
 - [ ] Daytime care can be completed reliably for the full stay.
 
-Standard Overnight Care generally covers approximately 6:00 PM through 8:00 AM and does not include unlimited daytime care.
+Standard Overnight Care generally covers approximately 6:00 PM through 8:00 AM and does not include unlimited daytime care. A 24-Hour Continuous Care booking is separately scoped and priced, and is not a substitute label for Standard Overnight Care.
 
 A standard midday add-on is one separate 30-minute daytime care visit.
 
@@ -314,6 +317,7 @@ Holiday or peak pricing does not guarantee capacity.
 ## 20. Pricing Review
 
 - [ ] Standard Overnight pricing has been applied correctly.
+- [ ] For 24-Hour Continuous Care, the starting rate, household-bundled scope, and individualized final quote have been applied correctly without ordinary per-pet or hourly multiplication.
 - [ ] Additional-pet pricing has been applied correctly where applicable.
 - [ ] Daytime/midday pricing has been applied correctly.
 - [ ] Holiday modifiers have been applied correctly where applicable.
@@ -466,7 +470,7 @@ This is preferable to displaying the internal checklist.
 
 Website logic may detect when:
 
-`consecutive_overnights >= 7`
+`consecutive_overnights >= 7` or `consecutive_24_hour_continuous_periods >= 7`
 
 and route the booking to internal Long-Stay Review.
 
@@ -648,8 +652,8 @@ If this document conflicts with a CURRENT / APPROVED Client-facing agreement or 
 - Do not publish the full internal Long-Stay Review.
 - Do not create an automatic long-stay surcharge.
 - Do not create an automatic long-stay discount.
-- Do not assume seven or more nights means decline.
-- Do not assume seven or more nights means acceptance.
+- Do not assume seven or more nights or 24-hour periods means decline.
+- Do not assume seven or more nights or 24-hour periods means acceptance.
 - Do not bypass review because standard pricing can be calculated.
 - Do not treat price calculation as booking acceptance.
 - Do not expose personal/work/school calendar details publicly.

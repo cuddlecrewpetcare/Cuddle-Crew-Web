@@ -353,6 +353,21 @@ Do not invent or introduce specialized behavior equipment without appropriate Cl
 
 Do not rely on equipment alone where the underlying behavior remains unsafe.
 
+### Alone-Time Behavior and Maximum Safe Duration
+
+For every pet, record the Client’s accurate maximum safe and comfortable alone time and review any:
+
+- separation anxiety or isolation distress;
+- destructive behavior;
+- vocalization;
+- escape attempts;
+- confinement response;
+- puppy or senior factors;
+- medication, feeding, elimination, or nighttime needs; and
+- prior events that show the entered limit may not be reliable.
+
+Do not infer that a quiet pet can safely tolerate a longer gap. If ordinary scheduled visits or reasonable Standard Overnight departures would exceed the disclosed limit, require a different care plan or consider Continuous Care through personalized review. This is a service-fit decision, not an automatic behavior surcharge.
+
 ## 12. Service-Type Fit
 
 Determine whether the requested Service remains appropriate.

@@ -46,7 +46,11 @@ B. The Contractor is agreeable to providing such services to the Client on the t
 
 1. The Client hereby agrees to engage the Contractor to provide the Client with the following services (the "Services"):
 
-   a. The Contractor will provide professional in-home pet care services, which may include pet sitting, drop-in visits, dog walking, overnight care, feeding, fresh water, potty breaks, litter box or enclosure care, routine agreed medication administration, companionship, enrichment, basic pet-related cleanup, agreed home-security checks, and related pet-care tasks as specified in the Client’s confirmed booking and current care instructions. The exact Services, pets, service dates, visit durations, care schedule, pricing, and approved tasks will be determined through the booking process and the Client’s current approved Precise Petcare records. Services outside the Contractor’s training, insurance coverage, safety limits, legal scope, or agreed service scope may be modified, declined, or referred out.
+   a. The Contractor will provide professional in-home pet care services, which may include pet sitting, drop-in visits, dog walking, Standard Overnight Care, Continuous Care, feeding, fresh water, potty breaks, litter box or enclosure care, routine agreed medication administration, companionship, enrichment, basic pet-related cleanup, agreed home-security checks, and related pet-care tasks as specified in the Client’s confirmed booking and current care instructions. The exact Services, pets, service dates, visit durations, care schedule, pricing, and approved tasks will be determined through the booking process and the Client’s current approved Precise Petcare records. Services outside the Contractor’s training, insurance coverage, safety limits, legal scope, or agreed service scope may be modified, declined, or referred out.
+
+Standard Overnight Care generally covers approximately 6:00 PM through 8:00 AM. It bundles the core overnight stay but is not continuous presence or a fourteen-hour hourly service. The Contractor may make reasonable departures during Standard Overnight Care when compatible with each pet’s disclosed maximum safe and comfortable alone time, the confirmed care plan, feeding, elimination, medication and timing needs, behavior, nighttime needs, and approved Service scope. Daytime care is separate unless expressly included in the confirmed booking.
+
+Continuous Care is a separate, limited-capacity Service consisting of a dedicated consecutive block at the Client’s residence. During a confirmed Continuous Care block, the Contractor generally remains at the residence except for an emergency or a departure specifically discussed and approved. Continuous Care is not boarding, daycare, veterinary monitoring, or a guarantee of second-by-second observation. A limited twenty-four-hour Continuous Care Service may be offered only after individualized review; ordinary rest and sleep remain part of that Service and do not change it into a second-by-second monitoring promise.
 
 2. The Services may include additional tasks expressly agreed to by the Parties through the Contractor’s approved booking or client-portal workflow. The Contractor is not obligated to perform tasks that are unsafe, outside the agreed scope, outside training or insurance coverage, or not reasonably achievable within the booked service duration.
 
@@ -175,7 +179,7 @@ The Contractor may modify, discontinue, or decline any task or Service that cann
 
 ### 30. Client Disclosure, Access, and Third Parties
 
-The Client will provide complete and accurate information regarding all pets, medications, behavior, bite or escape history, access instructions, household occupants, expected visitors, and other information reasonably necessary for the safe provision of the Services. The Client will provide safe and reliable access to the service location and will disclose relevant locks, keys, codes, gates, alarm systems, cameras or audio devices, concierge or leasing-office restrictions, and third-party caregivers or visitors. In the event that conditions at the service location reasonably appear unsafe, the Contractor may decline entry or leave the property and contact the Client.
+The Client will provide complete and accurate information regarding all pets, medications, behavior, bite or escape history, access instructions, household occupants, expected visitors, and other information reasonably necessary for the safe provision of the Services. This includes each pet’s maximum time safely and comfortably left alone and any relevant separation anxiety, isolation distress, destructive behavior, vocalization, escape risk, puppy or senior needs, medication, feeding, elimination, or nighttime needs. The Client will provide safe and reliable access to the service location and will disclose relevant locks, keys, codes, gates, alarm systems, cameras or audio devices, concierge or leasing-office restrictions, and third-party caregivers or visitors. In the event that conditions at the service location reasonably appear unsafe, the Contractor may decline entry or leave the property and contact the Client.
 
 ### 31. Emergency Veterinary Care
 
@@ -261,7 +265,8 @@ In particular:
 - Website estimates and preliminary quotes do not independently determine the final booking scope, price, or acceptance.
 - A calculated price does not guarantee booking acceptance.
 - Cancellation, refund, holiday, short-notice, early-return, trip-extension, and booking-change information must remain consistent with the current Cancellation, Booking Change & Refund Policy.
-- Overnight Care must not be represented as 24-hour continuous care unless a separate service explicitly provides that scope.
+- Standard Overnight Care must not be represented as 24-hour Continuous Care; the separately named 3–8 hour and limited 24-Hour Continuous Care Services must preserve their distinct scope and review requirements.
+- Website and portal workflows should collect each pet’s maximum safe and comfortable alone time and must not imply uninterrupted Standard Overnight presence.
 - Website safety language must preserve Cuddle Crew’s right to modify, discontinue, or decline unsafe or out-of-scope care.
 - The website must not imply that payment requires Cuddle Crew to perform unsafe handling, forceful restraint, unauthorized medical procedures, transportation outside applicable coverage, or other out-of-scope services.
 - Emergency veterinary authority must defer to the separate Emergency Veterinary Authorization & Care Release.
@@ -288,7 +293,8 @@ In particular:
 - Do not use general pet-sitting industry practices to fill a gap in this Agreement.
 - Do not expose client-specific Precise Petcare data through public website functionality.
 - Do not imply that a website estimate, quote request, payment, or form submission constitutes guaranteed booking acceptance unless an authoritative source explicitly states that it does.
-- Do not imply that Overnight Care is 24-hour continuous care.
+- Do not imply that Standard Overnight Care is 24-hour Continuous Care or that reasonable compatible departures are prohibited.
+- Do not represent Continuous Care as boarding, daycare, veterinary monitoring, or guaranteed second-by-second observation.
 - Do not imply exact arrival times where the Agreement provides for service windows.
 - Do not imply that payment overrides safety, animal welfare, insurance limitations, legal limitations, or approved service scope.
 - When internal logic requires review, prefer a client-facing result such as "Personalized review required" instead of exposing private internal reasoning.

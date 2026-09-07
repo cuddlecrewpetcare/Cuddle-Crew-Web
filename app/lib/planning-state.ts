@@ -1,8 +1,9 @@
 import type {EstimateService,PetType} from './estimate-types.ts';
+import {serviceCatalog} from '../config/business.ts';
 
 export type PlanningState={petTypes:PetType[];service?:EstimateService;blocks:number[];midday?:'none'|'drop30'|'drop60'|'drop90'|'walk30'|'walk60'|'walk90';zip?:string;zone?:string;availability?:string};
 const petTypes=new Set<PetType>(['dog','cat','rabbit','bird','fish','small']);
-const services=new Set<EstimateService>(['drop30','drop60','drop90','walk30','walk60','walk90','overnight']);
+const services=new Set<EstimateService>(Object.keys(serviceCatalog) as EstimateService[]);
 export const sanitizePlanningState=(input:Record<string,unknown>):PlanningState=>({
  petTypes:Array.isArray(input.petTypes)?input.petTypes.filter((x):x is PetType=>typeof x==='string'&&petTypes.has(x as PetType)).slice(0,8):[],
  service:typeof input.service==='string'&&services.has(input.service as EstimateService)?input.service as EstimateService:undefined,
