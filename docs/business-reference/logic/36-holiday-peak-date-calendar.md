@@ -4,13 +4,13 @@
 >
 > Classification: INTERNAL REFERENCE
 >
-> Authority: AUTHORITATIVE FOR 2026 QUALIFYING HOLIDAY AND PEAK-DATE PERIODS
+> Authority: AUTHORITATIVE FOR 2026–2028 QUALIFYING HOLIDAY AND PEAK-DATE PERIODS
 >
 > Website use: Exact holiday/peak periods for pricing, cancellation classification, estimate-builder logic, booking disclosures, and PPC alignment.
 
 ## Purpose
 
-This document is the annual source of truth for the exact holiday and designated peak-date periods used by Cuddle Crew Pet Care LLC ("Cuddle Crew Pet Care") for calendar year 2026.
+This document is the annual source of truth for the exact holiday and designated peak-date periods used by Cuddle Crew Pet Care LLC ("Cuddle Crew Pet Care") for calendar years 2026, 2027, and 2028, including the approved Christmas / New Year's crossovers into January 2027, January 2028, and January 2029.
 
 The CURRENT / APPROVED Pricing, Fees & Surcharge Policy controls the surcharge amounts. The CURRENT / APPROVED Cancellation, Booking Change & Refund Policy controls holiday cancellation terms. This file controls **which dates qualify**.
 
@@ -31,9 +31,39 @@ All dates use the business's local Sacramento-area time zone.
 
 These periods were selected as travel-demand/peak-care periods rather than by automatically adopting every federal, cultural, religious, or calendar observance.
 
-## Not Qualifying at Launch
+## 2027 Approved Holiday / Peak Periods
 
-The following are **not** designated holiday/peak periods for 2026 unless Cuddle Crew Pet Care later adopts a written amendment before an affected booking is confirmed:
+All dates use the business's local Sacramento-area time zone.
+
+| Holiday / Peak Period | First Qualifying Date | Final Qualifying Date | Daytime +$15 | Overnight +$30 |
+| --- | --- | --- | --- | --- |
+| Martin Luther King Jr. Day Weekend | January 15, 2027 | January 18, 2027 | Yes | Yes |
+| Presidents' Day Weekend | February 12, 2027 | February 15, 2027 | Yes | Yes |
+| Memorial Day Weekend | May 28, 2027 | May 31, 2027 | Yes | Yes |
+| Juneteenth Weekend | June 18, 2027 | June 20, 2027 | Yes | Yes |
+| Independence Day Weekend | July 2, 2027 | July 5, 2027 | Yes | Yes |
+| Labor Day Weekend | September 3, 2027 | September 6, 2027 | Yes | Yes |
+| Thanksgiving Peak Period | November 25, 2027 | November 28, 2027 | Yes | Yes |
+| Christmas / New Year's Peak Period | December 24, 2027 | January 3, 2028 | Yes | Yes |
+
+## 2028 Approved Holiday / Peak Periods
+
+All dates use the business's local Sacramento-area time zone.
+
+| Holiday / Peak Period | First Qualifying Date | Final Qualifying Date | Daytime +$15 | Overnight +$30 |
+| --- | --- | --- | --- | --- |
+| Martin Luther King Jr. Day Weekend | January 14, 2028 | January 17, 2028 | Yes | Yes |
+| Presidents' Day Weekend | February 18, 2028 | February 21, 2028 | Yes | Yes |
+| Memorial Day Weekend | May 26, 2028 | May 29, 2028 | Yes | Yes |
+| Juneteenth Weekend | June 16, 2028 | June 19, 2028 | Yes | Yes |
+| Independence Day Period | June 30, 2028 | July 4, 2028 | Yes | Yes |
+| Labor Day Weekend | September 1, 2028 | September 4, 2028 | Yes | Yes |
+| Thanksgiving Peak Period | November 23, 2028 | November 26, 2028 | Yes | Yes |
+| Christmas / New Year's Peak Period | December 24, 2028 | January 3, 2029 | Yes | Yes |
+
+## Not Qualifying Under the Approved 2026–2028 Calendars
+
+The following are **not** designated holiday/peak periods for 2026–2028 unless Cuddle Crew Pet Care later adopts a written amendment before an affected booking is confirmed:
 
 - Easter weekend;
 - Mother's Day;
@@ -85,11 +115,11 @@ Before relying on holiday pricing for a new calendar year:
 6. verify website/estimate-builder logic;
 7. publish qualifying periods before affected bookings are confirmed.
 
-Do not automatically roll 2026 dates into a future year.
+Do not automatically roll the approved 2026–2028 dates into a later year.
 
 ### Future-Year Planning Baseline
 
-Unless actual Cuddle Crew Pet Care demand data or a deliberate owner policy decision supports a change, begin future-year planning with these same **categories**:
+For calendar years after 2028, unless actual Cuddle Crew Pet Care demand data or a deliberate owner policy decision supports a change, begin future-year planning with these same **categories**:
 
 - Martin Luther King Jr. Day weekend;
 - Presidents' Day weekend;
@@ -100,7 +130,7 @@ Unless actual Cuddle Crew Pet Care demand data or a deliberate owner policy deci
 - Thanksgiving peak period;
 - Christmas / New Year's peak period.
 
-This category list is **not an automatic future-year holiday calendar**. Exact future dates remain non-authoritative until intentionally populated and approved for that year.
+This category list is **not an automatic future-year holiday calendar**. Other than the approved 2028 Christmas / New Year's crossover through January 3, 2029, exact dates after 2028 remain non-authoritative until intentionally populated and approved for that year.
 
 Do not automatically add Easter, Mother's Day, Father's Day, or another observance solely because it appears on a general calendar. Add or remove periods when actual booking demand or an owner business-policy decision supports doing so.
 
@@ -112,6 +142,13 @@ Do not automatically add Easter, Mother's Day, Father's Day, or another observan
 - **Effective Date:** September 5, 2026 for future/unconfirmed bookings
 - **Last Reviewed:** September 5, 2026
 
+## 2027–2028 Approval
+
+- **Calendar Years:** 2027 and 2028
+- **Approved By:** Owner, Cuddle Crew Pet Care LLC
+- **Approval Recorded:** September 7, 2026
+- **Scope:** Exact periods above are CURRENT / APPROVED for website, estimator, PPC, pricing classification, and cancellation classification use. Years after the approved January 3, 2029 crossover require separate future approval.
+
 ## Implementation Notes
 
 - Centralize holiday classification; do not hardcode independent copies of the dates throughout the website.
@@ -122,10 +159,10 @@ Do not automatically add Easter, Mother's Day, Father's Day, or another observan
 
 ## Codex Guardrails
 
-- Use only the exact approved periods above for 2026.
+- Use only the exact approved periods above for 2026–2028 and their stated cross-year endings.
 - Do not infer additional holidays from a government or third-party calendar.
 - Do not dynamically expand a period because of weekend proximity, school schedules, observed federal dates, or demand.
-- Future-year category baselines are planning aids only; do not treat them as approved qualifying dates.
+- Category baselines for years after 2028 are planning aids only; do not treat them as approved qualifying dates. The approved 2028 winter period remains active through January 3, 2029.
 - Do not change surcharge amounts here; use the CURRENT / APPROVED Pricing Policy.
 - Do not change cancellation terms here; use the CURRENT / APPROVED Cancellation Policy.
 - Do not duplicate the same holiday or travel-type surcharge merely because one continuous physical appointment is represented by multiple billing line items.

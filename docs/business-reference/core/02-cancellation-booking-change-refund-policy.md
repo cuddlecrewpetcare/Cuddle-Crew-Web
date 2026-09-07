@@ -75,7 +75,7 @@ Any cancellation charge under this section remains subject to the Compassionate 
 
 ## SHORT OVERNIGHT AND VACATION-CARE CANCELLATIONS
 
-4. For an Overnight Service or other multi-day vacation-care booking consisting of fewer than seven (7) consecutive nights:
+4. For an Overnight Service, a 24-Hour Continuous Care booking, or other multi-day vacation-care booking consisting of fewer than seven (7) consecutive nights or 24-hour periods:
 
    a. seventy-two (72) hours or more before the first scheduled Service, any amount already paid for the cancelled booking will be fully refundable or credited;
 
@@ -87,7 +87,7 @@ Any cancellation charge under this section remains subject to the Compassionate 
 
 ## EXTENDED BOOKINGS
 
-5. A booking consisting of seven (7) or more consecutive nights will be considered an "Extended Booking." Because an Extended Booking requires the Contractor to reserve a substantial portion of available service capacity and may result in other booking requests being declined, the following cancellation terms will apply:
+5. A booking consisting of seven (7) or more consecutive nights or seven (7) or more consecutive 24-Hour Continuous Care periods will be considered an "Extended Booking." Because an Extended Booking requires the Contractor to reserve a substantial portion of available service capacity and may result in other booking requests being declined, the following cancellation terms will apply:
 
    a. seven (7) days or more before the first scheduled Service, any amount already paid for the cancelled booking will be fully refundable or credited;
 
@@ -98,6 +98,8 @@ Any cancellation charge under this section remains subject to the Compassionate 
 Any cancellation charge under this section remains subject to the Compassionate Exceptions provisions of this Policy.
 
 For unusually long, high-value, or capacity-intensive bookings, the Contractor may establish different booking-specific reservation-payment or cancellation terms, provided that such terms are disclosed to and accepted by the Client before the booking is confirmed.
+
+For cancellation classification, a 3–8 hour Continuous Care block is a daytime Service and uses the DAYTIME SERVICE CANCELLATIONS framework. A 24-Hour Continuous Care period is an Overnight/multi-day capacity Service and uses the SHORT OVERNIGHT AND VACATION-CARE CANCELLATIONS framework unless the booking qualifies as an Extended Booking.
 
 ## HOLIDAY AND PEAK-DATE CANCELLATIONS
 
@@ -120,6 +122,8 @@ For unusually long, high-value, or capacity-intensive bookings, the Contractor m
       iii. if cancelled less than seven (7) days before the first scheduled Overnight Service, the Client may be charged one hundred percent (100%) of the applicable booking price.
 
    c. The Contractor will identify applicable holiday or peak-date treatment before the affected booking is confirmed.
+
+For holiday/peak-date cancellation classification, a 3–8 hour Continuous Care block uses the holiday daytime framework in subsection 6(a), while a 24-Hour Continuous Care booking uses the holiday Overnight framework in subsection 6(b).
 
 Any cancellation charge under this section remains subject to the Compassionate Exceptions provisions of this Policy.
 
@@ -263,8 +267,11 @@ In particular:
 - A daytime Service cancelled less than twenty-four (24) hours before service may be charged at fifty percent (50%).
 - A daytime Service cancelled after Cuddle Crew has departed for or arrived at the service location, or after performance has otherwise begun, may be charged at one hundred percent (100%).
 - Short Overnight or vacation-care bookings consisting of fewer than seven consecutive nights use the 72-hour / 24-hour cancellation structure defined in Clause 4.
-- Bookings of seven or more consecutive nights are Extended Bookings and use the 7-day / 72-hour cancellation structure defined in Clause 5.
+- A 3–8 hour Continuous Care block is a daytime Service for cancellation purposes.
+- A 24-Hour Continuous Care booking is an Overnight/multi-day capacity Service for cancellation purposes.
+- Bookings of seven or more consecutive nights or 24-Hour Continuous Care periods are Extended Bookings and use the 7-day / 72-hour cancellation structure defined in Clause 5.
 - Holiday and designated peak-date bookings use the longer cancellation periods defined in Clause 6.
+- During a qualifying holiday/peak period, 3–8 hour Continuous Care uses the daytime cancellation framework and 24-Hour Continuous Care uses the Overnight cancellation framework.
 - The website must not invent or independently determine a holiday or peak-date period. Applicable dates must come from the CURRENT / APPROVED holiday/peak-date reference.
 - Applicable holiday or peak-date treatment must be identified before the affected booking is confirmed.
 - Cuddle Crew may require reservation payments for Overnight, vacation-care, Extended, holiday, or other capacity-intensive bookings.

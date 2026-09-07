@@ -10,7 +10,7 @@
 
 `America/Los_Angeles` is the canonical business timezone. It is centralized in `app/config/business.ts`, matches the Sacramento-area operating context, is used for business-local scheduling decisions, and is verified against the runtime's IANA data. Fixed offsets and the abbreviations PST/PDT are not calculation inputs.
 
-The business-reference hierarchy controls. The Pricing, Fees & Surcharge Policy is CURRENT / APPROVED and distinguishes same-calendar-day daytime requests, daytime requests less than 24 elapsed hours ahead, and Overnight requests less than 48 elapsed hours ahead. The Cancellation, Booking Change & Refund Policy controls its separate thresholds. The exact Holiday / Peak-Date Calendar remains PLACEHOLDER and cannot authorize a date or automatic fee.
+The business-reference hierarchy controls. The Pricing, Fees & Surcharge Policy is CURRENT / APPROVED and distinguishes same-calendar-day daytime requests, daytime requests less than 24 elapsed hours ahead, and Overnight requests less than 48 elapsed hours ahead. The Cancellation, Booking Change & Refund Policy controls its separate thresholds. The exact 2026–2028 Holiday / Peak-Date Calendar is CURRENT / APPROVED and authorizes only its listed date ranges, including the final crossover through January 3, 2029, for automatic fee classification.
 
 ## Semantic model
 
@@ -36,6 +36,8 @@ Date-only helpers use UTC only as a neutral integer calendar index. That techniq
 
 Overnight Care is the approved business-local wall-clock interval approximately 6 PM through 8 AM and is owned by its start date/night in the current estimator; checkout is exclusive. It is not 24-hour continuous presence and not a fixed 14-hour elapsed guarantee. Tests show the same local interval can span 13 hours across spring-forward and 15 hours across fall-back.
 
+The separately named 24-Hour Continuous Care Service requires booking-specific start/end times and individualized review in Precise Petcare. The public estimator counts requested 24-hour capacity periods by start/checkout dates only to show a starting subtotal; it does not create a final duration, availability, or booking promise across a DST boundary.
+
 Same day means equality of the Service date and current date in `America/Los_Angeles`; it never means “less than 24 hours.” Short-notice thresholds compare resolved Service instants with an authoritative instant. Exactly 24 or 48 hours is outside a policy written as “less than.” Midnight, month/year, leap-day, spring-forward, and fall-back boundaries are covered.
 
 ## Business-rule time matrix
@@ -48,7 +50,7 @@ Same day means equality of the Service date and current date in `America/Los_Ang
 | Cancellation | Cancellation policy §§3–6 | hours/days before applicable scheduled Service | 24h, 72h, 7d, 14d language; exact “at least” boundaries are outside the shorter tier | no calculator; booking category and authoritative receipt/Service instant remain required |
 | Overnight window | Pricing policy §3 | Pacific wall-clock interval spanning midnight | approximately 6 PM–8 AM | start date owns the current estimator night; DST changes elapsed hours |
 | Availability window | F8 resource contract | inclusive date-only range | maximum 31 returned dates | POST/no-store; independent of host timezone |
-| Holiday date | Holiday calendar | future Pacific Service-date semantics | unresolved | PLACEHOLDER; no dates and no automatic fee |
+| Holiday date | Holiday calendar | Pacific Service-date semantics | exact approved 2026–2028 date ranges and stated crossovers | implemented; Standard Overnight uses start date, 3–8 hour Continuous uses daytime +$15, and 24-hour Continuous uses +$30 per qualifying period |
 | Contact/SMS timestamp | SMS reference and server implementation | server-created instant | at accepted processing attempt | ISO `Z`; browser cannot supply provenance |
 
 Cancellation thresholds are documented, but the website has no cancellation calculator. F10 does not guess booking-category, receipt-time, scheduled-Service-time, or future holiday-date details and does not change cancellation policy.
@@ -75,7 +77,7 @@ The sitemap's former `new Date()` `lastModified` value was removed because build
 
 ## Automated guard
 
-`npm run check:time` is IMPLEMENTED and part of `npm run validate`. It functionally checks Pacific timezone support, date-only/DST behavior, same-day separation, removal of client timing authority, deterministic sitemap metadata, and the unresolved-holiday safeguard. It complements focused tests rather than replacing them with broad pattern matching.
+`npm run check:time` is IMPLEMENTED and part of `npm run validate`. It functionally checks Pacific timezone support, date-only/DST behavior, same-day separation, removal of client timing authority, deterministic sitemap metadata, and approved holiday boundaries. It complements focused tests rather than replacing them with broad pattern matching.
 
 ## Inventory and disposition
 
@@ -94,11 +96,11 @@ The sitemap's former `new Date()` `lastModified` value was removed because build
 | CRITICAL | Client `startedAt` controlled an anti-bot rejection. Removed from browser, schema, server logic, and tests; stronger server controls remain. |
 | HIGH | Short-notice and date range logic depended on host timezone. Repaired with Pacific wall-clock resolution and date-only calendar indexes. |
 | MEDIUM | Rate limits and duplicate state are process-local; acceptable for current architecture and explicitly not distributed. |
-| MEDIUM | Exact holiday dates remain unresolved; automatic holiday classification stays disabled. |
+| RESOLVED | Exact 2026–2028 holiday periods are centralized and boundary-tested through the final January 3, 2029 crossover; later unapproved dates remain inactive. |
 | LOW | Some diagnostic duration call sites still use wall-clock subtraction; they do not control business/security outcomes and can migrate when those routes are next maintained. |
 | INFO | Temporal/date library, locale polyfills, universal browser timezone emulation, and distributed clocks are not needed. |
 
-Unresolved business decisions: populate and approve the holiday calendar; retain booking-specific cancellation receipt/Service instants in the authoritative workflow if a future calculator is built; define any future ambiguous provider-time disambiguation contract rather than guessing; and revisit distributed TTL/idempotency only if multiple instances create correctness failures.
+Unresolved business decisions: approve each holiday calendar after 2028 before enabling it, apart from the already-approved January 1–3, 2029 crossover; retain booking-specific cancellation receipt/Service instants in the authoritative workflow if a future calculator is built; define any future ambiguous provider-time disambiguation contract rather than guessing; and revisit distributed TTL/idempotency only if multiple instances create correctness failures.
 
 ## References used
 
@@ -107,7 +109,7 @@ Unresolved business decisions: populate and approve the holiday calendar; retain
 - `docs/business-reference/core/03-pricing-fees-surcharge-policy.md` (CURRENT / APPROVED)
 - `docs/business-reference/core/02-cancellation-booking-change-refund-policy.md` (CURRENT / APPROVED)
 - `docs/business-reference/logic/20-overnight-acceptance.md` (CURRENT / APPROVED)
-- `docs/business-reference/logic/36-holiday-peak-date-calendar.md` (PLACEHOLDER; non-authoritative for dates)
+- `docs/business-reference/logic/36-holiday-peak-date-calendar.md` (CURRENT / APPROVED)
 - `docs/business-reference/logic/37-service-window-capacity-planner.md` (CURRENT / APPROVED)
 - `docs/business-reference/guidance/sms-communications-consent-compliance.md` (CURRENT / APPROVED)
 - existing F3–F9 engineering references, application code, tests, and runtime validation

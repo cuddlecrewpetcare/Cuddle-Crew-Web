@@ -40,6 +40,32 @@ test('estimator and planner retain preliminary, non-booking boundaries',async({p
   await expect(page.getByText('Personalized review required')).toBeVisible();
 });
 
+test('approved Continuous Care and holiday information are usable without creating a booking',async({page})=>{
+  await page.goto('/');
+  await expect(page.locator('.advanced-estimator')).toHaveAttribute('aria-busy','false');
+  await page.getByLabel('What care do you need?').selectOption('continuous5');
+  await page.getByLabel('First service date').fill(futureDate);
+  await page.getByLabel('Last service date').fill(futureDate);
+  await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
+  await expect(page.locator('.estimate-result')).toContainText('$145');
+  await expect(page.locator('.estimate-result')).toContainText('no ordinary per-pet modifier');
+  await expect(page.getByText('Continuous Care at your residence')).toBeVisible();
+
+  await page.getByLabel('What care do you need?').selectOption('continuous24');
+  await page.getByLabel('Checkout date').fill('2099-01-03');
+  await expect(page.locator('.estimate-result')).toContainText('$300');
+  await expect(page.locator('.estimate-result')).toContainText('starting at');
+
+  await page.goto('/holidays');
+  await expect(page.getByRole('heading',{name:'Approved 2026–2028 holiday and peak dates.'})).toBeVisible();
+  await expect(page.getByText(/January 16, 2026–January 19, 2026/)).toBeVisible();
+  await expect(page.getByText(/December 24, 2026–January 3, 2027/)).toBeVisible();
+  await expect(page.getByText(/January 15, 2027–January 18, 2027/)).toBeVisible();
+  await expect(page.getByText(/December 24, 2027–January 3, 2028/)).toBeVisible();
+  await expect(page.getByText(/June 30, 2028–July 4, 2028/)).toBeVisible();
+  await expect(page.getByText(/December 24, 2028–January 3, 2029/)).toBeVisible();
+});
+
 test('start and contact flows do not send a real inquiry in browser tests',async({page})=>{
   await page.goto('/start');
   await expect(page.getByRole('heading',{name:'Find your next pet-care step.'})).toBeVisible();

@@ -113,6 +113,8 @@ Review and document where applicable:
 - [ ] Stranger fear or defensive behavior.
 - [ ] Handling sensitivity.
 - [ ] Separation requirements.
+- [ ] Separation anxiety or isolation distress while left alone.
+- [ ] Destructive behavior or vocalization while left alone.
 - [ ] Predator/prey separation.
 - [ ] Equipment-related safety concerns.
 - [ ] Other known triggers.
@@ -202,17 +204,19 @@ The Meet & Greet should not silently expand pet-care Service into unlimited hous
 ## 12. Service Duration Fit
 
 - [ ] Review the complete requested care routine.
+- [ ] Confirm each pet’s maximum safe and comfortable alone time, including relevant escape, behavior, life-stage, medication, feeding, elimination, and nighttime factors.
 - [ ] Confirm that the selected Service duration realistically fits the routine.
 - [ ] Confirm that pet care, walking, medication, cleanup, enrichment, home tasks, and required documentation can reasonably fit.
 - [ ] Identify whether 30 minutes is adequate.
 - [ ] Identify whether 60 minutes is more appropriate.
 - [ ] Identify whether 90 minutes is more appropriate.
 - [ ] Identify whether the care plan requires multiple Services or a different Service type.
+- [ ] Identify whether a dedicated 3–8 hour Continuous Care block or limited 24-Hour Continuous Care request is the appropriate starting point.
 - [ ] Identify whether personalized review is required.
 
 Do not approve a shorter duration merely because it is less expensive if the complete care routine cannot realistically fit.
 
-Care that may not fit within the standard maximum daytime duration should receive personalized review.
+Care that may not fit within the ordinary 90-minute visit ladder should receive personalized review. The separate Continuous Care ladder may be considered where a dedicated consecutive block is the correct fit; it must not be built as overlapping ordinary visits for the same period.
 
 ## 13. Scheduling and Arrival Expectations
 

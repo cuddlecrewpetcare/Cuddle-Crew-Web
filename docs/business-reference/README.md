@@ -51,10 +51,10 @@ Use the most specific applicable `CURRENT / APPROVED` file. In particular:
 - SMS consent, A2P/10DLC website behavior, canonical disclosure, consent records, STOP/HELP handling, mobile-information privacy, and marketing-SMS boundaries → `guidance/sms-communications-consent-compliance.md`.
 - Source precedence and conflict resolution → `guidance/source-of-truth-document-hierarchy.md`.
 - Exact public rates, fees, and pricing modifiers → `core/03-pricing-fees-surcharge-policy.md`.
-- PPC base/modifier configuration, 15-minute supplemental care, mixed-species pricing hierarchy, same-arrival modifier treatment, Overnight + midday pricing implementation, small-animal-only Overnight benchmark logic, Extended/Far Extended Overnight review, large/complex household pricing order, care beyond 90 minutes, reservation-payment quote default, QuickBooks view-only Estimate workflow, and future holiday-year planning baseline → `logic/38-ppc-pricing-quote-implementation.md`.
+- PPC base/modifier configuration, 15-minute supplemental care, mixed-species pricing hierarchy, same-arrival modifier treatment, Overnight + midday pricing implementation, separate 3–8 hour and 24-Hour Continuous Care setup, small-animal-only Overnight benchmark logic, Extended/Far Extended Overnight review, large/complex household pricing order, reservation-payment quote default, QuickBooks view-only Estimate workflow, and future holiday-year planning baseline → `logic/38-ppc-pricing-quote-implementation.md`.
 - Exact approved holiday and peak-date qualifying periods → `logic/36-holiday-peak-date-calendar.md`.
 - Overnight suitability and acceptance, including Extended/Far Extended Overnight acceptance review → `logic/20-overnight-acceptance.md`.
-- Seven-or-more-night sustainability review and confirmation that length alone creates no automatic surcharge or discount → `logic/21-long-stay-review.md`.
+- Seven-or-more-night or seven-or-more-consecutive-24-hour-period sustainability review and confirmation that length alone creates no automatic surcharge or discount → `logic/21-long-stay-review.md`.
 - Cancellation, refund, and booking-change terms → `core/02-cancellation-booking-change-refund-policy.md`.
 - Internal custom-quote and personalized-scope review triggers, including large/complex households and routines that may not fit within 90 minutes → `logic/33-custom-quote-scope-review.md`.
 - Other internal booking, scope, safety, capacity, and suitability decisions → the applicable `logic/` reference.
@@ -66,8 +66,8 @@ For implementation, do not infer a price merely because a numeric benchmark exis
 - **Small-animal-only Overnight:** website result must be personalized review. The $80 cat-only Overnight amount may be used only as the internal starting benchmark described in `logic/38`; it is not a published or guaranteed small-animal Overnight rate.
 - **Extended/Far Extended Overnight:** website result must be personalized review. Do not invent an automatic +$10/+20 per-night travel ladder; use `logic/20` and `logic/38`.
 - **Large/complex households:** review trigger first. Do not invent a generic complexity surcharge; use correct duration/service structure before considering genuine custom scope.
-- **Care beyond 90 minutes:** do not publish a standard 2-hour daytime rate. Route extended continuous daytime needs to personalized review under `logic/33` and `logic/38`.
-- **Future holiday years:** the prior-year category set is only a planning baseline. Exact dates are not active until intentionally approved in the annual holiday calendar.
+- **Care beyond an ordinary 90-minute visit:** do not publish a standard 2-hour ordinary visit. Use the separate approved 3–8 hour Continuous Care ladder only for a dedicated consecutive block and preserve personalized review under `logic/33` and `logic/38`; limited 24-Hour Continuous Care starts at $300 per period.
+- **Holiday calendar horizon:** exact 2026, 2027, and 2028 periods are approved in `logic/36`, including the final crossover through January 3, 2029. For later years, the prior-year category set is only a planning baseline and exact dates are not active until intentionally approved in the annual holiday calendar.
 
 SMS-specific implementation must read the canonical SMS reference before changing phone-number collection, communications consent, disclosure text, notification preferences, opt-out or HELP behavior, SMS Privacy Policy language, or marketing-SMS behavior. Existing website behavior, form fields, CRM data, or possession of a phone number does not override that reference or establish consent. Higher-authority signed contractual or legal requirements still control where applicable.
 
@@ -85,7 +85,7 @@ SMS-specific implementation must read the canonical SMS reference before changin
 - A calculated price does not guarantee booking acceptance.
 - When internal logic requires review, use a result such as "Personalized review required" rather than forcing an automated result.
 - Do not create promises of exact arrival times when authoritative policies use service windows.
-- Do not imply that Overnight Care is 24-hour continuous care.
+- Do not imply that Standard Overnight Care is 24-Hour Continuous Care. Preserve reasonable compatible departures and the separate scope of each Service.
 - Do not imply that payment or a higher price makes an otherwise unsafe, unlawful, uninsured, or out-of-scope service acceptable.
 - Do not expose private home addresses, private service-area reference points, API keys, client information, access credentials, travel dates, medical data, or other sensitive information through public frontend code.
 - Do not derive geographic pricing from a private reference address in client-side code.

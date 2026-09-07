@@ -23,31 +23,32 @@ Before changing an implementation area:
 | Overall Service and booking framework | `core/01-master-service-agreement.md` (`CURRENT / APPROVED`) | `app/page.tsx`; `app/start/page.tsx`; `app/terms/page.tsx`; `app/safety/page.tsx`; `app/layout.tsx`; `app/SiteHeader.tsx` | Inquiry, estimate, registration, request, confirmation, invoice, payment, and Service readiness are distinct states. |
 | Cancellation, refunds, booking changes, early return, extensions | `core/02-cancellation-booking-change-refund-policy.md` (`CURRENT / APPROVED`) | `app/faq/FAQSearch.tsx`; `app/safety/page.tsx`; future booking/change workflows; tests | Do not reuse one generic deadline across daytime, short vacation/Overnight, extended, and holiday bookings. |
 | Rates, additional pets, travel fees, short notice, same day, payment, quotes | `core/03-pricing-fees-surcharge-policy.md` (`CURRENT / APPROVED`) | `app/config/business.ts`; `app/lib/business-rules.ts`; `app/lib/estimate.ts`; `app/QuoteEstimator.tsx`; `app/page.tsx`; `app/faq/FAQSearch.tsx`; `app/holidays/page.tsx`; `app/AddressChecker.tsx`; pricing and E2E tests | Central configuration is an implementation mirror, not authority. “May add” fees must not silently become unconditional where discretion applies. |
+| Continuous Care / 24-Hour Continuous Care | `core/01-master-service-agreement.md`; `core/03-pricing-fees-surcharge-policy.md`; `logic/18-booking-acceptance-risk-triage.md`; `logic/33-custom-quote-scope-review.md`; `logic/38-ppc-pricing-quote-implementation.md` (all `CURRENT / APPROVED`) | `app/config/business.ts`; `app/lib/estimate.ts`; `app/QuoteEstimator.tsx`; `app/page.tsx`; `app/faq/FAQSearch.tsx`; planner and tests | Estimate fixed 3–8 hour household blocks directly and show 24-hour care starting at $300, but require personalized review and final PPC confirmation. No ordinary per-pet/hourly multiplication. |
 | Access, keys, alarms, cameras, home security | `core/04-access-key-home-security-agreement.md` (`PLACEHOLDER`); general constraints in `core/01` and applicable current logic | `app/safety/page.tsx`; `app/faq/FAQSearch.tsx`; `app/contact/page.tsx`; `app/contact/ContactTools.tsx` | Contractual detail requires owner/legal approval. Keep private credentials in Precise Petcare; website submission never proves successful access testing. |
 | Emergency veterinary authority | `core/05-emergency-veterinary-authorization.md` (`PLACEHOLDER`); `core/01` defers to it | `app/safety/page.tsx`; `app/faq/FAQSearch.tsx`; onboarding/portal handoff | Do not invent treatment, transport, or spending authority. Human/legal review required. |
 | Medication consent | `core/06-medication-administration-consent.md` (`PLACEHOLDER`) | Public medication copy; future onboarding/portal handoff | Do not treat a form, demonstration, or payment as Client consent or scope approval. |
 | Shared-care Client terms | `core/07-shared-care-third-party-care-agreement.md` (`PLACEHOLDER`) | `app/safety/page.tsx`; future onboarding and booking flow | Internal coordination logic may require review but cannot create unresolved contractual terms. |
-| Overnight Client terms | `core/08-overnight-care-addendum.md` (`PLACEHOLDER`) | `app/page.tsx`; `app/faq/FAQSearch.tsx`; `app/QuoteEstimator.tsx`; `app/safety/page.tsx` | Current public scope must remain consistent with core agreement and current Overnight logic without inventing addendum terms. |
+| Overnight Client terms | `core/08-overnight-care-addendum.md` (`DRAFT — READY FOR OWNER REVIEW`) | `app/page.tsx`; `app/faq/FAQSearch.tsx`; `app/QuoteEstimator.tsx`; `app/safety/page.tsx` | Draft form is not authority; current public scope follows `core/01`, `core/03`, and `logic/20`. |
 | Behavior/handling Client terms | `core/09-pet-behavior-handling-safety-agreement.md` (`PLACEHOLDER`) | `app/safety/page.tsx`; `app/plan/CarePlanner.tsx`; public inquiry copy | Collect only preliminary disclosures; do not publish internal risk labels or invent Client obligations. |
 | Media/photo/testimonial consent | `core/10-media-photo-testimonial-consent.md` (`PLACEHOLDER`) | `app/page.tsx`; client-pet files in `public/`; future consent preference workflow | Existing assets do not prove consent. Owner/legal verification required before relying on public consent claims. |
-| Vacation care / care-frequency Client approval | `core/15-vacation-care-plan-care-frequency-approval.md` (`PLACEHOLDER`) | `app/lib/care-planner.ts`; `app/plan/CarePlanner.tsx`; `app/QuoteEstimator.tsx`; `app/faq/FAQSearch.tsx` | Do not turn general welfare guidance into an unapproved Client contract or universal schedule. |
+| Vacation care / care-frequency Client approval | `core/15-vacation-care-plan-care-frequency-approval.md` (`DRAFT — READY FOR OWNER REVIEW`) | `app/lib/care-planner.ts`; `app/plan/CarePlanner.tsx`; `app/QuoteEstimator.tsx`; `app/faq/FAQSearch.tsx` | Draft form is not authority; collect accurate per-pet maximum alone-time limits through the approved PPC workflow. |
 | New-client readiness | `logic/16-new-client-pre-service-checklist.md` (`CURRENT / APPROVED`) | `app/start/page.tsx`; `app/page.tsx`; portal links; future onboarding status | Website submission and payment do not equal readiness. Precise Petcare remains the Client-specific record. |
 | Meet & Greet | `logic/17-meet-and-greet-checklist.md` (`CURRENT / APPROVED`) | `app/page.tsx`; `app/start/page.tsx`; `app/faq/FAQSearch.tsx`; `app/config/provider-guide.ts` | Generally expected; a rare exception requires personal approval. Completion is not booking acceptance. |
 | Booking acceptance / risk triage | `logic/18-booking-acceptance-risk-triage.md` (`CURRENT / APPROVED`) | `app/lib/estimate.ts`; `app/api/estimate/route.ts`; `app/QuoteEstimator.tsx`; `app/lib/care-planner.ts`; `app/plan/CarePlanner.tsx`; `app/api/availability/route.ts` | Estimate review triggers are evaluated server-side; the API omits private reason codes. Review triggers are not automatic declines. Keep thresholds and reasons private. |
 | Adventure Walk suitability | `logic/19-adventure-walk-suitability.md` (`CURRENT / APPROVED`) | Future 90-minute option; current walk copy in `app/page.tsx`, `app/faq/FAQSearch.tsx`, `app/safety/page.tsx` | Individual suitability and day-of conditions control; no mileage/pace guarantee or public medical diagnosis. |
-| Overnight acceptance | `logic/20-overnight-acceptance.md` (`CURRENT / APPROVED`) | `app/config/business.ts`; `app/lib/estimate.ts`; `app/QuoteEstimator.tsx`; `app/page.tsx`; `app/faq/FAQSearch.tsx` | Approximately 6 PM–8 AM, not continuous care. Non-Standard-zone Overnights require review. |
-| Long-stay review | `logic/21-long-stay-review.md` (`CURRENT / APPROVED`) | Future estimator/booking trigger; Overnight date logic in `app/lib/estimate.ts` | Seven or more consecutive Overnights triggers review, not a fee, discount, automatic acceptance, or decline. |
+| Overnight acceptance | `logic/20-overnight-acceptance.md` (`CURRENT / APPROVED`) | `app/config/business.ts`; `app/lib/estimate.ts`; `app/QuoteEstimator.tsx`; `app/page.tsx`; `app/faq/FAQSearch.tsx` | Standard Overnight is approximately 6 PM–8 AM, permits reasonable care-plan-compatible departures, and is distinct from Continuous Care. Non-Standard-zone Overnights require review. |
+| Long-stay review | `logic/21-long-stay-review.md` (`CURRENT / APPROVED`) | Estimator review trigger; Overnight and 24-hour date logic in `app/lib/estimate.ts` | Seven or more consecutive Overnights or 24-hour Continuous Care periods triggers review, not a fee, discount, automatic acceptance, or decline. |
 | Medication scope | `logic/22-medication-scope-review.md` (`CURRENT / APPROVED`) | `app/lib/care-planner.ts`; `app/plan/CarePlanner.tsx`; `app/faq/FAQSearch.tsx`; `app/safety/page.tsx`; `app/page.tsx` | More time may require a longer Service; advanced/risky/exact-time care requires review. Verified training/insurance scope is still unresolved. |
 | Behavior risk | `logic/23-behavior-risk-review.md` (`CURRENT / APPROVED`) | `app/lib/care-planner.ts`; `app/plan/CarePlanner.tsx`; `app/safety/page.tsx`; `app/faq/FAQSearch.tsx` | No public risk score, severity label, acceptance probability, or internal rationale. |
 | Shared-care coordination | `logic/24-shared-care-coordination.md` (`CURRENT / APPROVED`) | `app/safety/page.tsx`; future onboarding/portal handoff | Uncertain third-party care does not count as confirmed welfare coverage. Cuddle Crew does not silently absorb no-shows. |
 | Custom quote / scope review | `logic/33-custom-quote-scope-review.md` (`CURRENT / APPROVED`) | `app/lib/estimate.ts`; `app/QuoteEstimator.tsx`; `app/lib/care-planner.ts`; future quote/admin workflow | Stop automatic quoting where required. Never solve safety, insurance, or scope with a surcharge. |
-| Holiday/peak dates | `logic/36-holiday-peak-date-calendar.md` (`PLACEHOLDER`) | `app/lib/business-rules.ts`; `app/holidays/page.tsx`; `app/QuoteEstimator.tsx`; `app/faq/FAQSearch.tsx`; tests | No date is authoritative until exact boundaries are populated and the file is approved. Disable invention. |
+| Holiday/peak dates | `logic/36-holiday-peak-date-calendar.md` (`CURRENT / APPROVED`) | `app/config/business.ts`; `app/lib/business-rules.ts`; `app/lib/estimate.ts`; `app/holidays/page.tsx`; `app/QuoteEstimator.tsx`; `app/faq/FAQSearch.tsx`; tests | Use only the exact approved 2026–2028 periods, their stated crossovers through January 3, 2029, and America/Los_Angeles Service-date semantics. Later years require new approval. |
 | Service-window capacity | `logic/37-service-window-capacity-planner.md` (`CURRENT / APPROVED`) | `app/lib/availability.ts`; `app/api/availability/route.ts`; `app/QuoteEstimator.tsx`; calendar tests | True load includes care, drive, journal/admin, and buffer. A blank calendar or event count does not prove availability. |
 | Annual audit | `operations/35-annual-business-policy-audit.md` (`CURRENT / APPROVED`) | `LAUNCH_CHECKLIST.md`; documentation review; future scheduled governance | Complete at least annually and after material changes, including SMS program changes. |
 | Continuity / backup | `operations/38-continuity-backup-provider-plan.md` (`CURRENT / APPROVED`) | `app/page.tsx`; `app/safety/page.tsx`; `app/config/provider-guide.ts`; `app/choosing-care/page.tsx` | Lauren is ordinarily primary; approved continuity is possible but never guaranteed. Do not expose provider identity or access details. |
 | Training, certification, insurance, Service scope | `operations/40-training-certification-service-scope-matrix.md` (`PLACEHOLDER`) | `app/credentials/page.tsx`; `app/config/provider-guide.ts`; public claims and metadata | Public specifics are neutralized pending evidence verification and approval. No credential/capability fact may be inferred until the matrix is approved. |
 | Client-friendly explanations | `guidance/client-explanation-library.md` (`CURRENT / APPROVED`) | `app/faq/FAQSearch.tsx`; help text in estimator/planner/pages | Explanations do not create policy and must defer to the specific current policy. |
-| Broad pricing/care manual | `guidance/pricing-care-standards-manual.md` (`PLACEHOLDER`) | Historical context across pricing/planner/copy | Not production authority despite containing detailed material. Use dedicated current references. |
+| Broad pricing/care manual | `guidance/pricing-care-standards-manual.md` (`CURRENT / APPROVED`) | Pricing, planner, service design, public explanations, and PPC handoff | Dedicated current Client-facing and logic references still control their more specific subjects. |
 | SMS consent and A2P/10DLC | `guidance/sms-communications-consent-compliance.md` (`CURRENT / APPROVED`) | `app/config/sms.ts`; `app/contact/ContactTools.tsx`; `app/lib/contact.ts`; `app/api/contact/route.ts`; `app/privacy/page.tsx`; `app/terms/page.tsx`; tests | Website checkbox is optional and unchecked. Source/timestamp exist only after affirmative consent. STOP/HELP/vendor operations still require operational verification. |
 | Source hierarchy and conflicts | `guidance/source-of-truth-document-hierarchy.md` (`CURRENT / APPROVED`) | `AGENTS.md`; root `README.md`; this map; all business-rule changes | Current approved, specific sources control; old implementation and software defaults never become policy. |
 
@@ -73,12 +74,12 @@ Phase 12B removed credential specifics and ZIP allocations from this configurati
 `app/lib/business-rules.ts` currently owns:
 
 - conservative ZIP-only review routing;
-- disabled holiday-date lookup pending an approved calendar;
+- exact approved 2026–2028 holiday-period lookup, including stated cross-year endings;
 - short-notice classification;
 - Service-window/care-gap calculations; and
 - availability override helpers.
 
-Holiday generation must not remain active while the annual calendar is a placeholder. Daytime and Overnight short-notice classifiers need distinct approved thresholds. ZIP assignment needs its own approved authority.
+Holiday lookup must exactly mirror the current approved annual calendar and stay inactive for unapproved future years. Daytime and Overnight short-notice classifiers need distinct approved thresholds. ZIP assignment needs its own approved authority.
 
 ### Estimate and Planner
 
@@ -99,7 +100,7 @@ The public website collects preliminary inquiry and planning data only. Precise 
 
 The website must not silently overwrite or compete with those records.
 
-## Placeholder Dependency Queue
+## Unresolved Dependency Queue
 
 | Placeholder | Required decision/review before implementation may rely on it |
 | --- | --- |
@@ -111,9 +112,7 @@ The website must not silently overwrite or compete with those records.
 | Behavior / Handling / Safety Agreement | Owner/legal/training/insurance approval of disclosures, Client duties, and handling limits. |
 | Media / Photo / Testimonial Consent | Owner/legal approval plus auditable consent records for each public use. |
 | Vacation Care Plan / Care-Frequency Approval | Owner/legal/welfare approval of Client-facing acknowledgement and exceptions. |
-| Holiday / Peak-Date Calendar | Owner approval of exact start/end times, rate applicability, cancellation treatment, and annual validity. |
 | Training / Certification / Service-Scope Matrix | Evidence verification with owner, insurer, trainer/certifier, and membership sources as applicable. |
-| Pricing & Care Standards Manual | Owner review of the compiled manual; dedicated current references continue to control their subjects. |
 
 ## Human-Review States
 

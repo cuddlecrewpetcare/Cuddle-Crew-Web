@@ -650,6 +650,7 @@ When evaluating whether the overall care plan is adequate:
 
 - include only reliable, clearly assigned third-party care;
 - do not count uncertain visits;
+- compare the complete schedule with each pet’s accurately disclosed maximum safe and comfortable alone time and related behavior, life-stage, feeding, elimination, medication, and nighttime needs;
 - do not allow a vague shared-care plan to reduce care below approved welfare standards.
 
 ### Pricing

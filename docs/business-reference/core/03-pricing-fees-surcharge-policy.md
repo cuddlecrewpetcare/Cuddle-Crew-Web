@@ -115,6 +115,28 @@ Routine booking communications, cancellation requests, booking-change requests, 
 
    h. A longer midday visit during Overnight Care will use the applicable standard 60-Minute or 90-Minute daytime rate. A midday dog walk will use the applicable Dog Walk rate.
 
+   i. **Continuous Care at the Client residence:**
+
+      i. 3-hour block: $90.00;
+
+      ii. 4-hour block: $120.00;
+
+      iii. 5-hour block: $145.00;
+
+      iv. 6-hour block: $165.00;
+
+      v. 7-hour block: $185.00; and
+
+      vi. 8-hour Extended Day: $200.00.
+
+   j. The 3–8 hour Continuous Care ladder is an express block-price schedule. It must not be calculated by multiplying duration by $30. Public shorthand may state that Continuous Care starts at $30 per hour with a three-hour minimum and an eight-hour Extended Day at $200, provided the complete block ladder remains available and no flat hourly multiplication is implied.
+
+   k. **24-Hour Continuous Care:** starts at $300.00 per twenty-four-hour period, subject to limited capacity, request, individualized scope and scheduling review, and final quote before confirmation. The $300.00 starting price is bundled and must not be calculated as $30 multiplied by 24. Ordinary rest and sleep are included in the period.
+
+   l. Continuous Care prices are household-based and include ordinary routine care that safely fits the confirmed block. They do not receive automatic normal per-pet modifiers. A large, complex, or intensive household may require a modified scope, custom quote, different Service, referral, or decline after review. There is no automatic puppy, senior, anxious-pet, medical, or disability surcharge; pricing follows the actual Service required.
+
+   m. Standard Overnight Care bundles the core overnight stay and must not be priced as fourteen hourly units. It may include reasonable departures compatible with the Client’s accurate disclosures and confirmed care plan. Twenty-four-hour Continuous Care is separate from Standard Overnight Care.
+
 ## ADDITIONAL PET PRICING
 
 4. Where the complete care routine for all pets can safely and reasonably be completed within the booked Service duration, the following additional-pet charges will apply:
@@ -129,6 +151,8 @@ Additional-pet pricing does not guarantee that an unlimited number of pets or ca
 
 Aquariums, colonies, flocks, communal enclosures, and other grouped-animal arrangements may be priced according to the actual husbandry workload rather than by mechanically applying an individual-pet charge to every animal.
 
+The charges in this Section do not apply automatically to Continuous Care. Continuous Care remains household-based; actual additional workload is addressed through Service selection, scope modification, or a disclosed custom quote rather than an ordinary per-pet formula or hourly multiplier.
+
 ## HOLIDAY AND PEAK-DATE SURCHARGES
 
 5. Services provided on a date or during a period designated by the Contractor as a holiday or qualifying peak date may be subject to the following surcharges:
@@ -136,6 +160,8 @@ Aquariums, colonies, flocks, communal enclosures, and other grouped-animal arran
    a. daytime Service: $15.00 per qualifying visit; and
 
    b. Overnight Service: $30.00 per qualifying night.
+
+For holiday classification, a 3–8 hour Continuous Care block is a daytime Service and receives the $15.00 charge per qualifying block/service arrival. A 24-Hour Continuous Care period is an Overnight/multi-day capacity Service and receives the $30.00 charge per qualifying twenty-four-hour period. The Standard Overnight start date controls its holiday surcharge. One qualifying Service arrival or capacity period receives one applicable surcharge; a separately booked daytime Service and Overnight on the same date may each receive the applicable surcharge.
 
 Holiday surcharges apply only to qualifying Service dates or periods identified by the Contractor. The Contractor will make the applicable holiday or peak-date schedule available to the Client before an affected booking is confirmed.
 
@@ -154,6 +180,8 @@ Holiday surcharges are separate from holiday cancellation terms, which are gover
    d. an Overnight Service requested less than forty-eight (48) hours before the requested Overnight Service may be subject to a $25.00 short-notice fee per night.
 
 Payment of a short-notice or same-day fee does not guarantee availability or require the Contractor to accept a Service that cannot reasonably or safely be accommodated.
+
+Any short-notice or other modifier for Continuous Care must be supported by a current approved rule, reviewed against the actual requested schedule, and disclosed before confirmation. No modifier may be repeated per hour or converted into an ordinary per-pet Continuous Care charge.
 
 ## COMPASSIONATE AND DISCRETIONARY SHORT-NOTICE EXCEPTIONS
 
@@ -395,6 +423,14 @@ The website may display the following current standard rates:
   - Dog: $25
   - Cat: $23
   - Small Animal: $23 where appropriate
+- Continuous Care at the Client residence:
+  - 3 hours: $90
+  - 4 hours: $120
+  - 5 hours: $145
+  - 6 hours: $165
+  - 7 hours: $185
+  - 8-hour Extended Day: $200
+  - 24-Hour Continuous Care: starts at $300 per 24-hour period; limited capacity and individualized review
 
 Longer midday care during an Overnight must use the normal applicable 60- or 90-minute daytime rate. A midday dog walk must use the applicable Dog Walk rate.
 
@@ -403,6 +439,17 @@ Longer midday care during an Overnight must use the normal applicable 60- or 90-
 - Overnight Care generally covers approximately 6:00 PM through 8:00 AM.
 - The website must not represent standard Overnight Care as twenty-four-hour or continuous care.
 - Daytime care outside the Overnight period is separate unless expressly included in the confirmed booking.
+- Standard Overnight Care bundles the core overnight stay and may include reasonable departures compatible with each pet’s disclosed maximum safe and comfortable alone time and confirmed care plan.
+- Standard Overnight Care is not fourteen hourly units; 24-Hour Continuous Care is a separate limited-capacity Service.
+
+### Continuous Care Representation
+
+- Continuous Care is a dedicated consecutive block at the Client’s residence, with the sitter generally remaining except for an emergency or a departure specifically discussed and approved.
+- It is not boarding, daycare, veterinary monitoring, or a second-by-second observation guarantee.
+- Routine care is bundled for the household; do not add ordinary per-pet modifiers or multiply an hourly price by duration.
+- The 3–8 hour ladder may be estimated directly, but capacity, safety, scope, and booking acceptance require personalized review.
+- 24-Hour Continuous Care must display as starting at $300 per period and route to individualized review.
+- Scheduled visits are ordinarily the more affordable option when every pet can safely and comfortably remain alone between care periods. Service selection must follow care fit rather than an automatic upsell.
 
 ### Additional Pets
 
@@ -413,11 +460,14 @@ Longer midday care during an Overnight must use the normal applicable 60- or 90-
 - The estimator must not assume that adding a per-pet charge guarantees that the booking fits.
 - Where the routine no longer reasonably fits, the website should require a longer Service or personalized review.
 - Grouped-animal arrangements such as aquariums, colonies, flocks, or communal enclosures must not automatically multiply the small-animal fee by every individual animal.
+- Do not apply these ordinary additional-pet fees to Continuous Care.
 
 ### Holiday and Peak Dates
 
 - Qualifying daytime Service: +$15 per visit.
 - Qualifying Overnight Service: +$30 per night.
+- Qualifying 3–8 hour Continuous Care: +$15 per block/service arrival.
+- Qualifying 24-Hour Continuous Care: +$30 per 24-hour period.
 - Holiday fees apply only to dates or periods identified in a CURRENT / APPROVED holiday or peak-date reference.
 - The website must not invent holiday periods.
 - Holiday pricing and holiday cancellation rules are separate concepts.

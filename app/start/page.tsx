@@ -7,7 +7,7 @@ import {business} from '../config/business';
 export const metadata:Metadata={title:'Start Here | Cuddle Crew Pet Care',description:'Choose a clear next step for personalized Sacramento pet care: service area, care planning, pricing, availability, or a conversation with Lauren.',alternates:{canonical:'/start'},openGraph:{title:'Start Here | Cuddle Crew Pet Care',description:'Choose a clear next step for personalized Sacramento pet care.',url:'/start'}};
 const pathways=[
  {step:'1',title:'Check typical travel',body:'Use the optional address check or request a personalized travel review. A ZIP alone cannot set a fee.',href:'/#area',label:'Check typical travel'},
- {step:'2',title:'Plan care',body:'Use a short, anonymous guide to find a sensible visit-length and schedule starting point.',href:'/plan',label:'Plan care'},
+ {step:'2',title:'Plan care',body:'Use a short, anonymous guide to compare visit timing with the shortest maximum time any pet can safely and comfortably remain alone.',href:'/plan',label:'Plan care'},
  {step:'3',title:'Estimate pricing',body:'Build a no-obligation estimate with your pet types, preferred windows, dates, and ZIP.',href:'/#estimate',label:'Estimate pricing'},
  {step:'4',title:'Check preliminary availability',body:'After selecting dates in the estimate, see a broad planning indicator. It never reserves care.',href:'/#estimate',label:'Check preliminary availability'},
  {step:'5',title:'Talk with Lauren',body:'Ask a question, discuss a special routine, or get help choosing the right next step.',href:'/contact',label:'Contact Lauren'},

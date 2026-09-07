@@ -24,6 +24,7 @@ const cases:{name:string;change:Partial<CarePlannerInput>;duration?:30|60|90|nul
   {name:'separation requirements',change:{separation:'handling'},suitability:'consultation-required',reviewIncludes:'separate handling'},
   {name:'aggressive or reactive',change:{behavior:'aggressive'},suitability:'consultation-required',reviewIncludes:'Aggression'},
   {name:'escape risk',change:{behavior:'escape'},suitability:'consultation-required',reviewIncludes:'Escape risk'},
+  {name:'alone-time distress',change:{behavior:'alone-distress'},suitability:'consultation-required',reviewIncludes:'isolation distress'},
   {name:'ambiguous routine',change:{routineComplexity:'unclear'},suitability:'consultation-required',reviewIncludes:'ambiguous'},
   {name:'procedure scope review',change:{medication:'procedure'},suitability:'consultation-required',reviewIncludes:'requires scope'},
 ];
@@ -60,6 +61,8 @@ test('short entered tolerance conservatively controls the gap comparison',()=>{
   const result=assessCarePlan(baseline({comfortableAloneHours:10,bathroomIntervalHours:6}));
   assert.equal(result.gapWithinEnteredLimits,false);
   assert(result.reviewReasons.some(reason=>reason.includes('6-hour care limit')));
+  assert(result.reviewReasons.some(reason=>reason.includes('Continuous Care')));
+  assert(result.suggestedStartingPoint.includes('Continuous Care'));
 });
 
 test('DST and timezone limitations are explicit without collecting travel dates',()=>{

@@ -275,11 +275,11 @@ Use when a Client:
 
 Do not reduce the care plan below what is reasonably required simply to lower the price.
 
-Current daytime duration ladder:
+Current ordinary visit duration ladder:
 
 **30 minutes → 60 minutes → 90 minutes → personalized/custom care**
 
-Ninety minutes is the maximum standard public daytime Service duration at launch.
+Ninety minutes is the maximum ordinary Drop-In or Dog Walk duration. A separate 3–8 hour Continuous Care ladder exists for dedicated consecutive blocks.
 
 Do not invent a standard 2-hour daytime Service simply to avoid personalized review.
 
@@ -590,6 +590,66 @@ rather than an arbitrary surcharge.
 
 ---
 
+## 21. Does Standard Overnight Care mean the sitter never leaves?
+
+### Approved Response
+
+Standard Overnight Care is the core stay of approximately 6:00 PM–8:00 AM, not continuous or hourly care. Reasonable departures may happen—for example, for another pet-care visit, a meal, school, or another responsibility—only when they fit every pet’s disclosed maximum safe and comfortable alone time and the confirmed care plan. Daytime care is separate.
+
+### Guardrail
+
+Do not promise uninterrupted Standard Overnight presence. Do not use this explanation to permit a departure that conflicts with feeding, elimination, medication timing, behavior, nighttime, welfare, or approved-scope needs.
+
+---
+
+## 22. How is Continuous Care different from scheduled visits?
+
+### Approved Response
+
+Scheduled visits are usually the more affordable fit when every pet can safely and comfortably remain alone between care periods. Continuous Care reserves one dedicated 3–8 hour block at your residence when the care plan calls for it. The sitter generally remains except for an emergency or a departure specifically discussed and approved. It is a care-fit option, not an automatic upsell.
+
+### Guardrail
+
+Do not overlap ordinary visits with the same dedicated period. Do not describe Continuous Care as boarding, daycare, veterinary monitoring, or second-by-second observation.
+
+---
+
+## 23. How is Continuous Care priced?
+
+### Approved Response
+
+Continuous Care uses household block pricing: 3 hours $90, 4 hours $120, 5 hours $145, 6 hours $165, 7 hours $185, and an 8-hour Extended Day $200. Routine care is bundled, so ordinary per-pet fees are not added. Large, complex, or intensive households still need personalized review.
+
+### Guardrail
+
+Do not multiply every duration by $30. The shorthand “starts at $30 per hour with a three-hour minimum” is acceptable only with the actual ladder and the $200 eight-hour rate available.
+
+---
+
+## 24. Is 24-Hour Continuous Care available?
+
+### Approved Response
+
+Limited 24-Hour Continuous Care may be offered by request and starts at $300 per 24-hour period. It includes ordinary routine care and resting time for the household. Availability, safety, schedule, travel, care intensity, and scope require individualized review before confirmation.
+
+### Guardrail
+
+Do not calculate $30 × 24, guarantee availability, promise second-by-second observation, or automatically refer the request solely because it seeks continuous presence.
+
+---
+
+## 25. Is there a puppy, senior, anxiety, medical, or disability surcharge?
+
+### Approved Response
+
+No automatic surcharge applies just because a pet is young, senior, anxious, medical, or disabled. Pricing follows the actual Service and time the household needs. More intensive care may require a longer or custom plan, personalized review, or a referral when it falls outside safe Service scope.
+
+### Guardrail
+
+Do not imply every intensive need can be accepted for a higher price. Safety, welfare, training, insurance, law, and approved scope remain controlling.
+
+---
+
 ## General Client-Explanation Principles
 
 Client-facing explanations should be:
@@ -878,6 +938,9 @@ If this library itself conflicts with a CURRENT / APPROVED Client-facing policy,
 - Do not promise that a short-notice fee guarantees availability.
 - Do not imply that an additional-pet fee guarantees the routine fits.
 - Do not imply that standard Overnight Care is 24-hour continuous care.
+- Do not imply that Standard Overnight Care guarantees uninterrupted presence or prohibits all reasonable compatible departures.
+- Do not apply ordinary per-pet pricing or hourly multiplication to Continuous Care.
+- Do not represent Continuous Care as categorically unavailable, boarding, daycare, veterinary monitoring, or second-by-second observation.
 - Do not imply that midday care is automatically included in Overnight Care.
 - Do not recommend inadequate care solely because it is cheaper.
 - Do not turn approximately three daily dog care opportunities into a universal fixed requirement.

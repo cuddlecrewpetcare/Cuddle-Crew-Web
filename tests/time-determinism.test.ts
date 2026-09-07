@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {business} from '../app/config/business.ts';
-import {daysBetween,shortNoticeKind} from '../app/lib/business-rules.ts';
+import {daysBetween,holidayForDate,publicHolidays,shortNoticeKind} from '../app/lib/business-rules.ts';
 import {addCalendarDays,assertTimeZoneSupported,businessDate,calendarDayDifference,parseDateOnly,resolveWallClock} from '../app/lib/time.ts';
 
 test('Pacific business timezone is canonical and supported by the runtime',()=>{
@@ -48,4 +48,21 @@ test('overnight exactly 48 hours is outside the approved less-than threshold',()
  const service=resolveWallClock('2026-03-09',18);assert.equal(service.kind,'exact');if(service.kind!=='exact')return;
  assert.equal(shortNoticeKind('2026-03-09',18,new Date(service.instant.getTime()-48*3_600_000),'overnight'),'standard');
  assert.equal(shortNoticeKind('2026-03-09',18,new Date(service.instant.getTime()-48*3_600_000+1),'overnight'),'short-notice');
+});
+
+test('approved holiday ranges preserve inclusive boundaries across every approved year',()=>{
+ assert.equal(publicHolidays(2026).length,8);
+ assert.equal(publicHolidays(2027).length,9);
+ assert.equal(publicHolidays(2028).length,9);
+ assert.equal(publicHolidays(2029).length,1);
+ assert.equal(holidayForDate('2026-12-24')?.id,'winter-2026');
+ assert.equal(holidayForDate('2027-01-03')?.id,'winter-2026');
+ assert.equal(holidayForDate('2027-01-04'),undefined);
+ assert.equal(holidayForDate('2027-12-24')?.id,'winter-2027');
+ assert.equal(holidayForDate('2028-01-03')?.id,'winter-2027');
+ assert.equal(holidayForDate('2028-01-04'),undefined);
+ assert.equal(holidayForDate('2028-12-24')?.id,'winter-2028');
+ assert.equal(holidayForDate('2029-01-03')?.id,'winter-2028');
+ assert.equal(holidayForDate('2029-01-04'),undefined);
+ assert.equal(holidayForDate('2030-01-01'),undefined);
 });

@@ -97,6 +97,8 @@ test('home defers below-fold interactive tools and keeps public prices sourced f
   assert.match(home,/\$\{business\.pricing\.walk60\}/);
   assert.match(home,/\$\{business\.pricing\.drop90\.dog\}/);
   assert.match(home,/\$\{business\.pricing\.overnightMidday30\.dog\}/);
+  assert.match(home,/business\.pricing\.continuous/);
+  assert.match(home,/business\.pricing\.continuous24Starting/);
   assert.doesNotMatch(home,/Insured|bonded|GPS tracking|Stripe Climate|No sales tax|written permission/);
 });
 
@@ -106,11 +108,21 @@ test('FAQ pricing is derived from authoritative business configuration',()=>{
   assert.doesNotMatch(faq,/30-minute drop-in is \$20|60-minute drop-in is \$35|starts at \$25|at \$40/);
 });
 
+test('public service copy distinguishes Standard Overnight and both Continuous Care models',()=>{
+  const home=readFileSync(resolve('app/page.tsx'),'utf8'),faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8'),holidays=readFileSync(resolve('app/holidays/page.tsx'),'utf8');
+  for(const source of [home,faq])for(const phrase of ['Continuous Care','24-Hour Continuous Care','maximum safe and comfortable alone time','household-based'])assert.match(source,new RegExp(phrase));
+  assert.match(home,/reasonable departures/);assert.match(faq,/not \$30 multiplied by 24/);
+  assert.match(holidays,/business\.holidayPeriods\.map/);assert.match(holidays,/3–8 hour Continuous Care/);assert.doesNotMatch(holidays,/not yet approved/);
+});
+
 test('FAQ cancellation summary preserves each approved booking category and policy boundary',()=>{
   const faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8');
   assert.match(faq,/Daytime service: 24 hours or more/);
   assert.match(faq,/Overnight or vacation care under seven nights uses 72-hour and 24-hour thresholds/);
-  assert.match(faq,/Bookings of seven or more nights and approved holiday periods have longer rules/);
+  assert.match(faq,/For cancellation purposes, 3–8 hour Continuous Care is daytime/);
+  assert.match(faq,/24-Hour Continuous Care is Overnight\/multi-day capacity/);
+  assert.match(faq,/seven or more consecutive 24-hour periods use the Extended Booking rules/);
+  assert.match(faq,/Approved holiday periods use the corresponding longer daytime or Overnight framework/);
   assert.match(faq,/The signed policy and booking details control/);
 });
 

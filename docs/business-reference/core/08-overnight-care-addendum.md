@@ -6,7 +6,7 @@
 > Website use: Overnight scope, home requirements, privacy, and daytime-care clarification.
 
 ## Purpose
-This addendum supplements the Master Service Agreement for bookings that include Overnight Care by Cuddle Crew Pet Care LLC ("Cuddle Crew"). Client-specific sleeping, access, household, and pet-care instructions remain in Precise Pet Care ("PPC").
+This addendum supplements the Master Service Agreement for bookings that include Overnight Care by Cuddle Crew Pet Care LLC ("Cuddle Crew"). Client-specific sleeping, access, household, and pet-care instructions remain in Precise Petcare ("PPC").
 
 ## Authoritative Content
 
@@ -15,10 +15,12 @@ Standard Overnight Care generally covers approximately **6:00 PM through 8:00 AM
 
 Arrival and departure may occur within the approved overnight framework rather than at an exact minute unless an exact-time need has been specifically reviewed and accepted.
 
+Standard Overnight Care bundles the core overnight stay but does not promise that the sitter will remain inside the residence every minute. Reasonable departures may occur for another pet-care visit, a meal, school, or another ordinary responsibility when compatible with every pet’s disclosed maximum safe and comfortable alone time and the confirmed care plan. True 24-Hour Continuous Care is a separate limited-capacity Service.
+
 ### 2. Daytime Care
 Daytime care outside the overnight window is separate unless expressly included in the confirmed booking. A standard midday add-on is one separate 30-minute daytime care visit. Longer daytime care or walks use the applicable current service and pricing structure.
 
-The Client is responsible for booking enough daytime care to meet the pets' feeding, medication, elimination, exercise, welfare, and alone-time needs.
+The Client is responsible for booking enough daytime care to meet the pets' feeding, medication, elimination, exercise, welfare, and alone-time needs. The Client must accurately disclose each pet’s maximum safe and comfortable alone time and any relevant separation anxiety, isolation distress, destructive behavior, vocalization, escape risk, puppy or senior needs, medication, feeding, elimination, or nighttime factors.
 
 ### 3. Suitable Sleeping and Bathroom Facilities
 The Client will provide a safe, reasonably sanitary sleeping area and clean bedding or another mutually agreed sleeping arrangement, together with reasonable access to a functioning bathroom, running water, electricity, and appropriate heating/cooling.
@@ -67,4 +69,6 @@ By submitting this addendum, the Client confirms that the overnight environment 
 - Parking/after-dark access concerns.
 - Home emergency contact.
 - Special overnight notes.
+- Maximum safe and comfortable alone time for each pet, with relevant behavior, life-stage, medication, feeding, elimination, and nighttime factors.
+- Acknowledgment that reasonable compatible departures may occur and that 24-Hour Continuous Care is a separate Service.
 - Required acknowledgment and electronic signature/acceptance.
