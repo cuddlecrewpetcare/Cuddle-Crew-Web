@@ -3,8 +3,9 @@ import {FormEvent,useCallback,useEffect,useRef,useState} from 'react';
 import TurnstileWidget from './TurnstileWidget';
 import {trackPublicEvent} from '../lib/public-analytics';
 import {approvedSmsDisclosure} from '../config/sms';
+import {business} from '../config/business';
 
-const email='lauren@cuddlecrewpetcare.com';
+const email=business.email;
 const emailHref=`mailto:${email}?subject=Pet%20care%20question`;
 
 export default function ContactTools({turnstileSiteKey=''}:{turnstileSiteKey?:string}){
@@ -33,9 +34,9 @@ export default function ContactTools({turnstileSiteKey=''}:{turnstileSiteKey?:st
  };
 
  return <div className="contact-tools">
-  <section className="contact-direct" aria-labelledby="direct-contact"><p className="eyebrow">Direct contact</p><h2 id="direct-contact">Reach Lauren your way.</h2><p>You can send the form here, call, or contact Lauren from your own email account.</p><div className="contact-buttons"><button type="button" className="button" onClick={copyEmail}>{copied?'Email copied!':'Copy email address'}</button><a className="text-link" href={emailHref}>Open email app →</a><a className="text-link" href="tel:+19162523550">Call 916-252-3550 →</a></div><p className="contact-address">{email}</p></section>
+  <section className="contact-direct" aria-labelledby="direct-contact"><p className="eyebrow">Direct contact</p><h2 id="direct-contact">Reach Lauren your way.</h2><p>You can send the form here, call, or contact Lauren from your own email account. Routine questions are answered {business.replyWindow}.</p><div className="contact-buttons"><button type="button" className="button" onClick={copyEmail}>{copied?'Email copied!':'Copy email address'}</button><a className="text-link" href={emailHref}>Open email app →</a><a className="text-link" href={business.phoneHref}>Call {business.phoneDisplay} →</a></div><p className="contact-address">{email}</p></section>
   <form className="inquiry-builder" onSubmit={submit} aria-busy={status==='sending'}>
-   <p className="eyebrow">Initial inquiry</p><h2>Ask Lauren a question.</h2><p>Share the basics below. This does not register you, create a reservation, or guarantee availability.</p><p className="required-note"><span aria-hidden="true">*</span> Required fields</p>
+   <p className="eyebrow">Initial inquiry</p><h2>Ask Lauren a question.</h2><p>Share the basics below. Lauren normally replies {business.replyWindow}. This does not register you, create a reservation, or guarantee availability.</p><p className="required-note"><span aria-hidden="true">*</span> Required fields</p>
    <label htmlFor="contact-name">Your name <span aria-hidden="true">*</span><input id="contact-name" name="name" required maxLength={80} autoComplete="name" value={name} onChange={event=>setName(event.target.value)}/></label>
    <label htmlFor="contact-email">Your email <span aria-hidden="true">*</span><input id="contact-email" name="replyTo" required maxLength={254} autoComplete="email" type="email" value={replyTo} onChange={event=>setReplyTo(event.target.value)}/></label>
    <div className="inquiry-pair">
@@ -48,8 +49,8 @@ export default function ContactTools({turnstileSiteKey=''}:{turnstileSiteKey?:st
    <label className="form-trap" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off"/></label>
    <p className="form-privacy">Please don’t include door or alarm codes, payment details, veterinary records, or detailed medical information. Use the secure client portal for those details.</p>
    {siteKey&&<TurnstileWidget siteKey={siteKey} onToken={receiveToken} resetKey={turnstileReset}/>}<button className="button" type="submit" disabled={status==='sending'}>{status==='sending'?'Sending…':'Send inquiry'}</button>
-   {status==='sent'&&<p className="form-status success" role="status">Thanks—your inquiry was accepted for delivery to Lauren. Routine questions are usually answered within one business day. If you need care within 48 hours, submit your request through the client portal and call 916-252-3550.</p>}
-   {status==='error'&&<div ref={errorRef} className="form-status error" role="alert" tabIndex={-1}><p>{errorMessage}</p><a className="text-link" href={emailHref}>Open your email app instead →</a></div>}
+   {status==='sent'&&<p className="form-status success" role="status">Thanks—your inquiry was accepted for delivery to Lauren. Routine questions are answered {business.replyWindow}. If you need care within 48 hours, submit your request through Precise Petcare and call {business.phoneDisplay}.</p>}
+   {status==='error'&&<div ref={errorRef} className="form-status error" role="alert" tabIndex={-1}><p>{errorMessage}</p><div className="contact-buttons"><button type="submit" className="text-link">Try the form again</button><a className="text-link" href={emailHref}>Open your email app instead →</a><a className="text-link" href={business.phoneHref}>Call {business.phoneDisplay} →</a><a className="text-link" href={business.portal.login}>Open Precise Petcare →</a></div></div>}
   </form>
  </div>;
 }

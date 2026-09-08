@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import {expect,test} from '@playwright/test';
 
-const auditedRoutes=['/','/start','/services','/rates','/service-area','/gallery','/plan','/contact','/faq','/privacy'] as const;
+const auditedRoutes=['/','/start','/services','/rates','/service-area','/gallery','/plan','/contact','/faq','/accessibility','/privacy'] as const;
 
 for(const route of auditedRoutes){
  test(`${route} has no detectable WCAG A/AA accessibility violations`,async({page})=>{
@@ -89,7 +89,7 @@ test('focus, reduced motion, touch, and narrow reflow remain usable',async({brow
 test('core routes reflow without horizontal document overflow',async({page})=>{
  for(const width of [320,375,390,768,1024,1280]){
   await page.setViewportSize({width,height:800});
-  for(const route of ['/','/start','/services','/rates','/service-area','/gallery','/plan','/contact']){
+  for(const route of ['/','/start','/services','/rates','/service-area','/gallery','/plan','/contact','/accessibility']){
    await page.goto(route);
    expect(await page.evaluate(()=>({client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth})),`${route} at ${width}px`).toEqual({client:width,scroll:width});
   }

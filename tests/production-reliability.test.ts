@@ -67,25 +67,27 @@ test('SEO metadata and schema use the verified business profile without unsuppor
   assert.match(layout,/'@type': 'WebSite'/);
   assert.match(layout,/telephone: business\.phoneE164/);
   assert.match(layout,/areaServed: business\.location\.territory/);
-  assert.doesNotMatch(layout,/AggregateRating|Review/);
+  assert.doesNotMatch(layout,/AggregateRating|Review|priceRange/);
 });
 
 test('public index routes retain canonical and social metadata while retired routes redirect',()=>{
   const sitemap=readFileSync(resolve('app/sitemap.ts'),'utf8');
   const robots=readFileSync(resolve('app/robots.ts'),'utf8');
   const proxy=readFileSync(resolve('proxy.ts'),'utf8');
-  const routes=['start','services','rates','service-area','gallery','choosing-care','holidays','privacy','terms'];
+  const routes=['start','services','rates','service-area','gallery','plan','choosing-care','holidays','safety','credentials','faq','contact','accessibility','privacy','terms'];
 
   assert.match(sitemap,/SITE_INDEXING_ENABLED/);
-  assert.match(sitemap,/\/choosing-care/);
+  assert.match(sitemap,/\/choosing-care/);assert.match(sitemap,/\/accessibility/);
   assert.match(robots,/SITE_INDEXING_ENABLED/);
   assert.match(proxy,/['\"]\/about['\"]:\s*['\"]\/#meet-lauren['\"]/);
   assert.doesNotMatch(proxy,/['\"]\/(services|rates|service-area)['\"]:/);
   for(const route of routes){
     const source=readFileSync(resolve(`app/${route}/page.tsx`),'utf8');
-    assert.match(source,/alternates:\{canonical:/);
-    assert.match(source,/openGraph:/);
+    assert.match(source,/publicPageMetadata/);
+    assert.match(source,new RegExp(`path:['"]\\/${route}['"]`));
   }
+  const metadata=readFileSync(resolve('app/lib/metadata.ts'),'utf8');
+  for(const field of ['alternates','canonical','openGraph','twitter','summary_large_image','/og.png'])assert.match(metadata,new RegExp(field));
 });
 
 test('home keeps orientation concise while dedicated routes own interactive tools and detailed rates',()=>{

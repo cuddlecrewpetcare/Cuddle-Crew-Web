@@ -1,11 +1,14 @@
 'use client';
 import {useEffect,useId,useRef,useState} from 'react';
+import {business,type TravelTierKey} from './config/business';
 
 type Suggestion={id:string;label:string};
 type Check={available:boolean;zip:string;city:string;travelTier?:{key:string;name:string;fee:number|null;reviewRequired:boolean};travelContext?:string};
+type LocationHandoff={zip:string;travelTier?:TravelTierKey};
 const jsonObject=async(response:Response)=>await response.json() as Record<string,unknown>;
+const travelTiers=new Set<TravelTierKey>(Object.keys(business.travel) as TravelTierKey[]);
 
-export default function AddressChecker({onZip}:{onZip:(zip:string)=>void}){
+export default function AddressChecker({onLocation,onClear}:{onLocation:(location:LocationHandoff)=>void;onClear:()=>void}){
  const id=useId(),listId=`${id}-suggestions`,instructionId=`${id}-instructions`,statusId=`${id}-status`;
  const skipNextAutocomplete=useRef(false),checkController=useRef<AbortController|null>(null);
  const[address,setAddress]=useState(''),[suggestions,setSuggestions]=useState<Suggestion[]>([]),[activeIndex,setActiveIndex]=useState(-1),[suggestionStatus,setSuggestionStatus]=useState(''),[result,setResult]=useState<Check|null>(null),[status,setStatus]=useState<'idle'|'loading'|'unavailable'|'error'>('idle'),[message,setMessage]=useState('');
@@ -33,13 +36,14 @@ export default function AddressChecker({onZip}:{onZip:(zip:string)=>void}){
    const data=await jsonObject(response);if(controller.signal.aborted)return;
    if(data.available===false){setStatus('unavailable');setSuggestionStatus('');return}
    if(!response.ok){setStatus('error');setMessage(typeof data.error==='string'?data.error:'Contact Lauren for a travel review.');setSuggestionStatus('');return}
-   const checked=data as unknown as Check;setResult(checked);setStatus('idle');setSuggestionStatus('');onZip(checked.zip);
-   if(checked.travelTier)window.dispatchEvent(new CustomEvent('cuddlecrew:travel-tier',{detail:{zip:checked.zip,tier:checked.travelTier.key}}));
+   const checked=data as unknown as Check;if(!/^\d{5}$/.test(checked.zip)){setStatus('error');setMessage('The address result could not be used. Try again or contact Lauren for a travel review.');return}
+   const travelTier=checked.travelTier&&travelTiers.has(checked.travelTier.key as TravelTierKey)?checked.travelTier.key as TravelTierKey:undefined;
+   setResult(checked);setStatus('idle');setSuggestionStatus('');onLocation({zip:checked.zip,travelTier});
   }catch{if(!controller.signal.aborted){setStatus('unavailable');setSuggestionStatus('')}}finally{if(checkController.current===controller)checkController.current=null}
  };
 
  const selectSuggestion=(item:Suggestion)=>{skipNextAutocomplete.current=true;setSuggestions([]);setActiveIndex(-1);setSuggestionStatus('Address selected. Checking the address.');setAddress(item.label);void check(item.label)};
- const editAddress=(value:string)=>{skipNextAutocomplete.current=false;setAddress(value);setSuggestions([]);setActiveIndex(-1);setSuggestionStatus('');setResult(null);setStatus('idle')};
+ const editAddress=(value:string)=>{skipNextAutocomplete.current=false;setAddress(value);setSuggestions([]);setActiveIndex(-1);setSuggestionStatus('');setResult(null);setStatus('idle');onClear()};
  const onAddressKeyDown=(event:React.KeyboardEvent<HTMLInputElement>)=>{
   if(!suggestions.length)return;
   if(event.key==='ArrowDown'){event.preventDefault();setActiveIndex(index=>(index+1)%suggestions.length)}

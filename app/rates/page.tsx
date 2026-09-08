@@ -1,10 +1,10 @@
-import type {Metadata} from 'next';
 import RatesEstimator from '../RatesEstimator';
 import SiteFooter from '../SiteFooter';
 import SiteHeader from '../SiteHeader';
 import {business} from '../config/business';
 
-export const metadata:Metadata={title:'Pet Care Rates & Estimate | Cuddle Crew Pet Care',description:'Review approved public pet-sitting, dog-walking, Overnight, and Continuous Care rates, then build a preliminary estimate.',alternates:{canonical:'/rates'},openGraph:{title:'Rates & Estimate | Cuddle Crew Pet Care',description:'Transparent public rates and a preliminary planning estimator.',url:'/rates'}};
+import {publicPageMetadata} from '../lib/metadata';
+export const metadata=publicPageMetadata({title:"Pet Care Rates & Estimate | Cuddle Crew Pet Care",description:"Review approved public pet-sitting, dog-walking, Overnight, and Continuous Care rates, then build a preliminary estimate.",path:'/rates'});
 
 export default function Rates(){return <><SiteHeader/><main id="main-content" tabIndex={-1}><div className="shell detail-page">
  <section className="subhero detail-hero"><p className="eyebrow">Rates</p><h1>Clear prices for standard care.</h1><p className="lede">These approved public rates are planning anchors. Final service, modifiers, availability, scope, and pricing require Lauren’s review and an approved Precise Petcare quote.</p><div className="actions"><a className="button" href="#estimate">Build an estimate</a><a className="text-link" href="/services">Compare services →</a></div></section>

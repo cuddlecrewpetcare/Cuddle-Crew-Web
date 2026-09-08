@@ -1,10 +1,10 @@
-import type {Metadata} from 'next';
 import ServiceAreaTools from '../ServiceAreaTools';
 import SiteFooter from '../SiteFooter';
 import SiteHeader from '../SiteHeader';
 import {business} from '../config/business';
 
-export const metadata:Metadata={title:'Service Area | Cuddle Crew Pet Care',description:'Check an address for typical Sacramento-area pet-care travel and understand the route, capacity, and booking-review boundaries.',alternates:{canonical:'/service-area'},openGraph:{title:'Service Area | Cuddle Crew Pet Care',description:'Check typical travel for owner-operated in-home pet care in the Sacramento area.',url:'/service-area'}};
+import {publicPageMetadata} from '../lib/metadata';
+export const metadata=publicPageMetadata({title:"Service Area | Cuddle Crew Pet Care",description:"Check an address for typical Sacramento-area pet-care travel and understand the route, capacity, and booking-review boundaries.",path:'/service-area'});
 
 export default function ServiceArea(){return <><SiteHeader/><main id="main-content" tabIndex={-1}><div className="shell detail-page">
  <section className="subhero detail-hero"><p className="eyebrow">Service area</p><h1>Sacramento-area care, reviewed address by address.</h1><p className="lede">Cuddle Crew Pet Care is based in Carmichael and serves the broader Sacramento area when the address, route, schedule, and real capacity fit. Check an address for typical daytime travel, then Lauren confirms the request personally.</p><div className="actions"><a className="button" href="#address-check">Check an address</a><a className="text-link" href="/contact">Ask about your location →</a></div></section>
