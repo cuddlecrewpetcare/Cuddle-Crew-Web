@@ -2,14 +2,16 @@ import {expect,test} from '@playwright/test';
 
 const futureDate='2099-01-02';
 
-test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=>{
+test('home keeps service, keyboard, and start paths usable while service-area owns ZIP checks',async({page})=>{
   await page.goto('/');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link',{name:'Skip to main content'})).toBeFocused();
-  await expect(page.getByRole('heading',{name:'Care for the time the routine needs.'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:/In-home pet sitting and dog walking/})).toBeVisible();
   await expect(page.getByText('$30').first()).toBeVisible();
-  await expect(page.getByRole('link',{name:'New client registration'}).first()).toHaveAttribute('href','https://cuddlecrewpetcare.petssl.com/account');
+  await expect(page.getByRole('link',{name:'Start Here'}).first()).toHaveAttribute('href','/start');
+  await expect(page.locator('.estimate-fields')).toHaveCount(0);
 
+  await page.goto('/service-area');
   const zip=page.locator('.checker').getByLabel('Service ZIP');
   await expect(zip).toBeEditable();
   await zip.fill('95821');
@@ -17,14 +19,15 @@ test('home keeps service, ZIP, keyboard, and portal paths usable',async({page})=
   await page.getByRole('button',{name:'Check ZIP'}).click();
   await expect(page.locator('.checker .result')).toContainText('Personalized travel review required');
   await zip.fill('95660');
-  await expect(page.locator('.checker .result')).toContainText('ZIP 95660 cannot determine an approved travel tier');
+  await expect(page.locator('.checker .result')).toContainText('ZIP 95660 can identify the general request location');
+  await expect(page.locator('.checker .result')).toContainText('cannot determine an approved travel tier');
 });
 
 test('estimator and planner retain preliminary, non-booking boundaries',async({page})=>{
   const date=futureDate;
   let availabilityPayload:Record<string,unknown>|undefined;
   await page.route('**/api/availability',route=>{expect(route.request().method()).toBe('POST');expect(new URL(route.request().url()).search).toBe('');availabilityPayload=route.request().postDataJSON() as Record<string,unknown>;return route.fulfill({contentType:'application/json',body:JSON.stringify({state:'Limited Availability'})})});
-  await page.goto('/');
+  await page.goto('/rates');
   await expect(page.locator('.estimate-fields')).toBeVisible();
   await page.getByLabel('First service date').fill(date);
   await page.getByLabel('Last service date').fill(date);
@@ -41,7 +44,7 @@ test('estimator and planner retain preliminary, non-booking boundaries',async({p
 });
 
 test('approved Continuous Care and holiday information are usable without creating a booking',async({page})=>{
-  await page.goto('/');
+  await page.goto('/rates');
   await expect(page.locator('.advanced-estimator')).toHaveAttribute('aria-busy','false');
   await page.getByLabel('What care do you need?').selectOption('continuous5');
   await page.getByLabel('First service date').fill(futureDate);
@@ -68,8 +71,8 @@ test('approved Continuous Care and holiday information are usable without creati
 
 test('start and contact flows do not send a real inquiry in browser tests',async({page})=>{
   await page.goto('/start');
-  await expect(page.getByRole('heading',{name:'Find your next pet-care step.'})).toBeVisible();
-  await expect(page.getByRole('link',{name:'Open your client portal'})).toHaveAttribute('href','https://cuddlecrewpetcare.petssl.com/login');
+  await expect(page.getByRole('heading',{name:'Start with clarity, then request care securely.'})).toBeVisible();
+  await expect(page.getByRole('link',{name:'Open your Precise Petcare account'})).toHaveAttribute('href','https://cuddlecrewpetcare.petssl.com/login');
 
   let submitted:Record<string,unknown>|undefined;
   let failDelivery=false;
@@ -127,7 +130,7 @@ test('contact SMS consent remains readable without horizontal overflow across re
 });
 
 test('anonymous progress survives refresh without retaining dates or safety details and can be deleted',async({page})=>{
-  await page.goto('/');
+  await page.goto('/rates');
   await expect(page.locator('.estimate-fields')).toBeVisible();
   await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
   await page.getByLabel('9 AM–12 PM').check();

@@ -2,10 +2,7 @@ import {NextResponse} from 'next/server';
 
 const canonicalOrigin='https://www.cuddlecrewpetcare.com';
 const legacyRoutes:Record<string,string>={
-  '/services':'/#services',
-  '/rates':'/#estimate',
-  '/service-area':'/#area',
-  '/about':'/credentials',
+  '/about':'/#meet-lauren',
 };
 
 const securityHeaders={

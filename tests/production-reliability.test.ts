@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {existsSync,readFileSync} from 'node:fs';
 import test from 'node:test';
 import {resolve} from 'node:path';
 import {GET as healthCheck} from '../app/api/health/route.ts';
@@ -31,12 +31,13 @@ test('mobile navigation remains visible until JavaScript enhances it',()=>{
 
 test('start page keeps one primary first step and clear planning pathways',()=>{
   const start=readFileSync(resolve('app/start/page.tsx'),'utf8');
-  assert.match(start,/Start with typical travel/);assert.match(start,/Check preliminary availability/);assert.match(start,/Open your client portal/);assert.match(start,/Online tools provide planning guidance only/);assert.match(start,/aria-label="Choose your next step"/);
+  assert.match(start,/New-client orientation/);assert.match(start,/From exploring to confirmed care/);assert.match(start,/Create your secure profile/);assert.match(start,/Open your Precise Petcare account/);assert.match(start,/href:'\/rates#estimate'/);assert.match(start,/href:'\/service-area'/);assert.match(start,/Only an approved Precise Petcare quote and confirmed booking/);
 });
 
 test('ZIP-only service-area UI cannot assign a fee',()=>{
-  const home=readFileSync(resolve('app/page.tsx'),'utf8');
-  assert.match(home,/ZIP alone/);assert.match(home,/Personalized travel review required/);assert.doesNotMatch(home,/ServiceAreaMap|Core ZIPs|Standard ZIPs/);
+  const tools=readFileSync(resolve('app/ServiceAreaTools.tsx'),'utf8');
+  const area=readFileSync(resolve('app/service-area/page.tsx'),'utf8');
+  assert.match(tools,/ZIP-only fallback/);assert.match(tools,/Personalized travel review required/);assert.match(tools,/cannot determine an approved travel tier/);assert.match(area,/a ZIP alone cannot assign one/);assert.doesNotMatch(tools,/ServiceAreaMap|Core ZIPs|Standard ZIPs/);
 });
 
 test('contact errors receive focus while preserving entered values for recovery',()=>{
@@ -73,13 +74,13 @@ test('public index routes retain canonical and social metadata while retired rou
   const sitemap=readFileSync(resolve('app/sitemap.ts'),'utf8');
   const robots=readFileSync(resolve('app/robots.ts'),'utf8');
   const proxy=readFileSync(resolve('proxy.ts'),'utf8');
-  const routes=['start','choosing-care','holidays','privacy','terms'];
+  const routes=['start','services','rates','service-area','gallery','choosing-care','holidays','privacy','terms'];
 
   assert.match(sitemap,/SITE_INDEXING_ENABLED/);
   assert.match(sitemap,/\/choosing-care/);
   assert.match(robots,/SITE_INDEXING_ENABLED/);
-  assert.match(proxy,/['\"]\/services['\"]:\s*['\"]\/#services['\"]/);
-  assert.match(proxy,/['\"]\/rates['\"]:\s*['\"]\/#estimate['\"]/);
+  assert.match(proxy,/['\"]\/about['\"]:\s*['\"]\/#meet-lauren['\"]/);
+  assert.doesNotMatch(proxy,/['\"]\/(services|rates|service-area)['\"]:/);
   for(const route of routes){
     const source=readFileSync(resolve(`app/${route}/page.tsx`),'utf8');
     assert.match(source,/alternates:\{canonical:/);
@@ -87,18 +88,26 @@ test('public index routes retain canonical and social metadata while retired rou
   }
 });
 
-test('home defers below-fold interactive tools and keeps public prices sourced from business rules',()=>{
+test('home keeps orientation concise while dedicated routes own interactive tools and detailed rates',()=>{
   const home=readFileSync(resolve('app/page.tsx'),'utf8');
+  const rates=readFileSync(resolve('app/rates/page.tsx'),'utf8');
+  const estimator=readFileSync(resolve('app/RatesEstimator.tsx'),'utf8');
+  const area=readFileSync(resolve('app/service-area/page.tsx'),'utf8');
+  const areaTools=readFileSync(resolve('app/ServiceAreaTools.tsx'),'utf8');
 
-  assert.match(home,/dynamic\(\(\)=>import\('\.\/QuoteEstimator'\),\{ssr:false/);
-  assert.match(home,/dynamic\(\(\)=>import\('\.\/AddressChecker'\),\{ssr:false/);
-  assert.match(home,/Loading the planning estimator/);
+  assert.doesNotMatch(home,/QuoteEstimator|AddressChecker|estimate-fields|address-checker/);
+  assert.match(estimator,/dynamic\(\(\)=>import\('\.\/QuoteEstimator'\),\{ssr:false/);
+  assert.match(estimator,/Loading the planning estimator/);
+  assert.match(rates,/<RatesEstimator\/>/);
+  assert.match(area,/<ServiceAreaTools\/>/);
+  assert.match(areaTools,/AddressChecker/);
   assert.match(home,/\$\{business\.pricing\.drop30\.dog\}/);
-  assert.match(home,/\$\{business\.pricing\.walk60\}/);
-  assert.match(home,/\$\{business\.pricing\.drop90\.dog\}/);
-  assert.match(home,/\$\{business\.pricing\.overnightMidday30\.dog\}/);
-  assert.match(home,/business\.pricing\.continuous/);
+  assert.match(home,/\$\{business\.pricing\.walk30\}/);
+  assert.match(home,/business\.pricing\.overnight\.dog/);
   assert.match(home,/business\.pricing\.continuous24Starting/);
+  assert.match(rates,/business\.pricing\.drop90\.dog/);
+  assert.match(rates,/business\.pricing\.overnightMidday30\.dog/);
+  assert.match(rates,/business\.pricing\.continuous/);
   assert.doesNotMatch(home,/Insured|bonded|GPS tracking|Stripe Climate|No sales tax|written permission/);
 });
 
@@ -109,10 +118,18 @@ test('FAQ pricing is derived from authoritative business configuration',()=>{
 });
 
 test('public service copy distinguishes Standard Overnight and both Continuous Care models',()=>{
-  const home=readFileSync(resolve('app/page.tsx'),'utf8'),faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8'),holidays=readFileSync(resolve('app/holidays/page.tsx'),'utf8');
-  for(const source of [home,faq])for(const phrase of ['Continuous Care','24-Hour Continuous Care','maximum safe and comfortable alone time','household-based'])assert.match(source,new RegExp(phrase));
-  assert.match(home,/reasonable departures/);assert.match(faq,/not \$30 multiplied by 24/);
+  const home=readFileSync(resolve('app/page.tsx'),'utf8'),services=readFileSync(resolve('app/services/page.tsx'),'utf8'),faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8'),holidays=readFileSync(resolve('app/holidays/page.tsx'),'utf8');
+  for(const source of [services,faq])for(const phrase of ['Continuous Care','24-Hour Continuous Care','maximum safe and comfortable alone time','household-based'])assert.match(source,new RegExp(phrase));
+  assert.match(home,/Continuous Care/);assert.match(services,/reasonable departures/);assert.match(faq,/not \$30 multiplied by 24/);
   assert.match(holidays,/business\.holidayPeriods\.map/);assert.match(holidays,/3–8 hour Continuous Care/);assert.doesNotMatch(holidays,/not yet approved/);
+});
+
+test('Phase 12E public imagery uses the owner-selected Blu portrait and excludes prohibited resources',()=>{
+  const home=readFileSync(resolve('app/page.tsx'),'utf8');
+  for(const fragment of ['homepageMainPhoto','/lauren-portrait.jpeg','/photos/ponyo%20-%20lauren%27s%20cat/lauren-cat-ponyo-couch.jpeg','alt="Lauren Blalock, owner of Cuddle Crew Pet Care"','alt="Ponyo, a gray-and-white cat, reclining on a sofa"'])assert.ok(home.includes(fragment),fragment);
+  assert.equal(existsSync(resolve('public/photos/service-dog-walk.jpeg')),false);
+  assert.equal(existsSync(resolve('public/psi-membership-certificate.jpg')),true);
+  for(const path of ['public/handouts/Client Handout - Preparing for Your Pet Sitter.pdf','public/handouts/Pet Sitter Interview Checklist.pdf','public/handouts/Summer Safety Tips for Pet Owners (Client Handout).pdf','public/infographics/Dog Travel Safety Infographic'])assert.equal(existsSync(resolve(path)),false,path);
 });
 
 test('FAQ cancellation summary preserves each approved booking category and policy boundary',()=>{
