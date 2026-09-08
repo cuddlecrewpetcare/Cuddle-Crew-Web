@@ -68,3 +68,9 @@ next-env.d.ts
 /backups/
 /database-dumps/
 /private-exports/
+
+# Non-public owner reference resources (publication prohibited)
+/public/handouts/Client Handout - Preparing for Your Pet Sitter.pdf
+/public/handouts/Pet Sitter Interview Checklist.pdf
+/public/handouts/Summer Safety Tips for Pet Owners (Client Handout).pdf
+/public/infographics/Dog Travel Safety Infographic
