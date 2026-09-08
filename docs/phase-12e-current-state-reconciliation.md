@@ -10,6 +10,16 @@
 >
 > Nature: current planning and repository-hygiene record; not business-policy authority and not an implementation record
 
+## Owner-review implementation override — 2026-09-07
+
+For the current Phase 12E implementation, the owner has explicitly approved and directed the following narrower reconciliation. This section supersedes conflicting gallery, image-count, Blu-selection, and PSI-publication assumptions elsewhere in this planning record; it does not reopen unrelated Phase 12E decisions.
+
+- Preserve the intentional pet/ownership folder structure under `public/photos/` and display every approved animal photograph in that tree in a substantive `/gallery` route.
+- Separate Lauren’s pets from client pets, preserve the individual pet folders, and state that client pet photographs are displayed with written client/pet-owner permission.
+- Use `public/photos/blu - client dog/client-dog-blu-first-page-photo.jpeg` as the first/main homepage animal photograph and the first Blu/client gallery image. The leash and indoor Blu variants may appear only as secondary gallery images.
+- Public website/social-media publication permission is confirmed for the PSI logos supplied through Lauren’s membership portal and for `public/psi-membership-certificate.jpg`. That permission does not establish current-status wording and must not be presented as certification, endorsement, insurance, or bonding.
+- The three PSI client-handout PDFs and Dog Travel Safety Infographic remain prohibited public resources; the four narrow `.gitignore` rules remain controlling.
+
 ## 1. Decision summary
 
 Historical Phase 12E remains directionally useful, but it is not executable as recovered. Its provenance is **SUMMARY ONLY**, and substantial engineering, business-rule, privacy, image-recovery, and accessibility work was completed after its original context. Current 12E should be a focused presentation and information-architecture implementation, not a foundation rebuild.

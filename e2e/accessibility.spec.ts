@@ -1,12 +1,12 @@
 import AxeBuilder from '@axe-core/playwright';
 import {expect,test} from '@playwright/test';
 
-const auditedRoutes=['/','/plan','/contact','/faq','/privacy'] as const;
+const auditedRoutes=['/','/start','/services','/rates','/service-area','/gallery','/plan','/contact','/faq','/privacy'] as const;
 
 for(const route of auditedRoutes){
  test(`${route} has no detectable WCAG A/AA accessibility violations`,async({page})=>{
   await page.goto(route);
-  if(route==='/'){
+  if(route==='/rates'){
    await page.route('**/api/availability',request=>request.fulfill({contentType:'application/json',body:JSON.stringify({state:'Request for Review'})}));
    await expect(page.locator('.estimate-fields')).toBeVisible();
    await page.getByLabel('How many pets need this service?').fill('2');
@@ -44,7 +44,7 @@ test('skip link and compact navigation preserve logical keyboard focus',async({p
 test('address suggestions support combobox arrows, Enter, Escape, and status',async({page})=>{
  await page.route('**/api/address/suggestions',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({suggestions:[{id:'one',label:'123 Example Street, Sacramento, CA 95821'},{id:'two',label:'125 Example Street, Sacramento, CA 95821'}]})}));
  await page.route('**/api/address/check',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({available:true,zip:'95821',city:'Sacramento'})}));
- await page.goto('/');
+ await page.goto('/service-area');
  const address=page.getByRole('combobox',{name:'Street address'});
  await address.fill('123 Example');
  const listbox=page.getByRole('listbox',{name:'Address suggestions'});
@@ -81,7 +81,7 @@ test('focus, reduced motion, touch, and narrow reflow remain usable',async({brow
  const toggle=page.locator('.nav-toggle');
  await toggle.tap();
  await expect(toggle).toHaveAttribute('aria-expanded','true');
- await page.getByRole('link',{name:'FAQ'}).tap();
+ await page.getByRole('navigation',{name:'Primary'}).getByRole('link',{name:'FAQ'}).tap();
  await expect(page).toHaveURL(/\/faq$/);
  await context.close();
 });
@@ -89,7 +89,7 @@ test('focus, reduced motion, touch, and narrow reflow remain usable',async({brow
 test('core routes reflow without horizontal document overflow',async({page})=>{
  for(const width of [320,375,390,768,1024,1280]){
   await page.setViewportSize({width,height:800});
-  for(const route of ['/','/plan','/contact']){
+  for(const route of ['/','/start','/services','/rates','/service-area','/gallery','/plan','/contact']){
    await page.goto(route);
    expect(await page.evaluate(()=>({client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth})),`${route} at ${width}px`).toEqual({client:width,scroll:width});
   }

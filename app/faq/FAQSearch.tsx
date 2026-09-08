@@ -21,7 +21,7 @@ const entries=[
 ['Safety','How are emergencies handled?',"Lauren follows the current client profile and signed agreement, attempts to reach the client or authorized contact, and may seek veterinary help when care should not reasonably be delayed."],
 ['Privacy','How is home access handled?','Keys, codes, and household instructions are confidential and used only for approved care. Put them in the secure client portal and review backup access at the meet-and-greet.'],
 ['Services','Which requests need extra review?','Continuous Care, 24-Hour Continuous Care, transportation, medication or procedures, exact-time care, unusual species, complex handling, and large or intensive households require personalized review. Continuous Care is limited-capacity, not categorically unavailable. A higher price never overrides safety, legal, insurance, or service-scope limits.'],
-['Privacy','What about pet photos?','Public use of client media is not promised while the governing media-consent reference remains unapproved. Private visit documentation is handled according to the confirmed service plan and portal records.']
+['Privacy','What about pet photos?','All client pet photos shown on this site are shared with written permission from the client or pet owner. That permission does not extend to client identities, private household details, medical information, testimonials, addresses, or other client records. Any future client media still requires the applicable permission and approved consent record.']
 ] as const;
 
 export default function FAQSearch(){
