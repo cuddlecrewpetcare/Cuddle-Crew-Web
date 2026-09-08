@@ -1,5 +1,6 @@
-import type {Metadata} from 'next';import SiteHeader from '../SiteHeader';import SafetySearch,{SafetyEntry} from './SafetySearch';
-export const metadata:Metadata={title:'Safety & Trust Center | Cuddle Crew Pet Care',description:'Plain-language guidance for pet health, travel delays, home access, weather, medication, and other unexpected situations.',alternates:{canonical:'/safety'},openGraph:{title:'Safety & Trust Center | Cuddle Crew',description:'How Cuddle Crew approaches common pet-care and home-safety situations.',url:'/safety'}};
+import SiteHeader from '../SiteHeader';import SafetySearch,{SafetyEntry} from './SafetySearch';
+import {publicPageMetadata} from '../lib/metadata';
+export const metadata=publicPageMetadata({title:"Safety & Trust Center | Cuddle Crew Pet Care",description:"Plain-language guidance for pet health, travel delays, home access, weather, medication, and other unexpected situations.",path:'/safety'});
 const entries:SafetyEntry[]=[
  {category:'Travel',title:'Delayed return, extended trip, or no return confirmation',body:'Contact Lauren as soon as plans change and update the portal. Never assume care has continued or stopped until Lauren confirms. Additional service depends on availability and the signed agreement.'},
  {category:'Travel',title:'Early return',body:'Tell Lauren promptly so entry and pet-care plans can be coordinated safely. Cancellation terms and services already performed may still apply.'},

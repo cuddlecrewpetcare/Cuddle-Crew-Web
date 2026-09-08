@@ -1,9 +1,9 @@
-import type {Metadata} from 'next';
 import SiteFooter from '../SiteFooter';
 import SiteHeader from '../SiteHeader';
 import {business} from '../config/business';
 
-export const metadata:Metadata={title:'Pet Sitting & Dog Walking Services | Cuddle Crew Pet Care',description:'Compare owner-operated in-home Drop-In Visits, Dog Walks, Standard Overnight Care, and reviewed Continuous Care in the Sacramento area.',alternates:{canonical:'/services'},openGraph:{title:'Services | Cuddle Crew Pet Care',description:'Compare in-home pet sitting and dog walking options in the Sacramento area.',url:'/services'}};
+import {publicPageMetadata} from '../lib/metadata';
+export const metadata=publicPageMetadata({title:"Pet Sitting & Dog Walking Services | Cuddle Crew Pet Care",description:"Compare owner-operated in-home Drop-In Visits, Dog Walks, Standard Overnight Care, and reviewed Continuous Care in the Sacramento area.",path:'/services'});
 
 export default function Services(){return <><SiteHeader/><main id="main-content" tabIndex={-1}><div className="shell detail-page">
  <section className="subhero detail-hero"><p className="eyebrow">Services</p><h1>Care options built around real routines.</h1><p className="lede">Cuddle Crew Pet Care provides professional in-home visits, walks, Overnight Care, and dedicated Continuous Care. Lauren reviews the household, timing, welfare, safety, scope, route, and capacity before any booking is confirmed.</p><div className="actions"><a className="button" href="/start">Start Here</a><a className="text-link" href="/rates">View detailed rates →</a></div></section>

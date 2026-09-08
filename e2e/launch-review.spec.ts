@@ -1,6 +1,6 @@
 import {expect,test} from '@playwright/test';
 
-const publicRoutes=['/','/start','/services','/rates','/service-area','/gallery','/plan','/holidays','/choosing-care','/safety','/credentials','/faq','/contact','/privacy','/terms'];
+const publicRoutes=['/','/start','/services','/rates','/service-area','/gallery','/plan','/holidays','/choosing-care','/safety','/credentials','/faq','/contact','/accessibility','/privacy','/terms'];
 
 test('all public routes, metadata routes, legacy redirects, and 404 return expected status',async({request})=>{
   for(const route of publicRoutes)expect((await request.get(route)).status(),route).toBe(200);
@@ -67,6 +67,13 @@ test('dedicated planning tools resolve at their canonical anchors',async({page})
   await page.goto('/service-area#address-check');
   await expect(page.getByRole('heading',{name:'Check typical travel for your address.'})).toBeInViewport();
   await expect(page.locator('.address-checker')).toBeVisible();
+  await page.goto('/plan');
+  await page.getByLabel('Can the full routine safely fit in one visit?').selectOption('30');
+  await expect(page.getByRole('link',{name:'Price this starting point'})).toHaveAttribute('href',/^\/rates\?.*#estimate$/);
+});
+
+test('major routes emit route-specific canonical, Open Graph, and Twitter metadata',async({request})=>{
+  for(const route of publicRoutes){const response=await request.get(route);const html=await response.text();const canonical=route==='/'?'https://www.cuddlecrewpetcare.com':`https://www.cuddlecrewpetcare.com${route}`;expect(html,route).toContain(`<link rel="canonical" href="${canonical}"`);expect(html,route).toContain('<meta property="og:title"');expect(html,route).toContain('<meta property="og:description"');expect(html,route).toContain(`<meta property="og:url" content="${canonical}"`);expect(html,route).toContain('<meta name="twitter:card" content="summary_large_image"')}
 });
 
 test('mobile, 200 percent zoom, keyboard, and reduced-motion paths avoid horizontal overflow',async({page})=>{

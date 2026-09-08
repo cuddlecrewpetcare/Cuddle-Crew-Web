@@ -21,7 +21,7 @@
 
 /* Contrast and reflow corrections verified in the Phase 12E rendered review. */
 .home-area .eyebrow,.home-area p{color:#fffaf5}
-.readiness-cue .eyebrow,.readiness-cue p{color:#4b3931}
+.readiness-cue .eyebrow,.readiness-cue p,.readiness-cue li{color:#4b3931}
 .rate-section-tint{margin-inline:0}
 
 /* Owner-approved public pet gallery. Frames crop only at display time; source files remain unchanged. */

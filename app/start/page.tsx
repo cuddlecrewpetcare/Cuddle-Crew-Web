@@ -1,9 +1,9 @@
-import type {Metadata} from 'next';
 import SiteFooter from '../SiteFooter';
 import SiteHeader from '../SiteHeader';
 import {business} from '../config/business';
 
-export const metadata:Metadata={title:'Start Here | Cuddle Crew Pet Care',description:'Follow the clear new-client path from service exploration and secure Precise Petcare information to personalized review and confirmed care.',alternates:{canonical:'/start'},openGraph:{title:'Start Here | Cuddle Crew Pet Care',description:'A clear new-client path for personalized Sacramento-area pet care.',url:'/start'}};
+import {publicPageMetadata} from '../lib/metadata';
+export const metadata=publicPageMetadata({title:"Start Here | Cuddle Crew Pet Care",description:"Follow the clear new-client path from service exploration and secure Precise Petcare information to personalized review and confirmed care.",path:'/start'});
 
 const steps=[
  {title:'Learn about services and check fit',body:'Compare care options, approved public rates, and the general service area. This helps you orient—not reserve care.'},
@@ -29,7 +29,7 @@ export default function Start(){return <><SiteHeader/><main id="main-content" ta
 
  <section className="start-tools" aria-labelledby="start-tools-heading"><div className="section-heading"><div><p className="eyebrow">Explore at your pace</p><h2 id="start-tools-heading">Choose the support you need.</h2></div><p>You do not have to use every tool before registering.</p></div><div className="start-pathways"><ol>{pathways.map((path,index)=><li key={path.title}><span aria-hidden="true">{index+1}</span><div><h3>{path.title}</h3><p>{path.body}</p><a className="text-link" href={path.href}>{path.label} →</a></div></li>)}</ol></div></section>
 
- <section className="content-card readiness-cue"><p className="eyebrow">Before first care</p><h2>Keep the secure record complete and current.</h2><p>Before the first routine service, complete the relevant pet and household profiles, current care instructions, emergency contacts, and approved access arrangements in Precise Petcare. The Meet & Greet helps confirm that the routine, selected service, and access plan work in practice.</p><p>This orientation does not replace the signed agreements or the confirmed care plan.</p></section>
+ <section className="content-card readiness-cue"><p className="eyebrow">Before first care</p><h2>Prepare the routine and its backup.</h2><p>Keep these details current in secure Precise Petcare records, then confirm them at the Meet & Greet:</p><ul><li>Current care and medication instructions, plus emergency and veterinary contacts.</li><li>Enough food, medication, litter, enclosure supplies, and working care equipment—with clear locations.</li><li>A tested primary access method and an approved backup access plan where applicable.</li><li>A safe backup for routine feeders, fountains, self-cleaning litter boxes, smart access devices, or other equipment if the device, power, or network fails.</li></ul><p>This readiness check does not replace the signed agreements or the confirmed care plan.</p></section>
 
  <section className="cta start-cta"><p className="eyebrow">Ready for the secure step?</p><h2>Create your Precise Petcare profile.</h2><p>Use the portal for private household, pet, medical, emergency, and access information. Submit the relevant request there when your profile is ready.</p><div className="actions center"><a className="button" href={business.portal.register}>Create your secure profile</a><a className="button secondary" href="/contact">Contact Lauren first</a></div></section>
  </div></main><SiteFooter/></>}

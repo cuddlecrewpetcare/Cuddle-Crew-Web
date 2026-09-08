@@ -1,10 +1,10 @@
-import type {Metadata} from 'next';
 import SiteFooter from '../SiteFooter';
 import SiteHeader from '../SiteHeader';
 import {galleryPhotos,type GalleryCategory} from '../config/gallery';
 import GalleryLightbox from './GalleryLightbox';
 
-export const metadata:Metadata={title:'Pet Photo Gallery | Cuddle Crew Pet Care',description:'Meet Lauren’s cats and client pets in the Cuddle Crew Pet Care photo gallery.',alternates:{canonical:'/gallery'},openGraph:{title:'Pet Photo Gallery | Cuddle Crew Pet Care',description:'Meet Lauren’s cats and client pets in the Cuddle Crew Pet Care photo gallery.',url:'/gallery',type:'website'}};
+import {publicPageMetadata} from '../lib/metadata';
+export const metadata=publicPageMetadata({title:"Pet Photo Gallery | Cuddle Crew Pet Care",description:"Meet Lauren’s cats and client pets in the Cuddle Crew Pet Care photo gallery.",path:'/gallery'});
 
 const sections:[GalleryCategory,string,string][]=[
  ['lauren','Lauren’s pets','Ponyo and Bambi are Lauren’s own cats.'],
