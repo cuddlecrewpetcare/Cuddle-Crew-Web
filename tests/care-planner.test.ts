@@ -57,6 +57,18 @@ test('planner never overrides a stated duration using a hidden workload score',(
   assert.equal(result.suitability,'consultation-required');
 });
 
+test('four or more dogs require a neutral personalized review while three dogs retain ordinary assessment',()=>{
+  const threeDogs=assessCarePlan(baseline({dogs:3}));
+  assert.equal(threeDogs.suitability,'starting-point');
+
+  for(const dogs of [4,5]){
+    const assessment=assessCarePlan(baseline({dogs}));
+    assert.equal(assessment.suitability,'consultation-required');
+    assert(assessment.reviewReasons.includes('Personalized review required.'));
+    assert(!assessment.reviewReasons.some(reason=>/four|dog count|household size/i.test(reason)));
+  }
+});
+
 test('short entered tolerance conservatively controls the gap comparison',()=>{
   const result=assessCarePlan(baseline({comfortableAloneHours:10,bathroomIntervalHours:6}));
   assert.equal(result.gapWithinEnteredLimits,false);
