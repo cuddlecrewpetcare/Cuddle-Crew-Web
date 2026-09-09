@@ -7,26 +7,28 @@ Reconciliation is COMPLETE: [PR #5](https://github.com/cuddlecrewpetcare/Cuddle-
 
 Multi-agent practices are COMPLETE: [PR #6](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/pull/6), final source `63682499281ee3a2390ed35c26bb1bb75541b3d9`, merged main `63b216edad4fb51d25d1c7b407b7fd54d6b23c10`; exact-head Validation [34332752796](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34332752796), independent review, merge verification, resulting-main Validation [34333527142](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34333527142) and local validation passed. [Coverage 107–146](RUNS/2026-09-09-multi-agent-practices.md) remains 39 IMPLEMENTED / 1 PARTIAL / 0 MISSING; native messaging is the known PARTIAL limitation.
 
-This immutable checkpoint predates its own context-lifecycle addendum CI/review. Resolve closure through the PR for `codex/context-lifecycle-integration-20260909`, its final exact head/checks/review and no-ff merge/post-merge validation. GitHub completion evidence supersedes commit-time IN_REVIEW; do not create self-SHA refresh loops. [Bounded addendum 147–192](RUNS/2026-09-09-context-lifecycle.md) records scope and limitations.
+Context lifecycle is COMPLETE: [PR #7](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/pull/7), final source `1d293921e135ffa9eb0794d710b5c6a3bf71ddfb`, merged main `d4948e4c1535514e1f7e9db955dbcba092f9fbdc`; exact-head Validation [34337027844](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34337027844), independent review, normal no-ff merge verification and resulting-main Validation [34338656355](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34338656355) passed. [Coverage 147–192](RUNS/2026-09-09-context-lifecycle.md) remains 45 IMPLEMENTED / 1 PARTIAL / 0 MISSING; native messaging is the known PARTIAL limitation.
+
+Autonomous workspace configuration is the only current authorized work item. Its user-level Codex config is local and uncommitted; this branch records only the standing authorization, approval-stall/full-access boundaries and [bounded coverage 193–242](RUNS/2026-09-09-autonomous-workspace.md). No product work, pilot continuation, provider mutation or deployment is authorized.
 
 | Field | Current state |
 | --- | --- |
-| Base branch / SHA | `github/main` / `63b216edad4fb51d25d1c7b407b7fd54d6b23c10`; re-fetch before new work |
+| Base branch / SHA | `github/main` / `d4948e4c1535514e1f7e9db955dbcba092f9fbdc`; re-fetch before new work |
 | Last implemented phase | 12F; application merge `d828c972f2018545ffa25bc5c60af783a5de5aad` |
 | Latest verified phase | 12G audit merged; **APPLICATION NO-GO**, not launch-ready |
-| Current work item / status | `CC-CONTEXT-LIFECYCLE` / IN_REVIEW at commit-time; bounded control-plane additions and gated normal no-ff integration authorized; no product work |
-| Owner | Addendum/integration task `01a0857e-dc68-7c50-8ba6-68f46e64f680`; persistent logical-role routing unchanged in the dated RUN below |
-| Branch / worktree | `codex/context-lifecycle-integration-20260909`; isolated verified-base worktree, locate with `git worktree list` |
-| Completed | F0–F14 and 12A–12F history retained; 12G audit, orchestration reconciliation and multi-agent integration completed; latest main `63b216e`, Validation 34333527142 passed |
+| Current work item / status | `CC-AUTONOMOUS-WORKSPACE` / IN_PROGRESS at commit-time; bounded config/control-plane integration only; no product work |
+| Owner | Current bounded configuration/integration task; persistent logical-role routing remains unchanged below |
+| Branch / worktree | `codex/autonomy-control-plane-20260909`; isolated worktree from verified main, locate with `git worktree list` |
+| Completed | F0–F14 and 12A–12F history retained; 12G audit, orchestration reconciliation, multi-agent practices and context lifecycle completed; latest main `d4948e4`, Validation 34338656355 passed |
 | Active product Implementers | None. Pre-existing pilot task `01a084e7-ce5b-7c71-ab16-381c97ddca13` is STOPPED, unarchived without resuming; its tracked staged WIP was restored exactly after archival cleanup. |
 | Pre-existing pilot work / execution hold | Existing `codex/12g-care-01` has restored staged pilot-file edits from task `01a084e7-ce5b-7c71-ab16-381c97ddca13`, now `CC — 12G-CARE-01 — STOPPED`. Prior execution authority/disposition remains unresolved. Reconciliation did not implement, commit, push, test or approve it; recovery only restored the recorded tracked bytes/index. Former generated .codex data and platform snapshot are unverified. See RUN recovery evidence. |
 | Blocked | 12 unresolved P1s in [12G §R/§W](../phase-12g-final-release-audit.md); 12H and launch remain gated |
 | Pilot execution hold / no reassignment | `12G-CARE-01` has preserved staged work from its stopped owner. Resolve prior authority and disposition before any reassignment or execution; [pilot evidence](RUNS/2026-09-09-reconciliation.md#pilot-preparation-no-execution). |
-| Outstanding review | Context-lifecycle committed-SHA review/CI recorded on its branch PR after this checkpoint; inspect before inferring closure or merge readiness |
+| Outstanding review | Autonomous-workspace exact-head CI and fresh independent review are required before integration |
 | Business decisions/evidence | Existing `12G-SEO-01` locality and `12G-PRIV-01` name-consent launch gates; neither needed for proposed pilot |
 | Deferred | Existing [12G §T backlog](../phase-12g-final-release-audit.md); no duplicate roadmap |
-| Deployment | NO; not authorized in bootstrap, reconciliation or this addendum |
-| Durable evidence / routing | [Context-lifecycle addendum](RUNS/2026-09-09-context-lifecycle.md); [multi-agent addendum](RUNS/2026-09-09-multi-agent-practices.md); [completed reconciliation and runtime roles](RUNS/2026-09-09-reconciliation.md); [historical bootstrap](RUNS/2026-09-09-bootstrap.md); [operating guide](ORCHESTRATION.md) |
+| Deployment | NO; not authorized in bootstrap, reconciliation or the autonomy addendum |
+| Durable evidence / routing | [Autonomous-workspace addendum](RUNS/2026-09-09-autonomous-workspace.md); [context-lifecycle addendum](RUNS/2026-09-09-context-lifecycle.md); [multi-agent addendum](RUNS/2026-09-09-multi-agent-practices.md); [completed reconciliation and runtime roles](RUNS/2026-09-09-reconciliation.md); [operating guide](ORCHESTRATION.md) |
 | Native transport / resources | Native messaging/ACK PARTIAL; task IDs canonical, names labels, full RUN fallback mandatory. Model/reasoning adjustable through supported turns; speed selection/readback unavailable in current tools. |
 
 ## Current logical-role pointer

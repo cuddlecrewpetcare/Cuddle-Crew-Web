@@ -91,6 +91,7 @@ Include WORK_ITEM, MESSAGE_ID and sender/recipient task IDs (canonical), with na
 | TASK_CANCELLED | WORK_ITEM, STOP_REQUESTED, reason, required stop, preserved branch/diff/index evidence and report-back; STOP_CONFIRMED only after verified execution stop |
 | RESOURCE_CHANGE | MODEL/EFFORT/SPEED_ESCALATION or DEESCALATION; PREVIOUS_CONFIGURATION, NEW_CONFIGURATION, REASON; in-place/fresh handoff and owner continuity |
 | CHANGE_SURFACE_DEVIATION | Reason, expected versus proposed paths, acceptance/dependency impact, authority needed; Orchestrator resolves before expanded writes |
+| PLATFORM_APPROVAL_STALL | CATEGORY (`READ|WRITE|GIT|WORKTREE|TEST|NETWORK|TASK_MESSAGE|EXTERNAL_TOOL|OTHER`), ACTION, EFFECTIVE_ROOT/POLICY, WHY_GATED, ATTEMPTED_ONCE, SAFEST_REMEDIATION, REQUIRES_LAUREN YES/NO; no blind retry or bypass |
 | CONTEXT_POLLUTION_RISK | Unbounded consultation/duplicated context evidence; existing owner and bounded next question |
 | ROLE_ROTATION_RECOMMENDED | Logical/current role identity, evidence, active/safe-point state, benefit/risk/cost, successor configuration and why; recommendation is not automatic rotation |
 | DUPLICATE_LOGICAL_ROLE_DETECTED | Logical role, competing task IDs/names, current work/routing, durable evidence and action that restores one canonical active task |
@@ -282,7 +283,7 @@ Material completion: what changed and why; protected scope preserved; validation
 Use only for meaningful findings; send to Orchestrator and deduplicate in the existing backlog/RUN. Recommendation does not authorize implementation.
 
 ```text
-EVENT: HIGH_VALUE_IMPROVEMENT_FOUND / ADJACENT_OPPORTUNITY / NEW_CAPABILITY_OPPORTUNITY / NEW_ORCHESTRATION_OPPORTUNITY / UNEXPECTED_FINDING
+EVENT: HIGH_VALUE_IMPROVEMENT_FOUND / ADJACENT_OPPORTUNITY / NEW_CAPABILITY_OPPORTUNITY / NEW_ORCHESTRATION_OPPORTUNITY / APPROVAL_FRICTION_IMPROVEMENT / NEW_AUTONOMY_CAPABILITY / UNEXPECTED_FINDING
 WHAT / WHY / EVIDENCE / EXPECTED_BENEFIT:
 IMPROVEMENT_TYPE: BOOTSTRAP / WEBSITE / ENVIRONMENT / CI / SECURITY / BUSINESS_OPS / INTEGRATION / PERFORMANCE / ACCESSIBILITY / SEO / UX / COST / OTHER
 VALUE: LOW / MEDIUM / HIGH / VERY_HIGH
@@ -297,4 +298,18 @@ BACKLOG_REFERENCE / OWNER_OR_DECISION_NEEDED:
 ADJACENCY: <when applicable: INCREMENTAL_EFFORT, BENEFIT, RISK, SCOPE_EFFECT>
 NEW_CAPABILITY: <when applicable: WHAT_CHANGED, BENEFIT, MIGRATION_EFFORT, CAN_EXISTING_FALLBACK_BE_SIMPLIFIED>
 NEW_ORCHESTRATION: <when applicable: SOURCE_TYPE OFFICIAL/COMMUNITY/PROJECT EXPERIENCE + evidence label/date; WHY_IT_MAY_HELP; EXTRA_COMPLEXITY; EXTRA_MODEL_CI_USAGE; SECURITY_SUPPLY_CHAIN_EFFECT; PILOT_PROPOSAL; AUTHORIZED YES/NO>
+```
+
+When bounded workspace access is genuinely insufficient, stop before broadening it:
+
+```text
+EVENT: FULL_ACCESS_EVALUATION_REQUIRED
+BLOCKED_WORKFLOW:
+WHY_WORKSPACE_MODE_FAILS:
+FREQUENCY:
+BUSINESS_VALUE:
+ADDITIONAL_ACCESS_REQUIRED:
+RISK:
+NARROWER_ALTERNATIVES:
+RECOMMENDATION:
 ```
