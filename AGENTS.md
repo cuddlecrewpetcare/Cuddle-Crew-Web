@@ -1,5 +1,9 @@
 # Cuddle Crew Pet Care — Codex Repository Instructions
 
+## Orchestration entry point
+
+For coordinated Codex work, read [the operating guide](docs/codex/ORCHESTRATION.md) and [current status](docs/codex/PROJECT_STATUS.md), then only the assigned sources. Use the [compact role/assignment templates](docs/codex/TEMPLATES.md). These add ownership and evidence handling; all business authority and engineering contracts below remain controlling. Never infer product, merge, or deployment authorization from the status cache.
+
 ## Business Reference Authority
 
 Before modifying any website copy, service descriptions, pricing logic, estimate logic, booking logic, eligibility logic, policy language, FAQ content, service-area behavior, holiday behavior, payment behavior, safety messaging, onboarding flow, or Precise Petcare handoff behavior, review the relevant files in:
