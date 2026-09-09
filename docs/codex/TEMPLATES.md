@@ -1,6 +1,6 @@
 # Role and work-item templates
 
-Use only the applicable fields. Replace angle-bracket slots before sending. Paths refer to the chosen worktree; never paste secret/private values. These templates supplement [ORCHESTRATION](ORCHESTRATION.md), not the business hierarchy.
+Use only the applicable fields; trivial tasks do not need the full envelope. Replace angle-bracket slots before sending. Paths refer to the chosen worktree; never paste secret/private values. These templates supplement [ORCHESTRATION](ORCHESTRATION.md), not the business hierarchy. Before important dispatch check that purpose, Lauren's desired result, ownership, prohibited changes, authority and return evidence are clear; fix the brief when they are not.
 
 ## Ready-to-use role prompts
 
@@ -34,15 +34,24 @@ Copy this into the native assignment and, for substantial work, one RUNS/<work-i
 MESSAGE_TYPE: ASSIGNMENT
 MESSAGE_ID: <work-item>-assignment-1
 WORK_ITEM: <existing finding or bounded ID>
+ROLE: <bounded role; existing persistent role or temporary worker>
 FROM: <orchestrator task ID>
 TO / OWNER: <ready task ID + host, or subagent ID>
 TASK_NAME: CC — <WORK_ITEM> — IMPLEMENT
 TASK_ID / OWNER_TASK_ID: <ready routing ID if known; never a setup token>
-OBJECTIVE: <one outcome>
+WHY_THIS_EXISTS: <purpose; why this work matters>
+USER_INTENT: <Lauren's relevant request>
+SUCCESS_FROM_LAURENS_PERSPECTIVE: <observable useful result>
+OBJECTIVE / TECHNICAL_OBJECTIVE: <one bounded technical outcome>
 AUTHORIZED_SCOPE: <current Lauren instruction + allowed work>
 MUST_NOT: <protected negative requirements>
 OUT_OF_SCOPE: <excluded work>
 SOURCE_OF_TRUTH: <paths + sections; statuses verified>
+CONTEXT_FILES: <only relevant source paths; no unrelated history>
+READ_SCOPE: <relevant files/systems; allow useful discovery>
+WRITE_SCOPE: <owned files/modules; NONE for read-only work>
+FORBIDDEN_WRITE_SCOPE: <protected files/checkouts/settings>
+DEPENDENCIES: <work-item IDs + prerequisite evidence, or NONE>
 BASE_SHA: <exact SHA>
 BRANCH / WORKTREE: <branch; discover local path from Git>
 EXPECTED_CHANGE_SURFACE: <files/modules>
@@ -52,14 +61,17 @@ RISK / CHANGE_IMPACT: <LOW|MEDIUM|HIGH|CRITICAL; relevant impact>
 RESOURCE_ASSESSMENT: <complexity/ambiguity/risk/determinism/cross-file/cross-system/context/reversibility/time/cost; concise for small work>
 MODEL / REASONING: <independently recommended live choices>
 SPEED / DESIRED_SPEED: <economical/normal or justified faster preference>
-WHY: <capability, reliability, risk, latency and cost justification>
+WHY / WHY_THIS_CONFIGURATION: <capability, reliability, risk, latency and cost justification>
+ADDITIONAL_AGENT_VALUE: <time/quality/risk/specialization benefit; extra usage and synthesis cost when spawning>
 CONFIGURED_MODEL / CONFIGURED_REASONING / ACTUAL_SPEED: <tool-confirmed values or UNKNOWN; separate recommendation from actual>
 RESOURCE_OVERRIDE: <if material: EVENT; PREVIOUS_CONFIGURATION; NEW_CONFIGURATION; REASON>
 ROLLBACK: <practical recovery/revert path and limits; NOT_APPLICABLE with reason if unnecessary>
 PARALLEL_SAFE: NO
+INTEGRATION_OWNER: <one owner; workers do not merge>
 REVIEW_REQUIRED / SECURITY_REVIEW_REQUIRED / BUSINESS_TRUTH_REQUIRED: <YES/NO + why>
 REPORT_BACK_TO: <orchestrator ID and durable record path>
 FALLBACK: <same ready-to-use assignment in RUN path; native send/ACK limit; no blind retries>
+EXPECTED_OUTPUT: <concise receipt + artifact/diff/test navigation>
 STATUS / LAST_PROGRESS: <state; timestamp with timezone>
 ```
 
@@ -78,8 +90,28 @@ Include WORK_ITEM, MESSAGE_ID and sender/recipient task IDs (canonical), with na
 | UNEXPECTED_FINDING | CATEGORY, SEVERITY, EVIDENCE, BLOCKING, RECOMMENDATION; use existing backlog, no automatic new project |
 | TASK_CANCELLED | WORK_ITEM, STOP_REQUESTED, reason, required stop, preserved branch/diff/index evidence and report-back; STOP_CONFIRMED only after verified execution stop |
 | RESOURCE_CHANGE | MODEL/EFFORT/SPEED_ESCALATION or DEESCALATION; PREVIOUS_CONFIGURATION, NEW_CONFIGURATION, REASON; in-place/fresh handoff and owner continuity |
+| CHANGE_SURFACE_DEVIATION | Reason, expected versus proposed paths, acceptance/dependency impact, authority needed; Orchestrator resolves before expanded writes |
+| CONTEXT_POLLUTION_RISK | Unbounded consultation/duplicated context evidence; existing owner and bounded next question |
 
 A completion message is an implementation handback. Only the Orchestrator reconciles CI/review/business evidence and marks VERIFIED/COMPLETE. Reports may reference existing logs/check URLs instead of copying them.
+
+Compact worker receipt (include applicable COMPLETE evidence above by reference; artifacts/diffs/test output control over narrative):
+
+```text
+WORK_ITEM:
+STATUS:
+BASE_SHA:
+FINAL_SHA: <or NOT_APPLICABLE for read-only; exact reviewed artifact SHA>
+FILES_CHANGED:
+ACCEPTANCE_RESULTS: <criterion → result → evidence>
+VALIDATION: <commands/results/counts; CI SHA/URL or PENDING>
+UNEXPECTED_FINDINGS:
+BLOCKERS:
+BUSINESS_REQUIREMENTS_CHANGED: YES/NO <if YES, explicit authority + reference reconciliation>
+RECOMMENDED_NEXT_ACTION:
+```
+
+Reviewer receives requirements, authority, exact SHA/diff and validation in fresh context; omit the Implementer's opinions. Checkpoint messages and the same RUN suffice for recovery; do not attach full chats or massive logs.
 
 ## Lauren-facing status and decisions
 
@@ -117,7 +149,7 @@ Material completion: what changed and why; protected scope preserved; validation
 Use only for meaningful findings; send to Orchestrator and deduplicate in the existing backlog/RUN. Recommendation does not authorize implementation.
 
 ```text
-EVENT: HIGH_VALUE_IMPROVEMENT_FOUND / ADJACENT_OPPORTUNITY / NEW_CAPABILITY_OPPORTUNITY / UNEXPECTED_FINDING
+EVENT: HIGH_VALUE_IMPROVEMENT_FOUND / ADJACENT_OPPORTUNITY / NEW_CAPABILITY_OPPORTUNITY / NEW_ORCHESTRATION_OPPORTUNITY / UNEXPECTED_FINDING
 WHAT / WHY / EVIDENCE / EXPECTED_BENEFIT:
 IMPROVEMENT_TYPE: BOOTSTRAP / WEBSITE / ENVIRONMENT / CI / SECURITY / BUSINESS_OPS / INTEGRATION / PERFORMANCE / ACCESSIBILITY / SEO / UX / COST / OTHER
 VALUE: LOW / MEDIUM / HIGH / VERY_HIGH
@@ -131,4 +163,5 @@ AUTHORIZED_NOW: YES/NO; cite existing authority if YES
 BACKLOG_REFERENCE / OWNER_OR_DECISION_NEEDED:
 ADJACENCY: <when applicable: INCREMENTAL_EFFORT, BENEFIT, RISK, SCOPE_EFFECT>
 NEW_CAPABILITY: <when applicable: WHAT_CHANGED, BENEFIT, MIGRATION_EFFORT, CAN_EXISTING_FALLBACK_BE_SIMPLIFIED>
+NEW_ORCHESTRATION: <when applicable: SOURCE_TYPE OFFICIAL/COMMUNITY/PROJECT EXPERIENCE + evidence label/date; WHY_IT_MAY_HELP; EXTRA_COMPLEXITY; EXTRA_MODEL_CI_USAGE; SECURITY_SUPPLY_CHAIN_EFFECT; PILOT_PROPOSAL; AUTHORIZED YES/NO>
 ```
