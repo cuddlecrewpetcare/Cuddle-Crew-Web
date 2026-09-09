@@ -8,7 +8,7 @@ Initialize the four persistent roles with their exact names below. Each reads AG
 
 **CC — ORCHESTRATOR**
 
-> Read AGENTS.md, docs/codex/ORCHESTRATION.md and docs/codex/PROJECT_STATUS.md. Reconcile Git, current remote base, active tasks, exact-SHA CI/review and relevant phase evidence. Preserve unrelated dirty work. Identify only authorized scope and report status concisely. For each meaningful assignment assess task complexity, ambiguity, risk, determinism, cross-file/system reasoning, context, reversibility, time and cost; independently choose the most cost-efficient sufficiently capable model, reasoning and speed. Adjust up/down when evidence warrants; document material overrides and unsupported controls honestly. Assign one bounded fresh Implementer, route by task ID, prepare the full durable fallback, route Business Truth/checks/independent review, retain evidence and stop at scope completion. Follow separate merge and deployment gates. Lauren should need only this role for status, continuation, pause, routing preferences or blockers; no worker micromanagement. Initialize now; await authorization for the next work item.
+> Read AGENTS.md, docs/codex/ORCHESTRATION.md and docs/codex/PROJECT_STATUS.md. Reconcile Git, current remote base, active tasks, exact-SHA CI/review and relevant phase evidence. Preserve unrelated dirty work. Identify only authorized scope and report status concisely. For each meaningful assignment assess task complexity, ambiguity, risk, determinism, cross-file/system reasoning, context, reversibility, time and cost; independently choose the most cost-efficient sufficiently capable model, reasoning and speed. Adjust up/down when evidence warrants; document material overrides and unsupported controls honestly. Assign one bounded fresh Implementer, route by task ID, prepare the full durable fallback, route Business Truth/checks/independent review, retain evidence, surface worthwhile improvements through the recommendation rule, and stop at scope completion. Follow separate merge and deployment gates. Lauren should need only this role for status, continuation, pause, routing preferences or blockers; no worker micromanagement. Initialize now; await authorization for the next work item.
 
 **CC — <WORK_ITEM> — IMPLEMENT**
 
@@ -37,9 +37,11 @@ WORK_ITEM: <existing finding or bounded ID>
 FROM: <orchestrator task ID>
 TO / OWNER: <ready task ID + host, or subagent ID>
 TASK_NAME: CC — <WORK_ITEM> — IMPLEMENT
+TASK_ID / OWNER_TASK_ID: <ready routing ID if known; never a setup token>
 OBJECTIVE: <one outcome>
 AUTHORIZED_SCOPE: <current Lauren instruction + allowed work>
-MUST_NOT / OUT_OF_SCOPE: <relevant negative requirements>
+MUST_NOT: <protected negative requirements>
+OUT_OF_SCOPE: <excluded work>
 SOURCE_OF_TRUTH: <paths + sections; statuses verified>
 BASE_SHA: <exact SHA>
 BRANCH / WORKTREE: <branch; discover local path from Git>
@@ -48,10 +50,12 @@ ACCEPTANCE_CRITERIA: <observable outcomes, including boundaries>
 REQUIRED_VALIDATION: <commands and required hosted checks>
 RISK / CHANGE_IMPACT: <LOW|MEDIUM|HIGH|CRITICAL; relevant impact>
 RESOURCE_ASSESSMENT: <complexity/ambiguity/risk/determinism/cross-file/cross-system/context/reversibility/time/cost; concise for small work>
-MODEL / REASONING / SPEED: <independently recommended live choices>
+MODEL / REASONING: <independently recommended live choices>
+SPEED / DESIRED_SPEED: <economical/normal or justified faster preference>
 WHY: <capability, reliability, risk, latency and cost justification>
 CONFIGURED_MODEL / CONFIGURED_REASONING / ACTUAL_SPEED: <tool-confirmed values or UNKNOWN; separate recommendation from actual>
 RESOURCE_OVERRIDE: <if material: EVENT; PREVIOUS_CONFIGURATION; NEW_CONFIGURATION; REASON>
+ROLLBACK: <practical recovery/revert path and limits; NOT_APPLICABLE with reason if unnecessary>
 PARALLEL_SAFE: NO
 REVIEW_REQUIRED / SECURITY_REVIEW_REQUIRED / BUSINESS_TRUTH_REQUIRED: <YES/NO + why>
 REPORT_BACK_TO: <orchestrator ID and durable record path>
@@ -72,7 +76,7 @@ Include WORK_ITEM, MESSAGE_ID and sender/recipient task IDs (canonical), with na
 | REVIEW | COMMIT_OR_DIFF and reviewed SHA; VERDICT APPROVED/CHANGES_REQUESTED/BLOCKED; findings ID/severity/evidence/required correction; OPTIONAL_NONBLOCKING separately |
 | VERIFICATION | Final SHA; prior finding ID/status; FIX_CAUSED_REGRESSIONS; VERDICT APPROVED/CHANGES_REQUESTED |
 | UNEXPECTED_FINDING | CATEGORY, SEVERITY, EVIDENCE, BLOCKING, RECOMMENDATION; use existing backlog, no automatic new project |
-| TASK_CANCELLED | WORK_ITEM, reason, required stop, evidence/branch preservation and report-back |
+| TASK_CANCELLED | WORK_ITEM, STOP_REQUESTED, reason, required stop, preserved branch/diff/index evidence and report-back; STOP_CONFIRMED only after verified execution stop |
 | RESOURCE_CHANGE | MODEL/EFFORT/SPEED_ESCALATION or DEESCALATION; PREVIOUS_CONFIGURATION, NEW_CONFIGURATION, REASON; in-place/fresh handoff and owner continuity |
 
 A completion message is an implementation handback. Only the Orchestrator reconciles CI/review/business evidence and marks VERIFIED/COMPLETE. Reports may reference existing logs/check URLs instead of copying them.
@@ -86,6 +90,7 @@ CUDDLE CREW — STATUS
 Current phase:
 Active work:
 Owner/task:
+Task ID:
 Branch:
 Base SHA:
 Risk:
@@ -94,14 +99,36 @@ Review:
 Business Truth:
 Blocker:
 Next:
-Recommended:
+Recommended configuration:
 Model:
 Reasoning:
-Speed:
+Desired speed:
 Why:
+High-value improvements: <only if meaningful>
 Lauren input required: YES/NO
 ```
 
 When evidence cannot resolve a material decision, return USER_DECISION_REQUIRED: one clear question, why repository/tools cannot resolve it, meaningful options/consequences only when useful, and a recommendation. Batch nonurgent related decisions. State the actual instruction/tool boundary if it requires approval; do not create permission gates for reversible authorized work.
 
 Material completion: what changed and why; protected scope preserved; validation and limits; remaining risk; exact next action. Keep logs in evidence, and never claim application GO merely because one work item is complete.
+
+## Improvement recommendation
+
+Use only for meaningful findings; send to Orchestrator and deduplicate in the existing backlog/RUN. Recommendation does not authorize implementation.
+
+```text
+EVENT: HIGH_VALUE_IMPROVEMENT_FOUND / ADJACENT_OPPORTUNITY / NEW_CAPABILITY_OPPORTUNITY / UNEXPECTED_FINDING
+WHAT / WHY / EVIDENCE / EXPECTED_BENEFIT:
+IMPROVEMENT_TYPE: BOOTSTRAP / WEBSITE / ENVIRONMENT / CI / SECURITY / BUSINESS_OPS / INTEGRATION / PERFORMANCE / ACCESSIBILITY / SEO / UX / COST / OTHER
+VALUE: LOW / MEDIUM / HIGH / VERY_HIGH
+EFFORT: LOW / MEDIUM / HIGH
+RISK: LOW / MEDIUM / HIGH / CRITICAL
+COST_IMPACT: SAVES_COST / NEUTRAL / SMALL_COST / MATERIAL_COST / UNKNOWN
+MAINTENANCE: LOW / MEDIUM / HIGH
+URGENCY: NOW / SOON / LATER / OPTIONAL
+DEPENDENCIES / RECOMMENDED_TIMING:
+AUTHORIZED_NOW: YES/NO; cite existing authority if YES
+BACKLOG_REFERENCE / OWNER_OR_DECISION_NEEDED:
+ADJACENCY: <when applicable: INCREMENTAL_EFFORT, BENEFIT, RISK, SCOPE_EFFECT>
+NEW_CAPABILITY: <when applicable: WHAT_CHANGED, BENEFIT, MIGRATION_EFFORT, CAN_EXISTING_FALLBACK_BE_SIMPLIFIED>
+```
