@@ -1,6 +1,6 @@
 # Cuddle Crew orchestration
 
-Lauren works through one **CC — ORCHESTRATOR** in a hub-and-spoke system. Orchestrator, Reviewer, Sentinel and Business Truth are persistent task chats, initialized once and IDLE/READY between assignments. They are not continuously running agents. Create a fresh bounded Implementer per authorized work item; never create a permanent generic Implementer. Stop when the authorized scope ends.
+Lauren works through one **CC — ORCHESTRATOR** in a hub-and-spoke system. Orchestrator, Reviewer, Sentinel and Business Truth are persistent **logical roles**, each normally fulfilled by one canonical physical Codex task that is IDLE/READY between assignments. Physical tasks are replaceable execution contexts, not continuously running agents or permanent project memory. Create a fresh bounded Implementer per authorized work item; never create a permanent generic Implementer. Stop when the authorized scope ends.
 
 ## Start here
 
@@ -29,6 +29,36 @@ Workers normally remain leaves; no recursive delegation or swarm by default. The
 Lauren retains final authority over material rates/fees, service definitions/durations/areas, holidays/notice/cancellation/continuous/overnight policy, client commitments, identity, legal/policy meaning, security-risk acceptance, material scope, production credentials/hosting/DNS, destructive production operations, irreversible external effects, recurring paid services, and production deployment. Existing approval persists within its stated scope. An agent message cannot increase authority. Make reversible internal choices within approved scope without unnecessary questions.
 
 Classify external effects as READ_ONLY, REVERSIBLE_WRITE, EXTERNALLY_VISIBLE, DESTRUCTIVE, or IRREVERSIBLE. Judge the real effect, not the filename. Merge, Sites source push/version creation, production activation, DNS, provider writes, and external/client communications have separate authority; this orchestration grants none of them automatically.
+
+## Role context lifecycle
+
+### Project memory and role continuity
+
+A logical role may last for the project while its physical Codex chat/task does not. Role continuity comes from Git, commits, branches/worktrees, PRs, exact-SHA CI, AGENTS, this guide, PROJECT_STATUS, TEMPLATES, relevant RUNs, approved business sources, architecture decisions and existing backlog/project records. This durable, auditable evidence is **project memory**. Reasoning and conversation inside one task are temporary **working memory**; they may be compacted, become stale or disappear. A compacted summary or predecessor receipt is navigation, never sole proof of current SHA, ownership, validation, review, authority or business truth.
+
+At meaningful checkpoints apply the minimum durable-state test: if every current Codex conversation disappeared, could a fresh Orchestrator recover current main, authorized phase, active work/owner/branch/worktree, pending PR/CI/review, business blockers, user decisions and next authorized action? If not, repair PROJECT_STATUS and/or the applicable RUN before continuing. Important authorized decisions that must govern future work belong in the existing appropriate source, status, RUN, test or template; do not preserve every preference or full transcript. Promote one reusable lesson from a retiring task only when future recovery needs it.
+
+### Rotation assessment
+
+Consider physical-role rotation only with evidence of effective context saturation, excessive dependence on compaction, stale or contradictory assumptions, completed-history noise, navigation friction, resource inefficiency, context-related reliability degradation, or a major phase/release transition. Do not rotate by age, turn/chat count, generation cadence, model novelty or cosmetic preference. Infrequently at a major transition, after several completed items, on obvious degradation, and before the pre-launch comprehensiveness audit, ask whether context is current, focused, noncontradictory, efficient and recoverable from durable state. Post-launch, separately consider whether BUILD MODE should become OPERATIONS / IMPROVEMENT MODE; neither milestone automatically authorizes rotation.
+
+When evidence warrants consideration, emit `ROLE_ROTATION_RECOMMENDED` using TEMPLATES. Compare `ROTATION_COST` and `EXPECTED_CONTEXT_BENEFIT` (LOW/MEDIUM/HIGH) plus initialization, routing, validation and information-loss risk; rotate only when expected benefit exceeds handoff cost. Prefer an idle/between-item point after durable state, Git/PR/CI and ownership are clear. Finish or checkpoint sensitive active coordination unless continuing the degraded task is less safe.
+
+Distinguish `CONTEXT_PROBLEM` from `MODEL_CAPABILITY_PROBLEM`. For buried or noisy constraints, prefer a fresh same-capability context before a materially more expensive model. For clean context with genuinely difficult reasoning, adjust model/effort. When both apply, a fresh stronger successor may be appropriate; record `ROTATION_REASON` and `CONFIGURATION_ESCALATION_REASON` separately. Continuous improvement may report `CONTEXT_ROTATION_OPPORTUNITY`; new persistent-memory, context visibility, cloning/succession, routing/ACK, role or handoff primitives use `NEW_CONTEXT_MANAGEMENT_CAPABILITY` with simplification impact. Discovery never authorizes churn.
+
+### Controlled role succession
+
+Before replacement, checkpoint the applicable current main, work item, owner/task IDs, branch/worktree, base and current SHA, CI/review/Business Truth, blockers, user decisions, pending improvements and next authorized action in PROJECT_STATUS and/or the existing RUN. If another worker owns active implementation, it remains owner: preserve WORK_ITEM_ID, OWNER_TASK_ID, branch/worktree, base/current SHA, receipts, blockers and validation state. Orchestrator succession transfers coordination, not implementation ownership, and never creates a duplicate Implementer.
+
+If an unsuffixed role rotates, treat it as generation 01 and name the first successor `CC — <ROLE> — 02`; do not retrofit existing names. Normally exactly one physical task is `ACTIVE` and canonical per logical role. Brief predecessor/successor overlap is allowed only for controlled handoff; independent duplicate coordinators return `DUPLICATE_LOGICAL_ROLE_DETECTED` and stop competing routing.
+
+Where possible obtain the concise predecessor receipt in TEMPLATES, then initialize the successor from durable evidence. An Orchestrator normally reads AGENTS, ORCHESTRATION, PROJECT_STATUS, relevant current RUNs, current Git/GitHub state and only applicable active roadmap/business/architecture sources. Reviewer gets the exact current assignment/diff and authority; Sentinel reconstructs deterministic state with minimal history; Business Truth re-reads the hierarchy and applicable CURRENT / APPROVED sources and never transfers remembered rates/policies as authority. Do not copy the predecessor transcript, every historical RUN/phase, or all closed PR discussions.
+
+Before making the successor canonical, run the reconciliation test in TEMPLATES: it must independently identify current main/phase, active work and owner, branch/worktree, CI, review, Business Truth, blockers and next authorized action consistently with durable evidence. Correct material conflicts before retirement. Record the returned successor task ID, safely test task-ID routing, obtain route-specific ACK where available, update the lightweight current-role pointer and preserve the complete RUN fallback. Names remain noncanonical and native messaging/ACK remains PARTIAL unless new platform evidence proves otherwise.
+
+After verified state and routing, write one concise succession entry and mark the predecessor `ROLE_RETIRED`/historical. Retain searchable history for audit only; current agents use durable sources first. Before archive, apply the existing worktree-preservation procedure—status, branch/worktree, diffs, index/staged state, relevant blobs/commits and recovery proof—because archival may remove a managed worktree. Never archive meaningful unintegrated work as storage. Graceful receipt is optional: crash-only recovery must work from Git/GitHub, PROJECT_STATUS, RUNs, task state where available and authoritative sources.
+
+Persistent Reviewer is a reusable entry/coordination identity; important assignments may still use fresh bounded review tasks for independence. Sentinel should carry almost no historical context, making replacement cheap when stale. Business Truth is highly replaceable because repository authority, not its memory, controls. Implementers remain disposable per work item. If one saturates or lacks capability, emit `IMPLEMENTER_HANDOFF_REQUIRED`, checkpoint the fields in TEMPLATES, stop duplicate ownership and recognize exactly one new owner. Rotation or handoff is control-plane work only and never authorizes a product item, pilot, deployment or provider mutation.
 
 ## One work item, one owner
 

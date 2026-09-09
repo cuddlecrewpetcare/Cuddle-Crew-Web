@@ -92,6 +92,9 @@ Include WORK_ITEM, MESSAGE_ID and sender/recipient task IDs (canonical), with na
 | RESOURCE_CHANGE | MODEL/EFFORT/SPEED_ESCALATION or DEESCALATION; PREVIOUS_CONFIGURATION, NEW_CONFIGURATION, REASON; in-place/fresh handoff and owner continuity |
 | CHANGE_SURFACE_DEVIATION | Reason, expected versus proposed paths, acceptance/dependency impact, authority needed; Orchestrator resolves before expanded writes |
 | CONTEXT_POLLUTION_RISK | Unbounded consultation/duplicated context evidence; existing owner and bounded next question |
+| ROLE_ROTATION_RECOMMENDED | Logical/current role identity, evidence, active/safe-point state, benefit/risk/cost, successor configuration and why; recommendation is not automatic rotation |
+| DUPLICATE_LOGICAL_ROLE_DETECTED | Logical role, competing task IDs/names, current work/routing, durable evidence and action that restores one canonical active task |
+| IMPLEMENTER_HANDOFF_REQUIRED | Work item, old/new owner, branch/worktree, base/current SHA/diff, acceptance/tests/blockers/Business Truth/next step; exactly one recognized owner after transfer |
 
 A completion message is an implementation handback. Only the Orchestrator reconciles CI/review/business evidence and marks VERIFIED/COMPLETE. Reports may reference existing logs/check URLs instead of copying them.
 
@@ -112,6 +115,136 @@ RECOMMENDED_NEXT_ACTION:
 ```
 
 Reviewer receives requirements, authority, exact SHA/diff and validation in fresh context; omit the Implementer's opinions. Checkpoint messages and the same RUN suffice for recovery; do not attach full chats or massive logs.
+
+## Role rotation and succession
+
+Use these fields only when evidence triggers the [role context lifecycle](ORCHESTRATION.md#role-context-lifecycle). Keep the record in PROJECT_STATUS and/or the applicable RUN; do not create a separate database, full transcript or self-referential commit.
+
+Rotation recommendation:
+
+```text
+EVENT: ROLE_ROTATION_RECOMMENDED
+LOGICAL_ROLE:
+CURRENT_TASK_NAME:
+CURRENT_TASK_ID:
+REASON:
+EVIDENCE:
+ACTIVE_WORK: YES/NO
+SAFE_ROTATION_POINT: YES/NO
+EXPECTED_BENEFIT:
+HANDOFF_RISK:
+ROTATION_COST: LOW/MEDIUM/HIGH
+EXPECTED_CONTEXT_BENEFIT: LOW/MEDIUM/HIGH
+RECOMMENDED_SUCCESSOR_NAME:
+RECOMMENDED_MODEL:
+RECOMMENDED_REASONING:
+RECOMMENDED_DESIRED_SPEED:
+WHY_THIS_CONFIGURATION:
+CONFIGURATION_ESCALATION_REASON: <separate from rotation reason, or NONE>
+```
+
+Pre-rotation checkpoint and predecessor receipt:
+
+```text
+CURRENT_MAIN_SHA:
+ACTIVE_WORK_ITEM:
+OWNER:
+ACTIVE_TASK_IDS:
+BRANCH:
+WORKTREE:
+BASE_SHA:
+CURRENT_HEAD_SHA:
+CI_STATUS:
+REVIEW_STATUS:
+BUSINESS_TRUTH_STATUS:
+BLOCKERS:
+PENDING_USER_DECISIONS:
+PENDING_IMPROVEMENTS:
+NEXT_AUTHORIZED_ACTION:
+
+PREDECESSOR_RECEIPT:
+LOGICAL_ROLE:
+GENERATION:
+STATUS:
+CURRENT_MAIN:
+ACTIVE_WORK:
+ACTIVE_WORKER_IDS:
+OPEN_BLOCKERS:
+OPEN_USER_DECISIONS:
+IMPORTANT_UNMERGED_STATE:
+RECENT_COMPLETIONS:
+NEXT:
+HANDOFF_RECORD:
+READY_TO_RETIRE: YES/NO
+```
+
+Successor bootstrap, reconciliation and durable succession entry:
+
+```text
+SUCCESSOR_BOOTSTRAP:
+LOGICAL_ROLE:
+WHY_THIS_ROLE_EXISTS:
+CURRENT_PROJECT_STATE:
+CURRENT_MAIN_SHA:
+ACTIVE_WORK:
+CURRENT_OWNER_TASKS:
+BLOCKERS:
+CURRENT_BUSINESS_TRUTH:
+CURRENT_CI/REVIEW_STATE:
+NEXT_AUTHORIZED_ACTION:
+IMPORTANT_RECENT_DECISIONS:
+RELEVANT_RUN_RECORDS:
+CANONICAL_ROUTING:
+FALLBACK_ROUTING:
+
+SUCCESSOR_RECONCILIATION_TEST:
+CURRENT_MAIN_SHA:
+CURRENT_PHASE:
+ACTIVE_WORK_ITEM:
+CURRENT_OWNER:
+ACTIVE_BRANCH_WORKTREE:
+CI_STATUS:
+REVIEW_STATUS:
+BUSINESS_TRUTH_STATUS:
+BLOCKERS:
+NEXT_AUTHORIZED_ACTION:
+CONSISTENT_WITH_DURABLE_EVIDENCE: YES/NO
+ROUTING_VERIFIED: YES/NO <task-ID test + route-specific ACK if available; native limit retained>
+
+ROLE_SUCCESSION_RECORD:
+LOGICAL_ROLE:
+PREDECESSOR_TASK_NAME:
+PREDECESSOR_TASK_ID:
+SUCCESSOR_TASK_NAME:
+SUCCESSOR_TASK_ID:
+ROTATION_REASON:
+CHECKPOINT_SOURCE:
+ACTIVE_WORK_TRANSFERRED:
+ROUTING_VERIFIED:
+DATE_TIME:
+PREDECESSOR_STATUS: ROLE_RETIRED/HISTORICAL
+```
+
+The successor verifies critical facts against Git/GitHub/status/RUN/business sources before becoming canonical. If material answers conflict, correct initialization and keep the predecessor until safe. If the predecessor vanished, omit its receipt and perform crash-only reconstruction from durable evidence. Before retirement/archive capture the existing worktree/index/diff/blob recovery evidence.
+
+For a saturated or capability-limited bounded worker:
+
+```text
+EVENT: IMPLEMENTER_HANDOFF_REQUIRED
+WORK_ITEM:
+OLD_OWNER:
+NEW_OWNER:
+BRANCH_WORKTREE:
+BASE_SHA:
+CURRENT_SHA:
+CURRENT_DIFF:
+ACCEPTANCE_STATUS:
+TEST_STATUS:
+BLOCKERS:
+BUSINESS_TRUTH:
+NEXT_STEP:
+SINGLE_RECOGNIZED_OWNER_CONFIRMED: YES/NO
+```
 
 ## Lauren-facing status and decisions
 
