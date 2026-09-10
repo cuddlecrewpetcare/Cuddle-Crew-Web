@@ -63,6 +63,7 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   if(input.separation==='handling')reviewReasons.push('Pets requiring separate handling need a private safety and feasibility review.');
   if(input.separation==='unclear')reviewReasons.push('Separation requirements are unclear and need consultation.');
   if(total<1)reviewReasons.push('At least one pet is required to create a planning result.');
+  if(input.dogs>=4)reviewReasons.push('Personalized review required.');
   if(total>=5)reviewReasons.push('A larger household needs confirmation that all care tasks fit the selected service duration.');
   if(input.feedingFrequency>=3)factors.push('Frequent feeding may require timing coordination within flexible service windows.');
   if(!gap)reviewReasons.push('No service window or overnight coverage is selected, so a care gap cannot be evaluated.');
