@@ -9,27 +9,27 @@ Multi-agent practices are COMPLETE: [PR #6](https://github.com/cuddlecrewpetcare
 
 Context lifecycle is COMPLETE: [PR #7](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/pull/7), final source `1d293921e135ffa9eb0794d710b5c6a3bf71ddfb`, merged main `d4948e4c1535514e1f7e9db955dbcba092f9fbdc`; exact-head Validation [34337027844](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34337027844), independent review, normal no-ff merge verification and resulting-main Validation [34338656355](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34338656355) passed. [Coverage 147–192](RUNS/2026-09-09-context-lifecycle.md) remains 45 IMPLEMENTED / 1 PARTIAL / 0 MISSING; native messaging is the known PARTIAL limitation.
 
-Autonomous workspace configuration is complete on merged main. Its user-level Codex config is local and uncommitted; the merged control-plane record retains standing authorization, approval-stall/full-access boundaries and [bounded coverage 193–242](RUNS/2026-09-09-autonomous-workspace.md). The first bounded orchestration pilot, [12G-CARE-01](RUNS/12G-CARE-01.md), is also complete; no further product work is authorized.
+Autonomous workspace configuration is complete on merged main. Its user-level Codex config is local and uncommitted; the merged control-plane record retains standing authorization, approval-stall/full-access boundaries and [bounded coverage 193–242](RUNS/2026-09-09-autonomous-workspace.md). The first bounded orchestration pilot, [12G-CARE-01](RUNS/12G-CARE-01.md), is also complete. The bounded native-subagent routing repair is READY_FOR_REVIEW on `codex/native-subagent-repair-20260909`; it changes only orchestration evidence and does not authorize product work.
 
 | Field | Current state |
 | --- | --- |
-| Base branch / SHA | `github/main` / `156e5db4bd1b8c58d24363e310e2f7c11d73daa1` at completion record; re-fetch before new work |
+| Base branch / SHA | `github/main` / `44f380b3fb9d2700611b4f24c81e4a9304828490` verified for the native-subagent routing repair; re-fetch before new work |
 | Last implemented phase | 12F; application merge `d828c972f2018545ffa25bc5c60af783a5de5aad` |
 | Latest verified phase | 12G audit merged; **APPLICATION NO-GO**, not launch-ready |
-| Current work item / status | `12G-CARE-01` / COMPLETE; await Lauren's next explicit authorization |
-| Owner | One-time Orchestrator fallback after bounded Implementer provisioning failure; persistent logical-role routing remains unchanged below |
+| Current work item / status | `CC-NATIVE-SUBAGENT-ROUTING` / READY_FOR_REVIEW; after normal review/integration, the authorized but not-started next product work is `12G-CARE-02 + 12G-XF-01 + 12G-XF-02 + 12G-XF-03` |
+| Owner | One bounded Orchestrator control-plane writer in `codex/native-subagent-repair-20260909`; native subagent execution validated. Persistent logical-role routing remains unchanged below |
 | Branch / worktree | Product source `codex/12g-care-01-orchestrator-eed9`; normal no-ff integration `156e5db`; clean integration worktree retained for evidence |
 | Completed | F0–F14 and 12A–12F history retained; 12G audit, orchestration reconciliation, multi-agent practices, context lifecycle, autonomous workspace control plane, and 12G-CARE-01 completed; resulting-main Validation 34442001516 passed |
 | Active product Implementers | None. The historical stopped pilot task `01a084e7-ce5b-7c71-ab16-381c97ddca13` and its staged recovery state remain preserved, unchanged, and unarchived. |
 | Pre-existing pilot work / execution hold | Historical `codex/12g-care-01` remains preserved as recovery evidence only. 12G-CARE-01 was reconstructed independently from current main; the stopped task's tracked/index bytes and unverified generated/platform snapshot were not adopted or changed. |
-| Blocked | 12 unresolved P1s in [12G §R/§W](../phase-12g-final-release-audit.md); 12H and launch remain gated |
+| Blocked | 11 remaining recorded P1 candidates in [12G §R/§W](../phase-12g-final-release-audit.md); 12G-CARE-01 is COMPLETE. 12H and launch remain gated |
 | Pilot execution hold / no reassignment | Resolved for `12G-CARE-01` only through the explicit reconstruct/reapply authorization; preserved stopped work remains untouched. No other pilot/remediation is authorized. |
 | Outstanding review | None for 12G-CARE-01; exact-source CI, manual independent fallback review, merge verification, and resulting-main CI passed. |
 | Business decisions/evidence | Existing `12G-SEO-01` locality and `12G-PRIV-01` name-consent launch gates; neither needed for proposed pilot |
 | Deferred | Existing [12G §T backlog](../phase-12g-final-release-audit.md); no duplicate roadmap |
 | Deployment | NO; not authorized in bootstrap, reconciliation or the autonomy addendum |
 | Durable evidence / routing | [Autonomous-workspace addendum](RUNS/2026-09-09-autonomous-workspace.md); [context-lifecycle addendum](RUNS/2026-09-09-context-lifecycle.md); [multi-agent addendum](RUNS/2026-09-09-multi-agent-practices.md); [completed reconciliation and runtime roles](RUNS/2026-09-09-reconciliation.md); [operating guide](ORCHESTRATION.md) |
-| Native transport / resources | Native messaging/ACK PARTIAL; task IDs canonical, names labels, full RUN fallback mandatory. Model/reasoning adjustable through supported turns; speed selection/readback unavailable in current tools. |
+| Native transport / resources | Native subagent result routing is validated for bounded read-only work; top-level task messaging/ACK remains PARTIAL. Top-level task IDs and returned subagent runtime identities are distinct canonical routes; names are labels. RUN is durable recovery, not provisioning. Model/reasoning adjustable through supported turns; speed selection/readback unavailable in current tools. |
 
 ## Current logical-role pointer
 
