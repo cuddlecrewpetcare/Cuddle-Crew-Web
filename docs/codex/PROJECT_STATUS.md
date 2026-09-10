@@ -1,7 +1,24 @@
 # Cuddle Crew — current operational state
 
 > Cache only. Reconcile Git, live tasks, CI and phase evidence before acting.
-> Last verified / orchestration update: 2026-09-09 UTC (2026-09-09 Pacific).
+> Active release-completion session: 2026-09-10 Pacific. This section supersedes the historical snapshot below.
+
+| Field | Current release sprint state |
+| --- | --- |
+| Source | Initial fetched `github/main` was `44f380b3fb9d2700611b4f24c81e4a9304828490`; PR #10 integrated normally as `43553cbeb91bd7784eaf9232561247a267e42c82`. Fetch before each integration. |
+| Authority | Lauren authorizes all recorded remaining P0/P1 remediation, independent review, no-ff integration, fresh integrated 12G audit, and minimum Sites publication only after 12G application GO. No routine between-item approval needed. |
+| Parent / active logical Orchestrator | Current release-completion runtime `/root`; older task pointers below are historical only. |
+| Application gate | 12G NO-GO remains until all P0/P1 corrections and fresh integrated audit pass. CARE-01 is COMPLETE and must not be reopened without regression evidence. |
+| Active item / writer | Shared handoff CARE-02 / XF-01 / XF-02 / XF-03; native `/root/handoff_implement`, isolated `codex/12g-planner-handoff-20260910`; [assignment and evidence](RUNS/12G-HANDOFF.md). |
+| Remaining P1 reconciliation | Eleven UNRESOLVED at initial fetched main; no newer product correction except CARE-01. Shared handoff first, then CARE-03, BUS-02, EST-01, EST-02, EST-03, BUS-01, POL-01. |
+| Review / validation | PR #10 exact head independently APPROVED, no REQUIRED findings; local merged gate 173 Node / 35 Playwright (15 accessibility) passed; hosted exact-main merge run `34475067731` SUCCESS. |
+| Owner factual confirmation | Lauren confirmed on 2026-09-10 that Carmichael is the business base and public use of client-pet names Blu, Loki, Skylar is approved; see [approved publication facts](../business-reference/guidance/website-publication-approvals.md). No client identity/address disclosure. |
+| Preservation | Original `C:/Dev/CuddleCrewPetCareWEB` remains dirty/stale at `3b443a6d`; no reset/clean/restore/stash/staging/adoption. Preserved prior worktrees remain untouched. |
+| Deployment / external effects | Not deployed. No DNS, indexing, provider, SMS campaign, payment, or PPC mutation. Live Sites indexing was already enabled; Lauren separately approved keeping it enabled on 2026-09-10. Verify robots/sitemap after conditional publication. |
+
+## Historical orchestration snapshot — superseded by active sprint state above
+
+The following receipts preserve prior completed work and prior runtime pointers. Their old scope and status labels do not override the current sprint authorization or current Git evidence.
 
 Reconciliation is COMPLETE: [PR #5](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/pull/5), final source `69e54d92e8ed7e53404841d13bc1e4aab08dc1d1`, merged main `77bf76acfaa898735a8b901a3729578dad3e96c2`; exact-head CI/fresh review and post-merge CI/local validation passed (172 Node / 35 Playwright). Coverage 1–106 remains historical completed evidence: 98 IMPLEMENTED / 8 PARTIAL / 0 MISSING. Do not redo it.
 
