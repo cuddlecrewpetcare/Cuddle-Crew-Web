@@ -9,22 +9,22 @@ Multi-agent practices are COMPLETE: [PR #6](https://github.com/cuddlecrewpetcare
 
 Context lifecycle is COMPLETE: [PR #7](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/pull/7), final source `1d293921e135ffa9eb0794d710b5c6a3bf71ddfb`, merged main `d4948e4c1535514e1f7e9db955dbcba092f9fbdc`; exact-head Validation [34337027844](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34337027844), independent review, normal no-ff merge verification and resulting-main Validation [34338656355](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34338656355) passed. [Coverage 147–192](RUNS/2026-09-09-context-lifecycle.md) remains 45 IMPLEMENTED / 1 PARTIAL / 0 MISSING; native messaging is the known PARTIAL limitation.
 
-Autonomous workspace configuration is the only current authorized work item. Its user-level Codex config is local and uncommitted; this branch records only the standing authorization, approval-stall/full-access boundaries and [bounded coverage 193–242](RUNS/2026-09-09-autonomous-workspace.md). No product work, pilot continuation, provider mutation or deployment is authorized.
+Autonomous workspace configuration is complete on merged main. Its user-level Codex config is local and uncommitted; the merged control-plane record retains standing authorization, approval-stall/full-access boundaries and [bounded coverage 193–242](RUNS/2026-09-09-autonomous-workspace.md). The first bounded orchestration pilot, [12G-CARE-01](RUNS/12G-CARE-01.md), is also complete; no further product work is authorized.
 
 | Field | Current state |
 | --- | --- |
-| Base branch / SHA | `github/main` / `d4948e4c1535514e1f7e9db955dbcba092f9fbdc`; re-fetch before new work |
+| Base branch / SHA | `github/main` / `156e5db4bd1b8c58d24363e310e2f7c11d73daa1` at completion record; re-fetch before new work |
 | Last implemented phase | 12F; application merge `d828c972f2018545ffa25bc5c60af783a5de5aad` |
 | Latest verified phase | 12G audit merged; **APPLICATION NO-GO**, not launch-ready |
-| Current work item / status | `CC-AUTONOMOUS-WORKSPACE` / IN_PROGRESS at commit-time; bounded config/control-plane integration only; no product work |
-| Owner | Current bounded configuration/integration task; persistent logical-role routing remains unchanged below |
-| Branch / worktree | `codex/autonomy-control-plane-20260909`; isolated worktree from verified main, locate with `git worktree list` |
-| Completed | F0–F14 and 12A–12F history retained; 12G audit, orchestration reconciliation, multi-agent practices and context lifecycle completed; latest main `d4948e4`, Validation 34338656355 passed |
-| Active product Implementers | None. Pre-existing pilot task `01a084e7-ce5b-7c71-ab16-381c97ddca13` is STOPPED, unarchived without resuming; its tracked staged WIP was restored exactly after archival cleanup. |
-| Pre-existing pilot work / execution hold | Existing `codex/12g-care-01` has restored staged pilot-file edits from task `01a084e7-ce5b-7c71-ab16-381c97ddca13`, now `CC — 12G-CARE-01 — STOPPED`. Prior execution authority/disposition remains unresolved. Reconciliation did not implement, commit, push, test or approve it; recovery only restored the recorded tracked bytes/index. Former generated .codex data and platform snapshot are unverified. See RUN recovery evidence. |
+| Current work item / status | `12G-CARE-01` / COMPLETE; await Lauren's next explicit authorization |
+| Owner | One-time Orchestrator fallback after bounded Implementer provisioning failure; persistent logical-role routing remains unchanged below |
+| Branch / worktree | Product source `codex/12g-care-01-orchestrator-eed9`; normal no-ff integration `156e5db`; clean integration worktree retained for evidence |
+| Completed | F0–F14 and 12A–12F history retained; 12G audit, orchestration reconciliation, multi-agent practices, context lifecycle, autonomous workspace control plane, and 12G-CARE-01 completed; resulting-main Validation 34442001516 passed |
+| Active product Implementers | None. The historical stopped pilot task `01a084e7-ce5b-7c71-ab16-381c97ddca13` and its staged recovery state remain preserved, unchanged, and unarchived. |
+| Pre-existing pilot work / execution hold | Historical `codex/12g-care-01` remains preserved as recovery evidence only. 12G-CARE-01 was reconstructed independently from current main; the stopped task's tracked/index bytes and unverified generated/platform snapshot were not adopted or changed. |
 | Blocked | 12 unresolved P1s in [12G §R/§W](../phase-12g-final-release-audit.md); 12H and launch remain gated |
-| Pilot execution hold / no reassignment | `12G-CARE-01` has preserved staged work from its stopped owner. Resolve prior authority and disposition before any reassignment or execution; [pilot evidence](RUNS/2026-09-09-reconciliation.md#pilot-preparation-no-execution). |
-| Outstanding review | Autonomous-workspace exact-head CI and fresh independent review are required before integration |
+| Pilot execution hold / no reassignment | Resolved for `12G-CARE-01` only through the explicit reconstruct/reapply authorization; preserved stopped work remains untouched. No other pilot/remediation is authorized. |
+| Outstanding review | None for 12G-CARE-01; exact-source CI, manual independent fallback review, merge verification, and resulting-main CI passed. |
 | Business decisions/evidence | Existing `12G-SEO-01` locality and `12G-PRIV-01` name-consent launch gates; neither needed for proposed pilot |
 | Deferred | Existing [12G §T backlog](../phase-12g-final-release-audit.md); no duplicate roadmap |
 | Deployment | NO; not authorized in bootstrap, reconciliation or the autonomy addendum |
