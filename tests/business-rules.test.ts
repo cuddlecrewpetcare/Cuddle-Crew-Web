@@ -42,3 +42,18 @@ test('availability overrides only make review status more restrictive',()=>{cons
 test('legacy planner prefill preserves known single-species counts and marks mixed aggregates incomplete',()=>{const dog=parsePlannerPrefill('?planner=1&pets=1&household=Dog&duration=90&windows=0,2');assert(dog);assert.deepEqual(dog.types,['dog']);assert.equal(dog.service,'drop90');assert.deepEqual(dog.blocks,[0,2]);assert.equal(dog.planner.reviewRequired,true);for(const household of ['Dogs and cats','Mixed-pet household']){const mixed=parsePlannerPrefill(`?planner=1&pets=3&household=${encodeURIComponent(household)}&duration=60&windows=1`);assert(mixed);assert.equal(mixed.count,3);assert.deepEqual(mixed.types,[]);assert.equal(mixed.planner.incomplete,true);assert.equal(mixed.planner.reviewRequired,true)}});
 test('planner prefill rejects impossible counts and marks discarded window data incomplete',()=>{const value=parsePlannerPrefill('?planner=1&pets=99&household=Dog&duration=bogus&windows=-1,0,0,8,nope');assert(value);assert.equal(value.count,null);assert.deepEqual(value.types,[]);assert.deepEqual(value.blocks,[0]);assert.equal(value.planner.incomplete,true);assert.equal(value.planner.reviewRequired,true);assert.equal(parsePlannerPrefill('?pets=2'),null)});
 test('Turnstile requires a complete site and secret key pair',()=>{assert.equal(turnstileMode(undefined,undefined),'off');assert.equal(turnstileMode('',''),'off');assert.equal(turnstileMode('site','secret'),'enabled');assert.equal(turnstileMode('site',undefined),'misconfigured');assert.equal(turnstileMode(undefined,'secret'),'misconfigured')});
+
+// Pricing Policy §6: Continuous modifiers require review of the actual requested schedule.
+test('Continuous Care ignores stale ordinary visit windows at same-day and short-notice boundaries',()=>{
+ const prices={continuous3:90,continuous4:120,continuous5:145,continuous6:165,continuous7:185,continuous8:200,continuous24:300} as const;
+ for(const [service,price] of Object.entries(prices))for(const now of ['2026-09-10T12:00:00Z','2026-09-09T19:00:00Z']){
+  const change={service:service as keyof typeof prices,pets:pets('dog','dog','cat'),start:'2026-09-10',end:service==='continuous24'?'2026-09-11':'2026-09-10',now:new Date(now)};
+  const clean=result({...change,blocks:[]}),stale=result({...change,blocks:[0,1,2,3]});
+  assert.deepEqual(stale,clean);assert.equal(stale.base,price);assert.equal(stale.serviceSubtotal,price);assert.equal(stale.petFee,0);
+  assert.equal(stale.potentialShortFee,0);assert.equal(stale.sameDayCount,0);assert.equal(stale.shortCount,0);assert.equal(stale.reviewRequired,true);assert.equal(stale.total,null);
+ }
+});
+test('four actual same-day visit windows retain four potential daytime fees',()=>{
+ const value=result({blocks:[0,1,2,3],now:new Date('2026-09-10T12:00:00Z')});
+ assert.equal(value.units,4);assert.equal(value.serviceSubtotal,120);assert.equal(value.potentialShortFee,80);assert.equal(value.sameDayCount,4);assert.equal(value.shortCount,0);assert.equal(value.total,null);
+});

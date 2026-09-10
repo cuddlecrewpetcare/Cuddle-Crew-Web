@@ -1,5 +1,11 @@
 # Species and household scope review
 
+## Parent integration receipt
+
+COMPLETE: source `838c0a642489214b0c78f672642c0e87dfe20fb7`, PR #13, independently APPROVED by fresh `/root/species_review` with no REQUIRED or OPTIONAL findings. Independent checks passed 79 Node, 15 browser cases, 210 additional domain cases, 210 API cases and three persistence round trips; secrets zero and clean source. Exact source hosted Validation [34487177881](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34487177881) SUCCESS (192 Node / 56 Playwright).
+
+Normal no-ff merge `7a1f8affbbcf8b60b34a7c1e2a217789edc03c86` has exact parents `113391c4964e33578dd171d8387fff32dd0d22cd` and `838c0a642489214b0c78f672642c0e87dfe20fb7`; tree `7cfe77008c00f2136cad01bd14432de6585d4e0e` equals the reviewed source and merge simulation. Merged local full gate PASS: 192 Node / 56 Playwright, zero failures/skips, 16 accessibility cases retained. Nine synthetic availability throttle warnings safely fall back to review. Integration artifact 189 files / 10.51 MiB includes 11 emitted Geist fonts; source build used fallback fonts (178 / 10.36), with no source or generated-output edits. Exact resulting-main hosted Validation [34488615186](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34488615186) SUCCESS; PR #13 MERGED. Original checkout preserved; no production/provider effects. Other P1s and fresh integrated 12G audit remain required.
+
 ## Assignment and recovery
 
 - WORK_ITEM: `12G-BUS-02`.

@@ -9,7 +9,7 @@ const travelTiers=new Set<TravelTierKey>(Object.keys(business.travel) as TravelT
 export const sanitizePlanningState=(input:Record<string,unknown>):PlanningState=>{const zip=typeof input.zip==='string'&&/^\d{5}$/.test(input.zip)?input.zip:undefined;return{
  petTypes:Array.isArray(input.petTypes)?input.petTypes.filter((x):x is PetType=>typeof x==='string'&&petTypes.has(x as PetType)).slice(0,8):[],
  service:typeof input.service==='string'&&services.has(input.service as EstimateService)?input.service as EstimateService:undefined,
- blocks:Array.isArray(input.blocks)?[...new Set(input.blocks.filter((x):x is number=>Number.isInteger(x)&&Number(x)>=0&&Number(x)<4))]:[],
+ blocks:typeof input.service==='string'&&input.service.startsWith('continuous')?[]:Array.isArray(input.blocks)?[...new Set(input.blocks.filter((x):x is number=>Number.isInteger(x)&&Number(x)>=0&&Number(x)<4))]:[],
  midday:typeof input.midday==='string'&&new Set(['none','drop30','drop60','drop90','walk30','walk60','walk90']).has(input.midday)?input.midday as PlanningState['midday']:undefined,
  zip,
  travelTier:zip&&typeof input.travelTier==='string'&&travelTiers.has(input.travelTier as TravelTierKey)?input.travelTier as TravelTierKey:undefined,
