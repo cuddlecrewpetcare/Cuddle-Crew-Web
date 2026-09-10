@@ -33,7 +33,7 @@ test('12G-XF-01: multiple and potentially overlapping coverage remains selected 
 
 test('12G-XF-02: exact known composition survives handoff with no manufactured dog or species',()=>{
  const mixed=handoff({dogs:2,cats:1});assert.deepEqual(mixed.parsed.types,['dog','dog','cat']);const priced=estimate({dogs:2,cats:1,windowIndexes:[0,2]}).result;assert(priced);assert.equal(priced.total,90);assert.equal(priced.base!+priced.petFee!,45);
- const broadOther=handoff({dogs:0,cats:1,otherPets:1});assert.deepEqual(broadOther.parsed.types,['cat','small']);const result=estimate({dogs:0,cats:1,otherPets:1,windowIndexes:[0,2]}).result;assert(result);assert.equal(result.serviceSubtotal,66);assert.equal(result.base!+result.petFee!,33);assert.equal(result.reviewRequired,true);assert.equal(result.total,null);
+ const broadOther=handoff({dogs:0,cats:1,otherPets:1});assert.deepEqual(broadOther.parsed.types,['cat','small']);const result=estimate({dogs:0,cats:1,otherPets:1,windowIndexes:[0,2]}).result;assert(result);for(const field of ['serviceSubtotal','base','petFee','holidayFee','potentialShortFee','travelFee','addOn'] as const)assert.equal(result[field],null);assert.equal(broadOther.parsed.planner.reviewRequired,true);assert.equal(result.reviewRequired,true);assert.equal(result.total,null);
  const large=handoff({dogs:8,cats:8,otherPets:8});assert.deepEqual(large.parsed.planner.counts,[8,8,8]);assert.equal(large.parsed.planner.petCount,24);assert.deepEqual(large.parsed.types,[]);assert.equal(large.parsed.planner.incomplete,true);
 });
 

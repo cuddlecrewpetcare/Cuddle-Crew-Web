@@ -36,7 +36,7 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   const effectiveLimit=Math.min(input.comfortableAloneHours,input.bathroomIntervalHours);
   const gapWithinEnteredLimits=gap?gap.maximum<=effectiveLimit:null;
 
-  factors.push(`${total} pet${total===1?'':'s'}: ${input.dogs} dog${input.dogs===1?'':'s'}, ${input.cats} cat${input.cats===1?'':'s'}, and ${input.otherPets} other accepted pet${input.otherPets===1?'':'s'}.`);
+  factors.push(`${total} pet${total===1?'':'s'}: ${input.dogs} dog${input.dogs===1?'':'s'}, ${input.cats} cat${input.cats===1?'':'s'}, and ${input.otherPets} other pet${input.otherPets===1?'':'s'}.`);
   factors.push(`${input.feedingFrequency} feeding period${input.feedingFrequency===1?'':'s'} per day and a stated bathroom/walk interval of ${input.bathroomIntervalHours} hours.`);
   factors.push(`${input.taskCount} selected care task${input.taskCount===1?'':'s'} with ${input.routineComplexity} routine complexity.`);
   if(input.overnight)factors.push(input.windowIndexes.length?'Overnight coverage plus intentionally selected daytime coverage.':'Overnight coverage without a daytime visit.');
@@ -64,6 +64,7 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   if(input.separation==='unclear')reviewReasons.push('Separation requirements are unclear and need consultation.');
   if(total<1)reviewReasons.push('At least one pet is required to create a planning result.');
   if(input.dogs>=4)reviewReasons.push('Personalized review required.');
+  if(input.otherPets>0)reviewReasons.push('Personalized review required.');
   if(total>=5)reviewReasons.push('A larger household needs confirmation that all care tasks fit the selected service duration.');
   if(input.feedingFrequency>=3)factors.push('Frequent feeding may require timing coordination within flexible service windows.');
   if(!gap)reviewReasons.push('No service window or overnight coverage is selected, so a care gap cannot be evaluated.');
