@@ -21,6 +21,7 @@ async function price(page:Page,overnight=false){
  await dates(page,overnight);
 }
 async function dates(page:Page,overnight=false){
+ const confirm=page.getByRole('button',{name:'Confirm restored selections and care needs'});if(await confirm.count())await confirm.click();
  await page.getByLabel('First service date').fill('2099-01-02');
  await page.getByLabel(overnight?'Checkout date':'Last service date').fill(overnight?'2099-01-03':'2099-01-02');
 }

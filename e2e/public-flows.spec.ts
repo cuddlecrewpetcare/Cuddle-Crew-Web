@@ -204,7 +204,8 @@ test('anonymous progress survives refresh without retaining dates or safety deta
   await expect.poll(()=>page.evaluate(()=>JSON.parse(sessionStorage.getItem('cuddlecrew-care-planner-v1')||'{}').dogs)).toBe(2);
   await page.reload();
   await expect(page.getByLabel('Dogs')).toHaveValue('2');
-  await expect(page.getByLabel('Behavior or safety consideration')).toHaveValue('none');
+  await expect(page.getByLabel('Behavior or safety consideration')).toHaveValue('');
+  await expect(page.getByRole('link',{name:'Price this starting point'})).toHaveCount(0);
   await expect(page.getByRole('heading',{name:'Possible service timing across a day'})).toBeVisible();
   await page.getByRole('button',{name:'Clear saved planner progress and reset'}).click();
   await expect(page.getByText('Saved planner progress cleared.')).toBeVisible();
