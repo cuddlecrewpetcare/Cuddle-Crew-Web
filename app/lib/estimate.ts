@@ -1,6 +1,7 @@
 import {business} from '../config/business.ts';
 import {businessDate,daysBetween,holidayForDate,shortNoticeKind,zoneForZip} from './business-rules.ts';
 import {sanitizePlannerContext} from './planner-prefill.ts';
+import {requiresSpeciesReview} from './species-scope.ts';
 import type {EstimateInput,EstimateIssue,EstimatePet,EstimateResult,EstimateReviewReason,EstimateService,PetType} from './estimate-types.ts';
 export type {EstimateInput,EstimateIssue,EstimatePet,EstimateResult,EstimateReviewReason,EstimateService,MiddayService,PetType,PublicEstimateResult} from './estimate-types.ts';
 
@@ -26,7 +27,8 @@ export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];r
  const planner=sanitizePlannerContext(input.planner);
  const selectedWindow=input.blocks.length===1?business.windows[input.blocks[0]]:undefined;
  const coverageSupported=!overnight||!planner?.overnightDuration||input.blocks.length===0||Boolean(selectedWindow&&selectedWindow.startHour>=business.overnight.endHour&&selectedWindow.endHour+planner.overnightDuration/60<=business.overnight.startHour);
- if(planner?.reviewRequired||planner?.incomplete||!coverageSupported)return{issues:[],result:{total:null,serviceSubtotal:null,base:null,petFee:null,units:overnight||continuous?dates.length:dates.length*input.blocks.length,holidayFee:null,holidayCount:0,potentialShortFee:null,shortCount:0,sameDayCount:0,travelFee:null,travelTier:input.travelTier,addOn:null,addOnUnits:0,reviewRequired:true,reviewReasons:['planner']}};
+ const speciesReview=requiresSpeciesReview(input.pets.map(p=>p.type));
+ if(speciesReview||planner?.reviewRequired||planner?.incomplete||!coverageSupported)return{issues:[],result:{total:null,serviceSubtotal:null,base:null,petFee:null,units:overnight||continuous?dates.length:dates.length*input.blocks.length,holidayFee:null,holidayCount:0,potentialShortFee:null,shortCount:0,sameDayCount:0,travelFee:null,travelTier:input.travelTier,addOn:null,addOnUnits:0,reviewRequired:true,reviewReasons:speciesReview?['unusual-species']:['planner']}};
  // An explicit Planner selection owns the add-on, including selecting none.
  const midday=overnight&&planner?.overnightDuration?(input.blocks.length?`drop${planner.overnightDuration}` as 'drop30'|'drop60'|'drop90':'none'):input.midday;
  const household=householdSpecies(input.pets),petFee=continuous?0:additionalPetFee(input.pets),units=overnight||continuous?dates.length:dates.length*input.blocks.length;
@@ -34,7 +36,6 @@ export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];r
  if(continuous)reviewReasons.push('continuous-care');
  if(input.pets.some(p=>p.complex))reviewReasons.push('complex-care');
  const c=counts(input.pets);if(c.dog>=4||input.pets.length>=5)reviewReasons.push('household');
- if(input.pets.some(p=>!['dog','cat','rabbit','bird','fish'].includes(p.type)))reviewReasons.push('unusual-species');
  if(!input.travelTier)reviewReasons.push('travel');
  if(input.travelTier==='beyond')reviewReasons.push('travel');
  if(overnight&&input.travelTier&&['extended','farExtended','beyond'].includes(input.travelTier))reviewReasons.push('extended-overnight');

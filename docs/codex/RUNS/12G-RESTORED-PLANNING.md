@@ -86,3 +86,11 @@ Tests: `tests/restored-planning.test.ts`, `tests/feature-completion.test.ts`, `e
 Evidence: this RUN. The parent-owned `docs/codex/PROJECT_STATUS.md` and `docs/codex/RUNS/12G-HANDOFF.md` are included unchanged from their intentional parent edits. No other paths belong in this commit.
 
 Final environment, Git/status and exact-SHA clean-commit verification are reported in the native completion receipt. Port 3100 is released by the owned E2E lifecycle after the full pass. Parent may begin source CI and independent review; application GO/publication remains gated on the rest of the release work and fresh integrated 12G evidence.
+
+## Parent integration receipt
+
+Exact implementation `d8a33f0fcb6e093f424002ba82f069ee68687fb4` was independently APPROVED by fresh read-only `/root/restoration_review`, no REQUIRED or OPTIONAL findings. Independent 54 Node / 22 Playwright tests plus 62 additional state-boundary assertions passed, including real API, copy/print and two restored-state Axe scans; secrets 0, clean exact head. Hosted exact-source Validation [34482982668](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34482982668) SUCCESS with actual 186 Node / 47 Playwright and zero failures/skips.
+
+Normal no-ff integration `113391c4964e33578dd171d8387fff32dd0d22cd` has parents `303be467db21040881449c6a799b1d61935b7c25` and the implementation SHA. Tree `375ed3b80a2070434b461fc036f249442b3ade0f` matches reviewed source and merge simulation. Merged local doctor/full gate passed 186 Node / 47 Playwright (2.4 minutes E2E), typecheck/lint/build/artifact/current secrets, clean diff/status. Merged artifact measured 189 files / 10.51 MiB; its 11 emitted Geist font files (146,464 bytes) account for the count/size difference from the source checkout's font-fallback build. Privacy/resource checks and rendered tests passed both. No generated output was edited. Release will use its required clean exact-SHA checkout and artifact.
+
+Pushed normally to GitHub main; PR #12 is MERGED. Exact merged-main hosted Validation [34484045393](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34484045393) SUCCESS for `113391c4964e33578dd171d8387fff32dd0d22cd`. CARE-03 and newly confirmed STATE-01 are CLOSED with their separate direct evidence above. No production operation or provider setting changed.

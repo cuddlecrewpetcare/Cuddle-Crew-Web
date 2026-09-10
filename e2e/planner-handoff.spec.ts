@@ -7,7 +7,7 @@ async function prepare(page:Page,options:{dogs?:number;cats?:number;otherPets?:n
  await page.getByRole('button',{name:'Clear saved planner progress and reset'}).click();
  await page.getByLabel('Dogs',{exact:true}).fill(String(options.dogs??1));
  await page.getByLabel('Cats',{exact:true}).fill(String(options.cats??0));
- await page.getByLabel('Other accepted pets',{exact:true}).fill(String(options.otherPets??0));
+ await page.getByLabel('Other pets',{exact:true}).fill(String(options.otherPets??0));
  await page.getByLabel(/Shortest maximum time/).fill('24');
  await page.getByLabel(/Longest stated bathroom/).fill('24');
  await page.getByLabel('Can the full routine safely fit in one visit?').selectOption('30');
@@ -77,10 +77,11 @@ test('12G-XF-01: multiple or overlapping selected coverage stays visible without
 });
 
 test('12G-XF-02: known mixed households retain exact broad types and appropriate prices',async({page})=>{
- for(const sample of [{dogs:2,cats:1,otherPets:0,types:['dog','dog','cat'],subtotal:'$90',review:false},{dogs:0,cats:1,otherPets:1,types:['cat','small'],subtotal:'$66',review:true}]){
+ for(const sample of [{dogs:2,cats:1,otherPets:0,types:['dog','dog','cat'],subtotal:'$90',review:false},{dogs:0,cats:1,otherPets:1,types:['cat','small'],subtotal:null,review:true}]){
   await prepare(page,sample);await price(page);
   const selects=page.getByRole('combobox',{name:'Pet type',exact:true});await expect(selects).toHaveCount(sample.types.length);for(const [index,type] of sample.types.entries())await expect(selects.nth(index)).toHaveValue(type);
-  await expect(page.locator('.estimate-result')).toContainText(sample.subtotal);await expect(page.locator('#estimate-result-title')).toHaveText(sample.review?'Personalized review required':'Preliminary estimate');
+  if(sample.subtotal)await expect(page.locator('.estimate-result')).toContainText(sample.subtotal);else{await expect(page.locator('.estimate-result')).toContainText('Service and pricing need confirmation');await expect(page.locator('.estimate-result')).not.toContainText('$')}
+  await expect(page.locator('#estimate-result-title')).toHaveText(sample.review?'Personalized review required':'Preliminary estimate');
   const stored=await page.evaluate(storageKey=>JSON.parse(sessionStorage.getItem(storageKey)||'{}'),PLANNING_KEY);expect(stored.petTypes).toEqual(sample.types);
   await page.goto('/rates#estimate');await expect(page.locator('.advanced-estimator')).toHaveAttribute('aria-busy','false');for(const [index,type] of sample.types.entries())await expect(page.getByRole('combobox',{name:'Pet type',exact:true}).nth(index)).toHaveValue(type);
  }
