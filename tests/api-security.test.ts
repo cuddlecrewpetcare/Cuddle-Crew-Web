@@ -10,6 +10,7 @@ import * as addressCheckRoute from '../app/api/address/check/route.ts';
 import * as addressSuggestionsRoute from '../app/api/address/suggestions/route.ts';
 import * as contactRoute from '../app/api/contact/route.ts';
 import * as estimateRoute from '../app/api/estimate/route.ts';
+import type {PublicEstimateResult} from '../app/lib/estimate-types.ts';
 import {approvedSmsDisclosureText,smsConsentSource} from '../app/config/sms.ts';
 import {resendDeliveryConfigured,sendResendEmail,type ResendMessage} from '../app/lib/providers/resend.ts';
 import {verifyTurnstile} from '../app/lib/providers/turnstile.ts';
@@ -231,4 +232,13 @@ test('estimate API returns a neutral review outcome without private trigger reas
 test('estimate API rejects unbounded or malformed planning inputs',async()=>{
  resetRateLimitsForTests();const request=(change:Record<string,unknown>)=>estimateRoute.POST(new Request('https://example.test/api/estimate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({pets:[{type:'dog'}],service:'drop30',start:'2099-01-02',end:'2099-01-02',blocks:[0],midday:'none',zip:'95821',travelTier:'standard',...change})}));
  assert.equal((await request({end:'2199-01-02'})).status,400);assert.equal((await request({start:'not-a-date'})).status,400);assert.equal((await request({zip:'9582'})).status,400);assert.equal((await request({service:'boarding'})).status,400);
+});
+
+test('estimate API ignores stale Continuous windows and keeps its review response private',async(t)=>{
+ t.mock.timers.enable({apis:['Date'],now:new Date('2026-09-10T12:00:00Z')});resetRateLimitsForTests();
+ try{
+  const request=(blocks:number[])=>estimateRoute.POST(new Request('https://example.test/api/estimate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({pets:[{type:'dog'}],service:'continuous3',start:'2026-09-10',end:'2026-09-10',blocks,midday:'none',zip:'95821',travelTier:'standard'})}));
+  const clean=await request([]),stale=await request([0,1,2,3]);assert.equal(clean.status,200);assert.equal(stale.status,200);
+  const cleanBody=await clean.json(),staleBody=await stale.json() as {result:PublicEstimateResult};assert.deepEqual(staleBody,cleanBody);assert.equal(staleBody.result.potentialShortFee,0);assert.equal(staleBody.result.sameDayCount,0);assert.equal(staleBody.result.serviceSubtotal,90);assert.equal(staleBody.result.total,null);assert.equal(staleBody.result.reviewRequired,true);assert.equal('reviewReasons' in staleBody.result,false);
+ }finally{t.mock.timers.reset();resetRateLimitsForTests()}
 });

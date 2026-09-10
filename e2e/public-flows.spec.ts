@@ -211,3 +211,34 @@ test('anonymous progress survives refresh without retaining dates or safety deta
   await expect(page.getByText('Saved planner progress cleared.')).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>sessionStorage.getItem('cuddlecrew-care-planner-v1'))).toBeNull();
 });
+
+test('Continuous service transitions clear hidden visit windows and retain household and review state',async({page})=>{
+ await page.goto('/rates');await expect(page.locator('.advanced-estimator')).toHaveAttribute('aria-busy','false');
+ await page.getByLabel('How many pets need this service?').fill('2');
+ await page.getByLabel('Care may be unusually detailed').first().check();
+ for(const label of ['9 AM–12 PM','12–3 PM','3–6 PM','6–9 PM'])await page.getByLabel(label,{exact:true}).check();
+ await page.getByLabel('What care do you need?').selectOption('drop60');
+ await expect(page.locator('.time-blocks input:checked')).toHaveCount(4);
+ await page.getByLabel('First service date').fill(futureDate);await page.getByLabel('Last service date').fill(futureDate);await page.locator('.estimate-fields').getByLabel('Service ZIP').fill('95821');
+ await expect(page.locator('.estimate-result')).toContainText('$212');
+ const response=page.waitForResponse(r=>r.url().endsWith('/api/estimate')&&r.request().postDataJSON().service==='continuous3');
+ await page.getByLabel('What care do you need?').selectOption('continuous3');
+ const actual=await response;expect(actual.request().postDataJSON().blocks).toEqual([]);const result=(await actual.json()).result;expect(result.potentialShortFee).toBe(0);expect(result.sameDayCount).toBe(0);expect(result.reviewRequired).toBe(true);
+ await expect(page.locator('.time-blocks')).toHaveCount(0);await expect(page.locator('.estimate-result')).toContainText('$90');await expect(page.locator('.estimate-result')).not.toContainText('A potential');
+ await expect.poll(()=>page.evaluate(()=>JSON.parse(sessionStorage.getItem('cuddlecrew-care-plan-v1')||'{}').blocks)).toEqual([]);
+ const stored=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('cuddlecrew-care-plan-v1')||'{}'));expect(stored.petTypes).toEqual(['dog','cat']);expect(stored.zip).toBe('95821');expect(stored.reviewRequired).toBe(true);expect(stored).not.toHaveProperty('start');expect(stored).not.toHaveProperty('end');
+ await page.evaluate(()=>{Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async(value:string)=>{document.documentElement.dataset.summary=value}}});window.print=()=>{document.documentElement.dataset.printed='true'}});
+ await page.getByRole('button',{name:'Copy summary',exact:true}).click();expect(await page.locator('html').getAttribute('data-summary')).toContain('Calculable service subtotal: $90');expect(await page.locator('html').getAttribute('data-summary')).not.toContain('$80');await page.getByRole('button',{name:'Print',exact:true}).click();await expect(page.locator('html')).toHaveAttribute('data-printed','true');
+ await page.getByLabel('What care do you need?').selectOption('drop30');await expect(page.locator('.time-blocks input:checked')).toHaveCount(0);await expect(page.locator('.estimate-result')).toContainText('Select at least one visit window');await expect(page.getByLabel('Care may be unusually detailed').first()).toBeChecked();
+});
+for(const entry of ['saved','query'] as const)test(`Continuous ${entry} entry removes stale windows before restore and API calculation`,async({page})=>{
+ await page.goto('/rates');await expect(page.locator('.advanced-estimator')).toHaveAttribute('aria-busy','false');
+ await page.evaluate(()=>sessionStorage.setItem('cuddlecrew-care-plan-v1',JSON.stringify({schemaVersion:2,petTypes:['dog','cat'],service:'continuous24',blocks:[0,1,2,3],midday:'none',zip:'95821',travelTier:'standard',reviewRequired:true})));
+ if(entry==='saved')await page.reload();else await page.goto('/rates?petTypes=dog,cat&service=continuous24&windows=0,1,2,3&midday=none&zip=95821&planningContext=%7B%22reviewRequired%22%3Atrue%2C%22incomplete%22%3Afalse%7D#estimate');
+ await expect(page.getByLabel('What care do you need?')).toHaveValue('continuous24');await expect(page.locator('.time-blocks')).toHaveCount(0);
+ await page.getByLabel('First service date').fill(futureDate);await page.getByLabel('Checkout date').fill('2099-01-03');await expect(page.locator('.estimate-result')).toContainText('Review the restored selections');
+ const response=page.waitForResponse(r=>r.url().endsWith('/api/estimate'));await page.getByRole('button',{name:'Confirm restored selections and care needs'}).click();
+ const actual=await response;const request=actual.request().postDataJSON();expect(request.blocks).toEqual([]);expect(request.pets.map((p:{type:string})=>p.type)).toEqual(['dog','cat']);expect(request.planner.reviewRequired).toBe(true);const result=(await actual.json()).result;expect(result.total).toBeNull();expect(result.potentialShortFee).toBeNull();expect(result.reviewRequired).toBe(true);
+ await expect.poll(()=>page.evaluate(()=>JSON.parse(sessionStorage.getItem('cuddlecrew-care-plan-v1')||'{}').blocks)).toEqual([]);
+ await page.getByLabel('What care do you need?').selectOption('drop30');await expect(page.locator('.time-blocks input:checked')).toHaveCount(0);
+});

@@ -22,3 +22,16 @@ test('malformed planner progress returns conservative defaults',()=>{assert.deep
 test('unknown planner household remains incomplete and cannot fall back to saved pets',()=>{const parsed=parsePlannerPrefill('?planner=1&pets=4&household=Unknown');assert(parsed);assert.deepEqual(parsed.types,[]);assert.equal(parsed.count,4);assert.equal(parsed.planner.incomplete,true);assert.equal(parsed.planner.reviewRequired,true)});
 test('planning state accepts approved Continuous Care services',()=>{assert.equal(sanitizePlanningState({service:'continuous8'}).service,'continuous8');assert.equal(sanitizePlanningState({service:'continuous24'}).service,'continuous24')});
 test('approved holiday generation is deterministic through 2028 and later unapproved dates remain empty',()=>{assert.equal(publicHolidays(2026).length,8);assert.equal(publicHolidays(2027).length,9);assert.equal(publicHolidays(2028).length,9);assert.equal(publicHolidays(2029).length,1);assert.deepEqual(publicHolidays(2030),[])});
+
+test('Continuous saved and query state discards visit windows without losing household location or review',()=>{
+ for(const service of ['continuous3','continuous4','continuous5','continuous6','continuous7','continuous8','continuous24']){
+  const raw={schemaVersion:2,petTypes:['dog','cat'],service,blocks:[0,1,2,3],midday:'none',zip:'95821',travelTier:'standard',reviewRequired:true,planner:{reviewRequired:true,incomplete:false}};
+  const state=parseStoredPlanningState(JSON.stringify(raw));
+  assert.deepEqual(state.blocks,[]);assert.deepEqual(state.petTypes,['dog','cat']);assert.equal(state.zip,'95821');assert.equal(state.travelTier,'standard');assert.equal(state.reviewRequired,true);assert.equal(state.requiresConfirmation,true);assert.equal(state.planner?.reviewRequired,true);
+  const query=planningStateQuery(state);assert.equal(new URLSearchParams(query).has('windows'),false);
+  const parsed=parsePlanningStateQuery(`?${query}&windows=0,1,2,3`);assert.deepEqual(parsed.blocks,[]);assert.equal(parsed.service,service);assert.equal(parsed.planner?.reviewRequired,true);
+ }
+ const overnight=sanitizePlanningState({petTypes:['dog'],service:'overnight',blocks:[1],midday:'drop30',planner:{reviewRequired:false,incomplete:false,overnightDuration:30}});
+ assert.deepEqual(overnight.blocks,[1]);assert.equal(overnight.midday,'drop30');assert.equal(overnight.planner?.overnightDuration,30);
+ assert.deepEqual(sanitizePlanningState({service:'drop60',blocks:[0,1,2,3]}).blocks,[0,1,2,3]);
+});
