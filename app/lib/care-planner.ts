@@ -13,7 +13,7 @@ export type CarePlannerInput={
   feedingFrequency:number;bathroomIntervalHours:number;comfortableAloneHours:number;
   taskCount:number;medication:MedicationNeed;behavior:BehaviorNeed;
   routineComplexity:RoutineComplexity;separation:SeparationNeed;visitFit:VisitFit;
-  windowIndexes:number[];overnight:boolean;
+  windowIndexes:number[];overnight:boolean;answersConfirmed?:boolean;
 };
 
 export type CarePlanAssessment={
@@ -31,7 +31,7 @@ const petTotal=(input:CarePlannerInput)=>input.dogs+input.cats+input.otherPets;
 
 export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   const total=petTotal(input),reviewReasons:string[]=[],warnings:string[]=[],factors:string[]=[],reasons:string[]=[];
-  const durationMinutes:30|60|90|null=input.visitFit==='30'?30:input.visitFit==='60'?60:input.visitFit==='90'?90:null;
+  const durationMinutes:30|60|90|null=input.answersConfirmed===false?null:input.visitFit==='30'?30:input.visitFit==='60'?60:input.visitFit==='90'?90:null;
   const gap=plannerCareGap(input.windowIndexes,durationMinutes??30,input.overnight);
   const effectiveLimit=Math.min(input.comfortableAloneHours,input.bathroomIntervalHours);
   const gapWithinEnteredLimits=gap?gap.maximum<=effectiveLimit:null;
@@ -75,6 +75,7 @@ export function assessCarePlan(input:CarePlannerInput):CarePlanAssessment{
   warnings.push('This educational starting point does not diagnose, prescribe, provide treatment, guarantee acceptance, reserve inventory, or create a booking.');
   warnings.push('Final suitability, timing, availability, and service acceptance are determined through consultation.');
 
+  if(input.answersConfirmed===false)reviewReasons.push('Confirm the restored selections and enter the care answers again before using this planning guidance.');
   const suitability=reviewReasons.length?'consultation-required':'starting-point';
   const suggestedStartingPoint=durationMinutes===null?'A standard duration cannot be selected from these answers. Lauren will need to review the requested routine.':!gapWithinEnteredLimits&&gap?`The selected schedule does not meet the entered care limit. Discuss Continuous Care or another approved plan rather than adding visits that still leave an unsafe gap.`:suitability==='consultation-required'?`Use the ${durationMinutes}-minute option only as a discussion starting point; Lauren must review the complete routine.`:`A ${durationMinutes}-minute visit may be a useful and usually more affordable starting point when every pet can safely remain alone between care periods.`;
   if(gap)reasons.push(`The selected flexible windows produce a longest plausible care gap of approximately ${gap.maximum} hours.`);

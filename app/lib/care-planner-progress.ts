@@ -11,7 +11,19 @@ export const sanitizeCarePlannerProgress=(input:Record<string,unknown>):CarePlan
  windowIndexes:Array.isArray(input.windowIndexes)?[...new Set(input.windowIndexes.filter((value):value is number=>Number.isInteger(value)&&Number(value)>=0&&Number(value)<4))]:[0,2],
  overnight:input.overnight===true,visitFit:typeof input.visitFit==='string'&&fits.has(input.visitFit as VisitFit)?input.visitFit as VisitFit:'unknown',
 });
-export const parseCarePlannerProgress=(raw:string|null)=>{if(!raw)return sanitizeCarePlannerProgress({});try{const value=JSON.parse(raw);return value&&typeof value==='object'?sanitizeCarePlannerProgress(value):sanitizeCarePlannerProgress({})}catch{return sanitizeCarePlannerProgress({})}};
-export const loadCarePlannerProgress=()=>{try{return typeof sessionStorage==='undefined'?sanitizeCarePlannerProgress({}):parseCarePlannerProgress(sessionStorage.getItem(CARE_PLANNER_PROGRESS_KEY))}catch{return sanitizeCarePlannerProgress({})}};
-export const saveCarePlannerProgress=(value:CarePlannerProgress)=>{try{if(typeof sessionStorage!=='undefined')sessionStorage.setItem(CARE_PLANNER_PROGRESS_KEY,JSON.stringify(sanitizeCarePlannerProgress(value as unknown as Record<string,unknown>)))}catch{}};
+// Restored selections are never evidence that the omitted care answers were negative.
+const completeProgress=(input:Record<string,unknown>)=>
+ input.schemaVersion===2&&
+ (['dogs','cats','otherPets'] as const).every(key=>bounded(input[key],0,8,-1)!==-1)&&
+ stages.has(input.lifeStage as LifeStage)&&bounded(input.feedingFrequency,1,6,-1)!==-1&&
+ bounded(input.bathroomIntervalHours,1,24,-1)!==-1&&bounded(input.comfortableAloneHours,1,24,-1)!==-1&&
+ Array.isArray(input.windowIndexes)&&input.windowIndexes.every(value=>Number.isInteger(value)&&value>=0&&value<4)&&
+ typeof input.overnight==='boolean'&&fits.has(input.visitFit as VisitFit);
+export const parseCarePlannerProgress=(raw:string|null)=>{
+ const fresh={...sanitizeCarePlannerProgress({}),requiresConfirmation:false};if(raw===null)return fresh;
+ try{const value=JSON.parse(raw);if(value&&typeof value==='object'&&!Array.isArray(value)){const progress=sanitizeCarePlannerProgress(value);return{...progress,visitFit:completeProgress(value)?progress.visitFit:'unknown' as VisitFit,requiresConfirmation:true}}}catch{}
+ return{...fresh,requiresConfirmation:true};
+};
+export const loadCarePlannerProgress=()=>{try{return parseCarePlannerProgress(typeof sessionStorage==='undefined'?null:sessionStorage.getItem(CARE_PLANNER_PROGRESS_KEY))}catch{return parseCarePlannerProgress('')}};
+export const saveCarePlannerProgress=(value:CarePlannerProgress)=>{try{if(typeof sessionStorage!=='undefined')sessionStorage.setItem(CARE_PLANNER_PROGRESS_KEY,JSON.stringify({schemaVersion:2,...sanitizeCarePlannerProgress(value as unknown as Record<string,unknown>)}))}catch{}};
 export const clearCarePlannerProgress=()=>{try{if(typeof sessionStorage!=='undefined')sessionStorage.removeItem(CARE_PLANNER_PROGRESS_KEY)}catch{}};

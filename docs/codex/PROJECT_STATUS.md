@@ -5,13 +5,13 @@
 
 | Field | Current release sprint state |
 | --- | --- |
-| Source | Initial fetched `github/main` was `44f380b3fb9d2700611b4f24c81e4a9304828490`; PR #10 integrated normally as `43553cbeb91bd7784eaf9232561247a267e42c82`. Fetch before each integration. |
+| Source | Initial fetched `github/main` was `44f380b3fb9d2700611b4f24c81e4a9304828490`; PR #10 merged as `43553cbeb91bd7784eaf9232561247a267e42c82`; reviewed handoff PR #11 merged as `303be467db21040881449c6a799b1d61935b7c25`. Fetch before each integration. |
 | Authority | Lauren authorizes all recorded remaining P0/P1 remediation, independent review, no-ff integration, fresh integrated 12G audit, and minimum Sites publication only after 12G application GO. No routine between-item approval needed. |
 | Parent / active logical Orchestrator | Current release-completion runtime `/root`; older task pointers below are historical only. |
 | Application gate | 12G NO-GO remains until all P0/P1 corrections and fresh integrated audit pass. CARE-01 is COMPLETE and must not be reopened without regression evidence. |
-| Active item / writer | Shared handoff CARE-02 / XF-01 / XF-02 / XF-03; native `/root/handoff_implement`, isolated `codex/12g-planner-handoff-20260910`; [assignment and evidence](RUNS/12G-HANDOFF.md). |
-| Remaining P1 reconciliation | Eleven UNRESOLVED at initial fetched main; no newer product correction except CARE-01. Shared handoff first, then CARE-03, BUS-02, EST-01, EST-02, EST-03, BUS-01, POL-01. |
-| Review / validation | PR #10 exact head independently APPROVED, no REQUIRED findings; local merged gate 173 Node / 35 Playwright (15 accessibility) passed; hosted exact-main merge run `34475067731` SUCCESS. |
+| Active item / writer | Restored planning-state safety CARE-03 and newly verified P1 STATE-01; native `/root/restore_implement`, isolated `codex/12g-restored-planning-safety-20260910`; [assignment](RUNS/12G-RESTORED-PLANNING.md). Required base CI passed; execution authorized. |
+| Remaining P1 reconciliation | CARE-01 / CARE-02 / XF-01 / XF-02 / XF-03 COMPLETE. Seven original P1s remain: CARE-03, BUS-02, EST-01, EST-02, EST-03, BUS-01, POL-01. Additional STATE-01 confirmed by rendered direct-estimator detailed-care review becoming ordinary $30 after refresh; same restoration root, corrected with CARE-03. |
+| Review / validation | PR #10 complete with hosted `34475067731` SUCCESS. PR #11 source `9afdcad2` independently APPROVED, no REQUIRED findings; source CI `34478563351` SUCCESS; merged local gate 180 Node / 41 Playwright (15 accessibility) PASS; exact merged-main CI `34479764616` SUCCESS. |
 | Owner factual confirmation | Lauren confirmed on 2026-09-10 that Carmichael is the business base and public use of client-pet names Blu, Loki, Skylar is approved; see [approved publication facts](../business-reference/guidance/website-publication-approvals.md). No client identity/address disclosure. |
 | Preservation | Original `C:/Dev/CuddleCrewPetCareWEB` remains dirty/stale at `3b443a6d`; no reset/clean/restore/stash/staging/adoption. Preserved prior worktrees remain untouched. |
 | Deployment / external effects | Not deployed. No DNS, indexing, provider, SMS campaign, payment, or PPC mutation. Live Sites indexing was already enabled; Lauren separately approved keeping it enabled on 2026-09-10. Verify robots/sitemap after conditional publication. |
