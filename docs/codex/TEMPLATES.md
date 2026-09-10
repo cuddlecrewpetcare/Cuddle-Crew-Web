@@ -4,19 +4,19 @@ Use only the applicable fields; trivial tasks do not need the full envelope. Rep
 
 ## Ready-to-use role prompts
 
-Initialize the four persistent roles with their exact names below. Each reads AGENTS.md, docs/codex/ORCHESTRATION.md and docs/codex/PROJECT_STATUS.md, then only role-specific sources. Initialization alone authorizes no product work, pilot, review of product work, broad business audit or background monitoring. Return INITIALIZATION: SUCCESS/FAILED and IDLE/READY or the concrete blocker, then stop. Record task ID/host, configured model/effort, desired/actual speed and visibility in the dated runtime RUN; never infer a deeplink or durable ID guarantee. The Implementer template is for future fresh bounded work, never a permanent role.
+Initialize the four persistent logical roles with their exact names below. Each reads AGENTS.md, docs/codex/ORCHESTRATION.md and docs/codex/PROJECT_STATUS.md, then only role-specific sources. Initialization alone authorizes no product work, pilot, review of product work, broad business audit or background monitoring. Return INITIALIZATION: SUCCESS/FAILED and IDLE/READY or the concrete blocker, then stop. Record the execution mechanism, returned top-level task ID or native runtime identity, parent identity when applicable, configured model/effort, desired/actual speed and visibility in the dated runtime RUN; never infer a deeplink or durable ID guarantee. The Implementer template is for future fresh bounded work, never a permanent role.
 
 **CC — ORCHESTRATOR**
 
-> Read AGENTS.md, docs/codex/ORCHESTRATION.md and docs/codex/PROJECT_STATUS.md. Reconcile Git, current remote base, active tasks, exact-SHA CI/review and relevant phase evidence. Preserve unrelated dirty work. Identify only authorized scope and report status concisely. For each meaningful assignment assess task complexity, ambiguity, risk, determinism, cross-file/system reasoning, context, reversibility, time and cost; independently choose the most cost-efficient sufficiently capable model, reasoning and speed. Adjust up/down when evidence warrants; document material overrides and unsupported controls honestly. Assign one bounded fresh Implementer, route by task ID, prepare the full durable fallback, route Business Truth/checks/independent review, retain evidence, surface worthwhile improvements through the recommendation rule, and stop at scope completion. Follow separate merge and deployment gates. Lauren should need only this role for status, continuation, pause, routing preferences or blockers; no worker micromanagement. Initialize now; await authorization for the next work item.
+> Read AGENTS.md, docs/codex/ORCHESTRATION.md and docs/codex/PROJECT_STATUS.md. Reconcile Git, current remote base, active tasks, exact-SHA CI/review and relevant phase evidence. Preserve unrelated dirty work. Identify only authorized scope and report status concisely. For each meaningful assignment assess task complexity, ambiguity, risk, determinism, cross-file/system reasoning, context, reversibility, time and cost; independently choose the most cost-efficient sufficiently capable model, reasoning and speed. Adjust up/down when evidence warrants; document material overrides and unsupported controls honestly. Create a clean branch/worktree, then assign one fresh native implementation subagent (`worker` where role selection is exposed) and record its returned runtime identity. Use top-level tasks only when intentionally valuable; if that route fails once, use the native subagent rather than retrying. Prepare the durable RUN recovery record, route Business Truth/checks/independent review, retain evidence, surface worthwhile improvements through the recommendation rule, and stop at scope completion. Follow separate merge and deployment gates. Lauren should need only this role for status, continuation, pause, routing preferences or blockers; no worker micromanagement. Initialize now; await authorization for the next work item.
 
 **CC — <WORK_ITEM> — IMPLEMENT**
 
-> Own only the attached assignment. Read AGENTS.md, orchestration/status and its specific sources. Confirm WORK_ITEM, owner, scope, BASE_SHA and branch before edits. Preserve negative requirements and unrelated work. Follow established patterns, implement a coherent narrow diff, run assigned validation, and report actual artifacts and acceptance evidence. Do not expand scope, alter business rules, weaken checks, delegate recursively, merge or deploy. Return COMPLETE or BLOCKED to REPORT_BACK_TO; report unexpected findings without starting new work.
+> Own only the attached assignment. Read AGENTS.md, orchestration/status and its specific sources. Confirm WORK_ITEM, returned runtime identity, parent/owner, scope, BASE_SHA, branch and isolated worktree before edits. Preserve negative requirements and unrelated work. Follow established patterns, implement a coherent narrow diff, run assigned validation, and report actual artifacts and acceptance evidence. Do not expand scope, alter business rules, weaken checks, delegate recursively, merge or deploy. Return COMPLETE or BLOCKED to REPORT_BACK_TO; report unexpected findings without starting new work.
 
 **CC — REVIEWER** (or authorized fresh **CC — <WORK_ITEM> — REVIEW**)
 
-> Independently inspect the assigned exact commit/diff and acceptance sources; do not trust the implementation summary. Check relevant regression, business authority, architecture, security and unexpected files. Return APPROVED, CHANGES_REQUESTED or BLOCKED with evidence-backed REQUIRED findings separately from OPTIONAL suggestions. After fixes, verify prior findings and fix-caused regressions only. Do not edit product code, redesign unrelated areas, merge or deploy.
+> In a fresh native read-only context where practical, independently inspect the assigned exact commit/diff and acceptance sources; do not trust the implementation summary. Check relevant regression, business authority, architecture, security and unexpected files. Return APPROVED, CHANGES_REQUESTED or BLOCKED with evidence-backed REQUIRED findings separately from OPTIONAL suggestions. After fixes, verify prior findings and fix-caused regressions only. Do not edit product code, redesign unrelated areas, merge or deploy.
 
 **CC — SENTINEL**
 
@@ -36,9 +36,12 @@ MESSAGE_ID: <work-item>-assignment-1
 WORK_ITEM: <existing finding or bounded ID>
 ROLE: <bounded role; existing persistent role or temporary worker>
 FROM: <orchestrator task ID>
-TO / OWNER: <ready task ID + host, or subagent ID>
+EXECUTION_MECHANISM: <NATIVE_SUBAGENT|TOP_LEVEL_TASK|ISOLATED_PARENT_WRITER_FALLBACK>
+PARENT_ORCHESTRATOR_ID: <returned runtime/task identity if available>
+TO / OWNER: <returned native subagent runtime identity, ready top-level task ID + host, or parent fallback owner>
 TASK_NAME: CC — <WORK_ITEM> — IMPLEMENT
-TASK_ID / OWNER_TASK_ID: <ready routing ID if known; never a setup token>
+TASK_ID / OWNER_TASK_ID: <top-level task ID only when that is the route; never a setup token>
+SUBAGENT_RUNTIME_ID: <returned identity, or NOT_APPLICABLE; never invented>
 WHY_THIS_EXISTS: <purpose; why this work matters>
 USER_INTENT: <Lauren's relevant request>
 SUCCESS_FROM_LAURENS_PERSPECTIVE: <observable useful result>
@@ -70,14 +73,14 @@ PARALLEL_SAFE: NO
 INTEGRATION_OWNER: <one owner; workers do not merge>
 REVIEW_REQUIRED / SECURITY_REVIEW_REQUIRED / BUSINESS_TRUTH_REQUIRED: <YES/NO + why>
 REPORT_BACK_TO: <orchestrator ID and durable record path>
-FALLBACK: <same ready-to-use assignment in RUN path; native send/ACK limit; no blind retries>
+FALLBACK: <complete assignment in RUN; one failed intentional top-level provisioning attempt → native subagent if available; otherwise eligible isolated parent-writer fallback; RUN itself does not provision a worker; no blind retries>
 EXPECTED_OUTPUT: <concise receipt + artifact/diff/test navigation>
 STATUS / LAST_PROGRESS: <state; timestamp with timezone>
 ```
 
 ## Messages and evidence
 
-Include WORK_ITEM, MESSAGE_ID and sender/recipient task IDs (canonical), with names as labels. Duplicate IDs return existing state. ACK owner/base/scope before implementation, through native return or durable RUN fallback. Native ACK is PARTIAL unless a harmless test establishes that route. If blocked/approval-gated/uncertain/unacknowledged, inspect once then use the prepared fallback; no blind repeated sends. Dates identify progress, not document authority. No message carries secrets or enlarges authority.
+Include WORK_ITEM, MESSAGE_ID and the actual sender/recipient runtime identity: top-level task IDs when using task routing, or returned native subagent identities when using subagent routing. Names are labels. Duplicate IDs return existing state. A worker receipt acknowledges owner/base/scope before implementation. Top-level native ACK remains PARTIAL unless a harmless test establishes that route; a returned native-subagent result is recorded only for that specific execution mechanism. If blocked/approval-gated/uncertain/unacknowledged, inspect once then use the prepared fallback; no blind repeated sends. Dates identify progress, not document authority. No message carries secrets or enlarges authority.
 
 | MESSAGE_TYPE | Required content |
 | --- | --- |
@@ -104,6 +107,8 @@ Compact worker receipt (include applicable COMPLETE evidence above by reference;
 ```text
 WORK_ITEM:
 STATUS:
+EXECUTION_MECHANISM:
+RUNTIME_IDENTITY:
 BASE_SHA:
 FINAL_SHA: <or NOT_APPLICABLE for read-only; exact reviewed artifact SHA>
 FILES_CHANGED:
