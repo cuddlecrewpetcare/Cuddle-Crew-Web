@@ -6,6 +6,7 @@ import {clientKey,rateLimit} from '../../lib/rate-limit.ts';
 import {readJsonObject} from '../../lib/server-security.ts';
 import {createRequestId,jsonWithRequestId,logDiagnostic} from '../../lib/observability.ts';
 import {resourceLimits} from '../../config/resource-limits.ts';
+import {sanitizePlannerContext} from '../../lib/planner-prefill.ts';
 
 const petTypes=new Set<PetType>(['dog','cat','rabbit','bird','fish','small']);
 const services=new Set<EstimateService>(Object.keys(serviceCatalog) as EstimateService[]);
@@ -16,14 +17,15 @@ const validDate=(value:unknown):value is string=>typeof value==='string'&&parseD
 export async function POST(request:Request){
  const requestId=createRequestId(),json=(body:unknown,init:ResponseInit={})=>{const headers=new Headers(init.headers);headers.set('Cache-Control','no-store');return jsonWithRequestId(body,requestId,{...init,headers})};
  const limit=rateLimit(`estimate:${clientKey(request)}`,60,5*60_000);if(!limit.allowed){logDiagnostic('WARN','security.rate_limited',{operation:'estimate',requestId,category:'RATE_LIMIT',result:'rejected'});return json({error:'Please wait and try again.'},{status:429,headers:{'Retry-After':String(limit.retryAfter)}})}
- const parsed=await readJsonObject(request,resourceLimits.requestBodyBytes.estimate,['pets','service','start','end','blocks','midday','zip','travelTier']);if(!parsed.ok)return json({error:parsed.error},{status:parsed.status});
+ const parsed=await readJsonObject(request,resourceLimits.requestBodyBytes.estimate,['pets','service','start','end','blocks','midday','zip','travelTier','planner']);if(!parsed.ok)return json({error:parsed.error},{status:parsed.status});
  const value=parsed.value,pets=Array.isArray(value.pets)?value.pets:[];
+ if(value.planner!==undefined&&(!value.planner||typeof value.planner!=='object'||Array.isArray(value.planner)||Object.keys(value.planner).some(key=>!['reviewRequired','incomplete','overnightDuration','counts','petCount'].includes(key))))return json({error:'Choose valid planning options.'},{status:400});
  if(pets.length<1||pets.length>resourceLimits.estimate.maximumPets||!pets.every(p=>p&&typeof p==='object'&&petTypes.has((p as {type?:PetType}).type as PetType)))return json({error:'Choose a valid pet household.'},{status:400});
  const service=value.service as EstimateService,midday=value.midday as MiddayService,travelTier=value.travelTier as TravelTierKey|undefined;
  if(!services.has(service)||!middayServices.has(midday)||(travelTier!==undefined&&!travelTiers.has(travelTier)))return json({error:'Choose valid service options.'},{status:400});
  if(!validDate(value.start)||!validDate(value.end)||value.end<value.start||calendarDayDifference(value.start,value.end)!>resourceLimits.estimate.maximumDays||typeof value.zip!=='string'||!/^\d{5}$/.test(value.zip))return json({error:'Choose valid dates and ZIP.'},{status:400});
  const blocks=Array.isArray(value.blocks)?[...new Set(value.blocks.filter((x):x is number=>Number.isInteger(x)&&Number(x)>=0&&Number(x)<business.windows.length))]:[];
- const input:EstimateInput={pets:pets.map(p=>({type:(p as EstimatePet).type,complex:(p as EstimatePet).complex===true})),service,start:value.start,end:value.end,blocks,midday,zip:value.zip,travelTier,now:new Date()};
+ const input:EstimateInput={pets:pets.map(p=>({type:(p as EstimatePet).type,complex:(p as EstimatePet).complex===true})),service,start:value.start,end:value.end,blocks,midday,zip:value.zip,travelTier,planner:sanitizePlannerContext(value.planner),now:new Date()};
  const output=calculateEstimate(input);if(!output.result)return json(output);
  const{reviewReasons:privateReasons,...publicResult}=output.result;void privateReasons;
  return json({issues:output.issues,result:publicResult satisfies PublicEstimateResult});

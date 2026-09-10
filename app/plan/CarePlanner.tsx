@@ -2,6 +2,7 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {business} from '../config/business';
 import {assessCarePlan,type BehaviorNeed,type LifeStage,type MedicationNeed,type RoutineComplexity,type SeparationNeed,type VisitFit} from '../lib/care-planner';
+import {normalizePlannerCount,plannerPrefillQuery} from '../lib/planner-prefill';
 import {trackPublicEvent} from '../lib/public-analytics';
 import {clearCarePlannerProgress,loadCarePlannerProgress,saveCarePlannerProgress} from '../lib/care-planner-progress';
 
@@ -17,10 +18,10 @@ export default function CarePlanner(){
  const resultAnnouncement=result.suitability==='consultation-required'?'Planning guidance updated. Review with Lauren is required.':`${result.durationMinutes}-minute starting point calculated. Review the planning guidance.`;
  const toggle=(task:string)=>setTaskList(x=>x.includes(task)?x.filter(y=>y!==task):[...x,task]);
  const reset=()=>{skipNextSave.current=true;clearCarePlannerProgress();setDogs(1);setCats(0);setOtherPets(0);setLifeStage('adult');setTaskList(tasks.slice(0,2));setAlone(8);setBathroom(8);setFeeding(2);setBlocks([0,2]);setOvernight(false);setMedication('none');setBehavior('none');setComplexity('simple');setSeparation('none');setVisitFit('unknown');setCleared(true);setSaveEpoch(value=>value+1)};
- const count=dogs+cats+otherPets,household=(dogs&&cats)||(otherPets&&dogs)||(otherPets&&cats)?'Mixed-pet household':dogs?'Dog':cats?'Cat':'Rabbit, bird, fish, or small animal';
- const estimateParams=new URLSearchParams({planner:'1',pets:String(Math.max(1,count)),household,duration:String(result.durationMinutes??30)});if(blocks.length)estimateParams.set('windows',blocks.join(','));if(overnight)estimateParams.set('overnight','1');
+ const count=dogs+cats+otherPets;
+ const estimateParams=result.durationMinutes===null?'':plannerPrefillQuery({dogs,cats,otherPets,duration:result.durationMinutes,blocks,overnight,reviewRequired:result.suitability==='consultation-required'});
  return <div className="planner-grid" onChange={markStarted}><div className="planner-form"><p className="fine-print">Broad household counts, routine intervals, selected windows, and visit fit are saved only for this browser session. Medication, behavior, separation, task details, names, addresses, contact details, and travel dates are never saved here.</p><button type="button" className="text-link" onClick={reset}>Clear saved planner progress and reset</button>{cleared&&<span role="status" className="save-status">Saved planner progress cleared.</span>}
-  <fieldset><legend>Household pet counts</legend><label>Dogs<input type="number" min="0" max="8" value={dogs} onChange={e=>setDogs(Math.max(0,Math.min(8,+e.target.value||0)))}/></label><label>Cats<input type="number" min="0" max="8" value={cats} onChange={e=>setCats(Math.max(0,Math.min(8,+e.target.value||0)))}/></label><label>Other accepted pets<input type="number" min="0" max="8" value={otherPets} onChange={e=>setOtherPets(Math.max(0,Math.min(8,+e.target.value||0)))}/></label></fieldset>
+  <fieldset><legend>Household pet counts</legend><label>Dogs<input type="number" min="0" max="8" value={dogs} onChange={e=>setDogs(normalizePlannerCount(+e.target.value))}/></label><label>Cats<input type="number" min="0" max="8" value={cats} onChange={e=>setCats(normalizePlannerCount(+e.target.value))}/></label><label>Other accepted pets<input type="number" min="0" max="8" value={otherPets} onChange={e=>setOtherPets(normalizePlannerCount(+e.target.value))}/></label></fieldset>
   <label>Life stage<select value={lifeStage} onChange={e=>setLifeStage(e.target.value as LifeStage)}>{option('adult','Adult')}{option('puppy','Puppy or very young pet')}{option('senior','Senior')}{option('mixed','Mixed life stages')}</select></label>
   <fieldset><legend>What needs to happen during care?</legend>{tasks.map(task=><label className="check-field" key={task}><input type="checkbox" checked={taskList.includes(task)} onChange={()=>toggle(task)}/><span>{task}</span></label>)}</fieldset>
   <label>Feedings needed per day<input type="number" min="1" max="6" value={feeding} onChange={e=>setFeeding(Math.max(1,Math.min(6,+e.target.value||1)))}/></label>
