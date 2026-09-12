@@ -11,7 +11,7 @@
 
 ## Verdict and evidence
 
-Three fresh read-only audit slices independently examined business/state behavior, public routes/claims and security/privacy/release provenance. Each returned zero P0 and zero P1. The parent rendered audit covered 16 public routes, 37 internal targets, 9 external targets and the 404 with no route, link, image, canonical, overflow or browser-console failure.
+Three fresh read-only audit slices independently examined business/state behavior, public routes/claims and security/privacy/release provenance. Each returned zero P0 and zero P1. The parent rendered audit covered 16 public routes, 37 internal targets and the 404 with no route, internal-link, image, canonical, overflow or browser-console failure; it inventoried 9 external targets for Phase 12H checking.
 
 The exact candidate passed doctor, foundation, Git/resource/integration/time/deployment/recovery safety, 0-current-secret findings, 208/208 Node tests, typecheck, lint, production build, artifact privacy, 65/65 Playwright tests and 15/15 focused accessibility tests. The build contains 189 files / 10.51 MiB. Hosted exact-main Validation [34692288093](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34692288093) succeeded.
 

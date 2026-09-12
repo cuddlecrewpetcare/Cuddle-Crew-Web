@@ -31,7 +31,7 @@ The complete Phase 12G release-blocking remediation series is integrated at exac
 | Playwright | 65/65 passed; zero failures/skips |
 | Accessibility | All 15 dedicated accessibility cases retained and passed; automated Axe scans found no blocking violation |
 | Secrets/privacy | Current-tree secret scan: zero findings; exact-address, review-reason, session/query, gallery metadata, build-artifact, and prohibited-resource checks passed |
-| Routes/links | 16 public routes, 37 internal targets, and 9 external targets audited with zero failures; missing-route response correctly returned 404 |
+| Routes/links | 16 public routes and 37 internal targets audited with zero failures; 9 external targets inventoried for Phase 12H checking; missing-route response correctly returned 404 |
 | Hosted Validation | Run [34692288093](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34692288093), exact head `0a698e8781362b412747941c8b283a319239be43`, SUCCESS |
 
 The integrated browser and source audit covered the business-rule, CarePlanner, estimator, persistence, cross-feature, API/degraded-state, route/404, contact/SMS consent, responsive, SEO/canonical/schema, privacy/security, public-claim, asset/performance, link, and build-provenance surfaces listed in the original audit. Fixed and future dates used Pacific business-date semantics. Tests and smoke probes remained synthetic and side-effect safe; no production message, provider write, booking, payment, or deployment occurred.
