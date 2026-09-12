@@ -136,13 +136,19 @@ test('Phase 12E public imagery uses the owner-selected Blu portrait and excludes
 
 test('FAQ cancellation summary preserves each approved booking category and policy boundary',()=>{
   const faq=readFileSync(resolve('app/faq/FAQSearch.tsx'),'utf8');
-  assert.match(faq,/Daytime service: 24 hours or more/);
-  assert.match(faq,/Overnight or vacation care under seven nights uses 72-hour and 24-hour thresholds/);
-  assert.match(faq,/For cancellation purposes, 3–8 hour Continuous Care is daytime/);
-  assert.match(faq,/24-Hour Continuous Care is Overnight\/multi-day capacity/);
-  assert.match(faq,/seven or more consecutive 24-hour periods use the Extended Booking rules/);
-  assert.match(faq,/Approved holiday periods use the corresponding longer daytime or Overnight framework/);
-  assert.match(faq,/The signed policy and booking details control/);
+  for(const phrase of [
+    'Written cancellation and booking-change requests are received when Cuddle Crew receives them',
+    'Daytime service, including 3–8 hour Continuous Care: at least 24 hours before service has no cancellation fee and any amount paid is refunded or credited; less than 24 hours may be charged 50%; after Cuddle Crew has departed for or arrived at the service location, or after service begins, may be charged 100%',
+    'Short Overnight, 24-Hour Continuous Care, and other multi-day vacation care under seven consecutive nights or 24-hour periods: at least 72 hours before the first service receives a full refund or credit; less than 72 hours but at least 24 hours may be charged 50%; less than 24 hours may be charged 100%',
+    'Extended bookings of seven or more consecutive nights or 24-hour periods: at least seven days before the first service receives a full refund or credit; less than seven days but at least 72 hours may be charged 50%; less than 72 hours may be charged 100%',
+    'Holiday or designated peak-date daytime service, including 3–8 hour Continuous Care: at least seven days receives a full refund or credit; less than seven days but at least 72 hours may be charged 50%; less than 72 hours may be charged 100%',
+    'Holiday or designated peak-date Overnight and 24-Hour Continuous Care: at least 14 days receives a full refund or credit; less than 14 days but at least seven days may be charged 50%; less than seven days may be charged 100%',
+    'Applicable holiday or peak-date treatment is identified before the affected booking is confirmed',
+    'Cuddle Crew may, at its discretion, reduce or waive a charge, issue a service credit, or provide another reasonable accommodation; an exception is not guaranteed',
+    'The signed policy controls',
+    'Different booking-specific cancellation terms for an unusually long, high-value, or capacity-intensive booking apply only when disclosed and accepted before confirmation'
+  ])assert.ok(faq.includes(phrase),phrase);
+  assert.doesNotMatch(faq,/uses 72-hour and 24-hour thresholds|corresponding longer daytime or Overnight framework/);
 });
 
 test('fallback pages remain safe and actionable without exposing internals',()=>{
