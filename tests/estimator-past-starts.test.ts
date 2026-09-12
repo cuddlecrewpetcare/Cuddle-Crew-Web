@@ -11,12 +11,15 @@ const moneyFields=['total','serviceSubtotal','base','petFee','holidayFee','poten
 const assertUnpriced=(result:PublicEstimateResult|null)=>{assert(result);assert.equal(result.reviewRequired,true);for(const field of moneyFields)assert.equal(result[field],null)};
 
 test('12G-EST-03: passed and partly elapsed daytime starts require unpriced review',()=>{
- for(const blocks of [[0],[1],[2],[3],[0,3]])assertUnpriced(calculateEstimate({...baseline,blocks}).result);
+ for(const blocks of [[0],[1],[2],[3]])assertUnpriced(calculateEstimate({...baseline,blocks}).result);
+ assertUnpriced(calculateEstimate({...baseline,blocks:[0,2],now:new Date('2026-09-08T13:00:00-07:00')}).result);
 });
 
 test('12G-EST-03: a passed Overnight start and explicit passed Planner coverage require unpriced review',()=>{
  assertUnpriced(calculateEstimate({...baseline,service:'overnight',end:'2026-09-09',blocks:[]}).result);
- assertUnpriced(calculateEstimate({...baseline,service:'overnight',end:'2026-09-09',blocks:[0],planner:{reviewRequired:false,incomplete:false,overnightDuration:30}}).result);
+ const beforeOvernight=new Date('2026-09-08T13:00:00-07:00');
+ assertUnpriced(calculateEstimate({...baseline,service:'overnight',end:'2026-09-09',blocks:[0],planner:{reviewRequired:false,incomplete:false,overnightDuration:30},now:beforeOvernight}).result);
+ const stale=calculateEstimate({...baseline,service:'overnight',end:'2026-09-09',blocks:[0],now:beforeOvernight}).result;assert(stale);assert.equal(stale.serviceSubtotal,85);assert.equal(stale.potentialShortFee,25);
 });
 
 test('12G-EST-03: exact and future starts retain same-day rules while Continuous Care keeps schedule review',()=>{

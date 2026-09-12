@@ -19,6 +19,8 @@ Exact-base reproduction confirmed morning and partly elapsed 6–9 PM visits ret
 
 The first focused run passed all three new domain cases and exposed only an incorrect function-call expression in the new API test request serialization; typecheck reported the same test-only error. The request fixture was rewritten as an explicit rest object before serialization. No application code changed in that correction; rerun evidence follows below.
 
+Fresh independent review of source `94e9bfe1030b32c5d1ba5651bc79b5b6a72c8b97` found no application, privacy or UI defect, but returned one REQUIRED test-quality finding: the mixed-window and Planner-coverage fixtures could reach review through a second already-past start. The correction isolates a true 1 PM mixed case with the 9 AM window passed and 3 PM window upcoming, and isolates active Planner coverage before the future 6 PM Overnight start. It also proves a stale raw Overnight block remains ignored. This is a test-only follow-up commit; the application implementation is unchanged. Fresh exact-source validation and independent re-review are required.
+
 - Passed or partly elapsed selected service starts cannot yield ordinary automatic pricing; use neutral personalized review with noncalculable monetary output or clear rejection under existing architecture.
 - Prefer all-money-null review so copy/print does not retain an ordinary-looking subtotal for a passed request.
 - Preserve prior-date rejection, upcoming same-day potential $20 daytime charge, less-than-24h and Overnight less-than-48h behavior, fixed rates and holiday/household review.
