@@ -5,16 +5,16 @@
 
 | Field | Current release sprint state |
 | --- | --- |
-| Source | Initial fetched `github/main` was `44f380b3fb9d2700611b4f24c81e4a9304828490`; PR #10 merged as `43553cbeb91bd7784eaf9232561247a267e42c82`; handoff PR #11 `303be467`; restoration PR #12 `113391c`; species PR #13 `7a1f8aff`; EST-01 PR #14 `1c4956d`; EST-02 PR #15 `683e19d`; reviewed EST-03 PR #16 merged as `d28bda1d6c9a6e4ec3fa82ea67bcfc42ddba674e`. Fetch before each integration. |
+| Source | Initial fetched `github/main` was `44f380b3fb9d2700611b4f24c81e4a9304828490`; PRs #10–#18 were normally integrated. Exact audited application main is `0a698e8781362b412747941c8b283a319239be43`. Fetch before release. |
 | Authority | Lauren authorizes all recorded remaining P0/P1 remediation, independent review, no-ff integration, fresh integrated 12G audit, and minimum Sites publication only after 12G application GO. No routine between-item approval needed. |
 | Parent / active logical Orchestrator | Current release-completion runtime `/root`; older task pointers below are historical only. |
-| Application gate | 12G NO-GO remains until all P0/P1 corrections and fresh integrated audit pass. CARE-01 is COMPLETE and must not be reopened without regression evidence. |
-| Active item / writer | Unsupported Overnight pricing BUS-01; parent `/root` is documented isolated fallback writer in `codex/12g-overnight-review-pricing-20260910`; [assignment](RUNS/12G-OVERNIGHT-REVIEW-PRICING.md). Exact base CI passed; execution authorized. |
-| Remaining P1 reconciliation | CARE-01 / CARE-02 / XF-01 / XF-02 / XF-03 / CARE-03 / BUS-02 / EST-01 / EST-02 / EST-03 COMPLETE. Additional STATE-01 COMPLETE. Two original P1s remain: BUS-01 and POL-01. |
-| Review / validation | PRs #10–#15 retain their detailed RUN receipts. PR #15 source `f977ca8` independently APPROVED, source CI `34687305405` SUCCESS; merge `683e19d`, 201 Node / 63 Playwright, main CI `34687817506` SUCCESS. PR #16 final source `85617cc` independently APPROVED after one REQUIRED test-only correction; source CI `34689618373` SUCCESS; merge `d28bda1`, 205 Node / 63 Playwright, main CI `34690063110` SUCCESS. |
+| Application gate | Fresh integrated 12G audit on `0a698e8` found 0 P0 / 0 P1. **PHASE 12G APPLICATION GO: YES.** Conditional Phase 12H publication is authorized. |
+| Active item / writer | Documentation-only final GO receipt on `codex/12g-final-go-audit-20260912`; parent `/root` owns review/integration and the exact-SHA Sites release. |
+| Remaining P1 reconciliation | All 12 original P1s CLOSED. Additional `12G-STATE-01` CLOSED. Do not reopen without current-main regression evidence. |
+| Review / validation | BUS-01 source `fcab073` independently APPROVED, source CI `34690998038`, merge `3ff8b4f`, main CI `34691874745`. POL-01 corrected source `eb833e2` independently APPROVED after one REQUIRED wording fix, source CI `34691947129`, merge `0a698e8`, main CI `34692288093`. Integrated local gate: 208 Node / 65 Playwright / 15 accessibility; route audit 16 routes and 37 internal targets with zero failures. |
 | Owner factual confirmation | Lauren confirmed on 2026-09-10 that Carmichael is the business base and public use of client-pet names Blu, Loki, Skylar is approved; see [approved publication facts](../business-reference/guidance/website-publication-approvals.md). No client identity/address disclosure. |
 | Preservation | Original `C:/Dev/CuddleCrewPetCareWEB` remains dirty/stale at `3b443a6d`; no reset/clean/restore/stash/staging/adoption. Preserved prior worktrees remain untouched. |
-| Deployment / external effects | Not deployed. No DNS, indexing, provider, SMS campaign, payment, or PPC mutation. Live Sites indexing was already enabled; Lauren separately approved keeping it enabled on 2026-09-10. Verify robots/sitemap after conditional publication. |
+| Deployment / external effects | Not yet deployed at this audit record. No DNS, provider, SMS campaign, payment, or PPC mutation. Live Sites indexing was already enabled; Lauren separately approved keeping it enabled. Phase 12H must deploy only the final reviewed/audited main descendant and record version, rollback and smoke evidence. |
 
 ## Historical orchestration snapshot — superseded by active sprint state above
 
