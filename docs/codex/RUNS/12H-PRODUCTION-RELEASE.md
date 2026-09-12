@@ -22,4 +22,3 @@ Production smoke passed the canonical and apex hosts, 16 routes, 37 internal tar
 The canonical site and public Privacy, Terms, Contact, Start, Services, Rates and FAQ pages are externally reachable for Lauren's later SMS registration. No SMS campaign was registered and no production message or provider write was sent.
 
 Recovery and complete safe evidence are in [the production deployment record](../../deployments/2026-09-12-phase-12g-go.md). This containing documentation commit is expected to be a post-release repository receipt; it does not change the deployed application tree.
-
