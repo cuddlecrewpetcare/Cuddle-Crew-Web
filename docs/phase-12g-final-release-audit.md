@@ -1,16 +1,77 @@
 # Phase 12G Final Regression / Release Audit / GO-NO-GO
 
-> Status: FINAL AUDIT — APPLICATION NO-GO
+> Status: SUPERSEDING INTEGRATED REAUDIT — APPLICATION GO
 >
-> Audit date: 2026-09-08 (`America/Los_Angeles`)
+> Reaudit date: 2026-09-12 (`America/Los_Angeles`)
 >
-> Audited revision: `d828c972f2018545ffa25bc5c60af783a5de5aad`
+> Audited revision: `0a698e8781362b412747941c8b283a319239be43`
 >
-> Scope: current integrated application; documentation/evidence only
+> Hosted exact-main Validation: [34692288093](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34692288093) — SUCCESS
 >
-> Production launch authorized: **NO**
+> Scope: integrated application and release provenance; documentation/evidence only
+>
+> Production deployment at this audit-record stage: **NOT EXECUTED**
 
-## Executive conclusion
+## Superseding 2026-09-12 integrated reaudit
+
+This section supersedes the 2026-09-08 NO-GO decision preserved below. The original audit remains intact as historical reproduction and severity evidence; its unresolved-state statements no longer describe current `github/main`.
+
+The complete Phase 12G release-blocking remediation series is integrated at exact main `0a698e8781362b412747941c8b283a319239be43`. All twelve original P1 findings and the additionally confirmed `12G-STATE-01` P1 are closed through direct regression evidence, fresh independent review, normal no-ff integration, local merged-main gates, and exact-SHA hosted Validation. The integrated reaudit found zero remaining P0 and zero remaining P1 application defects.
+
+**PHASE 12G APPLICATION GO: YES**
+
+### Final candidate and integrated gate
+
+| Evidence | Result |
+| --- | --- |
+| Exact fetched candidate | `github/main` = `0a698e8781362b412747941c8b283a319239be43` |
+| Candidate commit | Normal no-ff merge `0a698e8781362b412747941c8b283a319239be43`, parents `3ff8b4f2ccbcac99977f66290a47e86132ab6840` and `eb833e27d5d007c8b1817b5e81346b2c6925312e` |
+| Repository gate | Doctor, Git safety, foundation/resources, typecheck, lint, production build, artifact privacy, and current-tree secret scan passed |
+| Node | 208/208 passed; zero failures/skips |
+| Playwright | 65/65 passed; zero failures/skips |
+| Accessibility | All 15 dedicated accessibility cases retained and passed; automated Axe scans found no blocking violation |
+| Secrets/privacy | Current-tree secret scan: zero findings; exact-address, review-reason, session/query, gallery metadata, build-artifact, and prohibited-resource checks passed |
+| Routes/links | 16 public routes and 37 internal targets audited with zero failures; 9 external targets inventoried for Phase 12H checking; missing-route response correctly returned 404 |
+| Hosted Validation | Run [34692288093](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34692288093), exact head `0a698e8781362b412747941c8b283a319239be43`, SUCCESS |
+
+The integrated browser and source audit covered the business-rule, CarePlanner, estimator, persistence, cross-feature, API/degraded-state, route/404, contact/SMS consent, responsive, SEO/canonical/schema, privacy/security, public-claim, asset/performance, link, and build-provenance surfaces listed in the original audit. Fixed and future dates used Pacific business-date semantics. Tests and smoke probes remained synthetic and side-effect safe; no production message, provider write, booking, payment, or deployment occurred.
+
+### P1 closure and exact provenance
+
+| Finding(s) | Direct closure evidence | Reviewed source | Normal no-ff merge | Exact source / merged-main Validation |
+| --- | --- | --- | --- | --- |
+| `12G-CARE-01` | Three dogs remain ordinary; four or more require opaque personalized review without a fabricated surcharge/decline | `e2e47fe7fff5bfc667df5819d831886f9f77af7b` — independently approved, no findings | `156e5db4bd1b8c58d24363e310e2f7c11d73daa1` | [34409155626](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34409155626) / [34442001516](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34442001516) |
+| `12G-CARE-02`, `12G-XF-01`, `12G-XF-02`, `12G-XF-03` | Explicit daytime coverage, exact known composition, unknown composition, opaque review, and new-plan stale-state invalidation each passed its direct handoff regression | `9afdcad2e0353e0aba8965bb1c061ea7db26aace` — independently approved, no REQUIRED findings | `303be467db21040881449c6a799b1d61935b7c25` | [34478563351](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34478563351) / [34479764616](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34479764616) |
+| `12G-CARE-03`, additional `12G-STATE-01` | Fresh, complete, partial, malformed, older and review-required restoration stays incomplete or conservatively reviewed; estimator care review survives reload | `d8a33f0fcb6e093f424002ba82f069ee68687fb4` — independently approved, no REQUIRED or OPTIONAL findings | `113391c4964e33578dd171d8387fff32dd0d22cd` | [34482982668](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34482982668) / [34484045393](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34484045393) |
+| `12G-BUS-02` | Larger dog, bird/fish/exotic, ambiguous and mixed rosters remain in approved scope or opaque review across direct, Planner, handoff, restore, API, copy and print paths | `838c0a642489214b0c78f672642c0e87dfe20fb7` — independently approved, no REQUIRED or OPTIONAL findings | `7a1f8affbbcf8b60b34a7c1e2a217789edc03c86` | [34487177881](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34487177881) / [34488615186](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34488615186) |
+| `12G-EST-01` | Hidden/stale daytime windows cannot create Continuous Care fees; fixed ladders, explicit services and review boundaries remain intact | `bab849526552d7013be7d4b966b605c65b1ffd6b` — independently approved, no REQUIRED or OPTIONAL findings | `1c4956dde47fc5f35b191bbc76e9b7a2f653f56a` | [34490811505](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34490811505) / [34492100008](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34492100008) |
+| `12G-EST-02` | Cat-only Overnight cannot accept a Dog Walk add-on; supported dog/mixed daytime and review-required outputs remain correct | `f977ca8cf8aa391610847aef4e98d1969a676ffb` — independently approved, no REQUIRED or OPTIONAL findings | `683e19dc0109aa7430095d8903a1500077c14f2f` | [34687305405](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34687305405) / [34687817506](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34687817506) |
+| `12G-EST-03` | Passed/partly elapsed visits and started Overnight return opaque all-money-null review; upcoming same-day and Continuous Care anchors remain valid | `85617cc01620866e4588bb6ba87359d85b1de3af` — approved after one REQUIRED test-isolation correction | `d28bda1d6c9a6e4ec3fa82ea67bcfc42ddba674e` | [34689618373](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34689618373) / [34690063110](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34690063110) |
+| `12G-BUS-01` | One/two rabbit Overnight reproductions no longer display, copy, print, restore or return `$0`/`$5`; every monetary field is null while dog `$85`, cat `$80` and supported daytime rates remain valid | `fcab073936603cd8c2e33b7c1bbb57734bf1fefa` — independently approved, no findings | `3ff8b4f2ccbcac99977f66290a47e86132ab6840` | [34690998038](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34690998038) / [34691874745](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34691874745) |
+| `12G-POL-01` | FAQ now states written-receipt control, every ordinary/holiday service-class timing and 0/50/100% ladder, pre-confirmation holiday treatment, discretion and narrow accepted booking-specific exception | `eb833e27d5d007c8b1817b5e81346b2c6925312e` — approved after one REQUIRED holiday-reference-point correction | `0a698e8781362b412747941c8b283a319239be43` | [34691947129](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34691947129) / [34692288093](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34692288093) |
+
+Applicable Business Truth remained the business library README and complete source hierarchy, plus the most-specific `CURRENT / APPROVED` pricing, cancellation, Overnight, acceptance/triage, medication, behavior, custom-scope, holiday, capacity, PPC-pricing and client-explanation references enumerated in the original audit and per-item RUN records. No material approved-source conflict or new business policy was introduced.
+
+### Remaining severity and launch conditions
+
+| Severity | Current items | Disposition |
+| --- | --- | --- |
+| P0 | None | No application blocker |
+| P1 | None | All original and additional confirmed P1s closed |
+| P2 | `12G-EST-04`, `12G-FUNC-02`, `12G-BUS-03`, `12G-PERF-01` | Launchable follow-up work: reviewed/nonfinal same-day modifier detail, clearer same-day checkout validation, fuller payment-timing disclosure, and noncritical lazy gallery-image optimization |
+| P3 | `12G-COPY-01`, `12G-SEO-02`, `12G-PERF-02`, `12G-ASSET-01`, `12G-ASSET-02` | Maintenance/polish |
+
+`12G-FUNC-01` is resolved by merged integer normalization and conservative parser behavior. `12G-SEO-01` and `12G-PRIV-01` are closed by the approved owner evidence in `docs/business-reference/guidance/website-publication-approvals.md`: Carmichael is the approved business base and public use of Blu, Loki and Skylar is approved.
+
+Manual evidence not performed by automation remains honestly outstanding: actual NVDA, physical-device portrait/landscape, manual 200%/400% and text-only zoom, and Windows forced-colors review. Existing process-local service limits, CSP/browser enforcement, optional production-provider configuration, external-link clicks, account recovery, and release rollback checks remain Phase 12H operator/manual conditions rather than newly inflated application defects. Existing PSI logo/certificate assets remain permitted by the owner's release instruction; the current credentials page makes no textual PSI membership/certification claim.
+
+Production publication remains a distinct Phase 12H operation. It was authorized conditionally by the owner after this GO gate but had not been executed when this audit record was written. Indexing was already enabled in Sites and Lauren separately approved keeping it enabled; final publication still must bind a clean release checkout, Sites version, activation, canonical-domain smoke evidence and rollback identity to this exact approved application SHA (or a later documentation-only integration whose application tree is proven identical).
+
+---
+
+## Preserved original audit — 2026-09-08 historical NO-GO
+
+## Original 2026-09-08 executive conclusion — historical
 
 The exact Phase 12F merge still heads `github/main`, installs deterministically, builds, passes all repository-prescribed validation, and has healthy hosted Validation evidence. The release candidate has no identified P0 defect and no P1 security, secret, indexing-gate, accessibility-automation, media-rights, or build-provenance defect.
 
