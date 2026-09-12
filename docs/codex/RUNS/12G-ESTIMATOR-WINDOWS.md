@@ -1,5 +1,11 @@
 # Continuous Care and dependent visit windows
 
+## Parent integration receipt
+
+COMPLETE: source `bab849526552d7013be7d4b966b605c65b1ffd6b`, PR #14. Fresh independent `/root/est01_review` APPROVED with no REQUIRED or OPTIONAL findings; independent 129 Node / 49 browser cases and 2,016 fresh/stale comparisons passed, current secrets zero, clean source and released port. Exact source hosted Validation [34490811505](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34490811505) SUCCESS (196 Node / 59 Playwright).
+
+Normal no-ff merge `1c4956dde47fc5f35b191bbc76e9b7a2f653f56a` has exact parents `7a1f8affbbcf8b60b34a7c1e2a217789edc03c86` and `bab849526552d7013be7d4b966b605c65b1ffd6b`; tree `190385a1d38d080cf62cd6cd06014a28477d9704` equals source and simulation. Complete merged local gate passed, including 59 browser cases (3.1 minutes), with no failures/skips. Artifact 189 files / 10.51 MiB includes the previously documented 11 emitted Geist fonts; no generated source edits. Exact main hosted Validation [34492100008](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34492100008) SUCCESS: 196 Node / 59 Playwright, zero fail/skip. Twelve local synthetic availability throttle warnings safely returned review. Hosted annotation warns pinned checkout/setup actions use deprecated Node 20 action runtimes now forced to Node 24; the independently pinned project Node 22.17.1 check passed. Record action-runtime maintenance separately; no incidental pin upgrade. PR #14 MERGED. Original checkout preserved; no production/provider effect. Four original P1s and fresh final application audit remain required.
+
 ## Assignment and recovery
 
 - WORK_ITEM: `12G-EST-01`; STATUS: IMPLEMENTED; local full gate passed, independent review and exact-source hosted CI pending. Exact base hosted Validation [34488615186](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34488615186) SUCCESS.
