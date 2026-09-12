@@ -2,6 +2,7 @@ import {business} from '../config/business.ts';
 import {businessDate,daysBetween,holidayForDate,shortNoticeKind,zoneForZip} from './business-rules.ts';
 import {sanitizePlannerContext} from './planner-prefill.ts';
 import {requiresSpeciesReview} from './species-scope.ts';
+import {effectiveMiddayService,hasIncompatibleDogWalk} from './estimate-service-selection.ts';
 import type {EstimateInput,EstimateIssue,EstimatePet,EstimateResult,EstimateReviewReason,EstimateService,PetType} from './estimate-types.ts';
 export type {EstimateInput,EstimateIssue,EstimatePet,EstimateResult,EstimateReviewReason,EstimateService,MiddayService,PetType,PublicEstimateResult} from './estimate-types.ts';
 
@@ -18,7 +19,7 @@ const daytimeBase=(service:StandardDaytimeService,household:'dog'|'cat'|'small')
 };
 const continuousBase=(service:ContinuousService)=>service==='continuous24'?business.pricing.continuous24Starting:business.pricing.continuous[Number(service.slice('continuous'.length)) as keyof typeof business.pricing.continuous];
 
-export function validateEstimate(input:EstimateInput):EstimateIssue[]{const issues:EstimateIssue[]=[];if(!input.pets.length)issues.push('pets');if(!input.start||!input.end||input.end<input.start)issues.push('dates');else if(input.start<businessDate(input.now))issues.push('past-date');if(zoneForZip(input.zip).state==='incomplete')issues.push('zip');if(input.service!=='overnight'&&!isContinuousService(input.service)&&!input.blocks.length)issues.push('windows');if(input.service.startsWith('walk')&&input.pets.some(p=>p.type!=='dog'))issues.push('walk-household');return issues;}
+export function validateEstimate(input:EstimateInput):EstimateIssue[]{const issues:EstimateIssue[]=[];if(!input.pets.length)issues.push('pets');if(!input.start||!input.end||input.end<input.start)issues.push('dates');else if(input.start<businessDate(input.now))issues.push('past-date');if(zoneForZip(input.zip).state==='incomplete')issues.push('zip');if(input.service!=='overnight'&&!isContinuousService(input.service)&&!input.blocks.length)issues.push('windows');if(hasIncompatibleDogWalk(input))issues.push('walk-household');return issues;}
 
 export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];result:EstimateResult|null}{
  const issues=validateEstimate(input);if(issues.length)return{issues,result:null};
@@ -29,8 +30,7 @@ export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];r
  const coverageSupported=!overnight||!planner?.overnightDuration||input.blocks.length===0||Boolean(selectedWindow&&selectedWindow.startHour>=business.overnight.endHour&&selectedWindow.endHour+planner.overnightDuration/60<=business.overnight.startHour);
  const speciesReview=requiresSpeciesReview(input.pets.map(p=>p.type));
  if(speciesReview||planner?.reviewRequired||planner?.incomplete||!coverageSupported)return{issues:[],result:{total:null,serviceSubtotal:null,base:null,petFee:null,units:overnight||continuous?dates.length:dates.length*input.blocks.length,holidayFee:null,holidayCount:0,potentialShortFee:null,shortCount:0,sameDayCount:0,travelFee:null,travelTier:input.travelTier,addOn:null,addOnUnits:0,reviewRequired:true,reviewReasons:speciesReview?['unusual-species']:['planner']}};
- // An explicit Planner selection owns the add-on, including selecting none.
- const midday=overnight&&planner?.overnightDuration?(input.blocks.length?`drop${planner.overnightDuration}` as 'drop30'|'drop60'|'drop90':'none'):input.midday;
+ const midday=effectiveMiddayService(input);
  const household=householdSpecies(input.pets),petFee=continuous?0:additionalPetFee(input.pets),units=overnight||continuous?dates.length:dates.length*input.blocks.length;
  const reviewReasons:EstimateReviewReason[]=[];
  if(continuous)reviewReasons.push('continuous-care');
