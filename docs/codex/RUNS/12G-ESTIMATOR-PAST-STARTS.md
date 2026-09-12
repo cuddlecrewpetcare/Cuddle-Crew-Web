@@ -1,5 +1,11 @@
 # Passed service-start handling
 
+## Parent integration receipt
+
+COMPLETE: final source `85617cc01620866e4588bb6ba87359d85b1de3af`, PR #16. First independent review of `94e9bfe` found one REQUIRED test-isolation issue and no product defect; the follow-up commit isolated mixed passed/upcoming windows, active Planner coverage and stale raw Overnight state without changing product code. A second fresh independent reviewer APPROVED `85617cc` with no REQUIRED or OPTIONAL findings. Exact source hosted Validation [34689618373](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34689618373) SUCCESS; 205 Node / 63 Playwright.
+
+Normal no-ff merge `d28bda1d6c9a6e4ec3fa82ea67bcfc42ddba674e` has exact parents `683e19dc0109aa7430095d8903a1500077c14f2f` and `85617cc01620866e4588bb6ba87359d85b1de3af`; tree `536e175c8e42f060898608b45e97060abfef3687` equals source and merge simulation. Merged local gate passed 205 Node, typecheck, lint, build/artifact privacy and 63 Playwright with zero failures/skips; the first E2E invocation encountered only a port collision with a bounded read-only preflight, and the clean rerun passed 63/63. Exact main hosted Validation [34690063110](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34690063110) SUCCESS. Original checkout and production/providers remained untouched. Two original P1s and the final integrated audit remain required.
+
 ## Assignment and recovery
 
 - WORK_ITEM: `12G-EST-03`; STATUS: IMPLEMENTATION AUTHORIZED. Exact final base hosted Validation [34687817506](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34687817506) SUCCESS.

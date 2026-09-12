@@ -29,13 +29,15 @@ export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];r
  const selectedWindow=input.blocks.length===1?business.windows[input.blocks[0]]:undefined;
  const coverageSupported=!overnight||!planner?.overnightDuration||input.blocks.length===0||Boolean(selectedWindow&&selectedWindow.startHour>=business.overnight.endHour&&selectedWindow.endHour+planner.overnightDuration/60<=business.overnight.startHour);
  const speciesReview=requiresSpeciesReview(input.pets.map(p=>p.type));
+ const household=householdSpecies(input.pets),overnightBase=business.pricing.overnight[household],unsupportedOvernight=overnight&&overnightBase===null;
+ const units=overnight||continuous?dates.length:dates.length*input.blocks.length;
  const passedWindowStart=(date:string,index:number)=>{const window=business.windows[index];return Boolean(window&&shortNoticeKind(date,window.startHour,input.now)==='past')};
  const passedStart=overnight
   ?dates.some(date=>shortNoticeKind(date,business.overnight.startHour,input.now,'overnight')==='past'||Boolean(planner?.overnightDuration&&input.blocks.some(index=>passedWindowStart(date,index))))
   :!continuous&&dates.some(date=>input.blocks.some(index=>passedWindowStart(date,index)));
- if(speciesReview||planner?.reviewRequired||planner?.incomplete||!coverageSupported||passedStart)return{issues:[],result:{total:null,serviceSubtotal:null,base:null,petFee:null,units:overnight||continuous?dates.length:dates.length*input.blocks.length,holidayFee:null,holidayCount:0,potentialShortFee:null,shortCount:0,sameDayCount:0,travelFee:null,travelTier:input.travelTier,addOn:null,addOnUnits:0,reviewRequired:true,reviewReasons:speciesReview?['unusual-species']:passedStart?['short-notice']:['planner']}};
+ if(speciesReview||unsupportedOvernight||planner?.reviewRequired||planner?.incomplete||!coverageSupported||passedStart)return{issues:[],result:{total:null,serviceSubtotal:null,base:null,petFee:null,units,holidayFee:null,holidayCount:0,potentialShortFee:null,shortCount:0,sameDayCount:0,travelFee:null,travelTier:input.travelTier,addOn:null,addOnUnits:0,reviewRequired:true,reviewReasons:speciesReview?['unusual-species']:unsupportedOvernight?['small-animal-overnight']:passedStart?['short-notice']:['planner']}};
  const midday=effectiveMiddayService(input);
- const household=householdSpecies(input.pets),petFee=continuous?0:additionalPetFee(input.pets),units=overnight||continuous?dates.length:dates.length*input.blocks.length;
+ const petFee=continuous?0:additionalPetFee(input.pets);
  const reviewReasons:EstimateReviewReason[]=[];
  if(continuous)reviewReasons.push('continuous-care');
  if(input.pets.some(p=>p.complex))reviewReasons.push('complex-care');
@@ -43,10 +45,9 @@ export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];r
  if(!input.travelTier)reviewReasons.push('travel');
  if(input.travelTier==='beyond')reviewReasons.push('travel');
  if(overnight&&input.travelTier&&['extended','farExtended','beyond'].includes(input.travelTier))reviewReasons.push('extended-overnight');
- if(overnight&&household==='small')reviewReasons.push('small-animal-overnight');
  if(capacityPeriod&&dates.length>=7)reviewReasons.push('long-stay');
 
- const base=overnight?(household==='dog'?business.pricing.overnight.dog:household==='cat'?business.pricing.overnight.cat:0):isContinuousService(input.service)?continuousBase(input.service):daytimeBase(input.service as StandardDaytimeService,household);
+ const base=overnight?overnightBase!:isContinuousService(input.service)?continuousBase(input.service):daytimeBase(input.service as StandardDaytimeService,household);
  let addOn=0,addOnPetFee=0,addOnUnits=0;
  if(overnight&&midday!=='none'){
    addOnUnits=dates.length;
