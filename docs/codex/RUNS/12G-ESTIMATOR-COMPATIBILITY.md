@@ -1,5 +1,11 @@
 # Overnight Dog Walk add-on compatibility
 
+## Parent integration receipt
+
+COMPLETE: source `f977ca8cf8aa391610847aef4e98d1969a676ffb`, PR #15. Fresh independent `/root/est02_review` APPROVED with no REQUIRED or OPTIONAL findings; independent validation passed 49 Node / 10 browser cases, typecheck, current secret scan zero and `git diff --check`. Exact source hosted Validation [34687305405](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34687305405) SUCCESS.
+
+Normal no-ff merge `683e19dc0109aa7430095d8903a1500077c14f2f` has exact parents `1c4956dde47fc5f35b191bbc76e9b7a2f653f56a` and `f977ca8cf8aa391610847aef4e98d1969a676ffb`; tree `e6baf6673cde941ca8fd92f065ad093d23c6d001` equals the reviewed source and merge simulation. Complete merged local gate passed 201 Node / 63 Playwright with zero failures/skips, typecheck, lint, build, 189-file / 10.51 MiB artifact privacy, current secret scan zero and all foundation checks. One non-failing Vinext static-image stream warning occurred after a client closed the large Loki JPEG response; gallery and route cases passed. Exact main hosted Validation [34687817506](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34687817506) SUCCESS. PR #15 MERGED; original checkout and all production/providers remained untouched. Three original P1s and the fresh final application audit remain required.
+
 ## Assignment and recovery
 
 - WORK_ITEM: `12G-EST-02`; STATUS: IMPLEMENTATION AUTHORIZED. Exact final base hosted Validation [34492100008](https://github.com/cuddlecrewpetcare/Cuddle-Crew-Web/actions/runs/34492100008) SUCCESS.

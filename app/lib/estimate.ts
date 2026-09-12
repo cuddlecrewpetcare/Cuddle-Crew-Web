@@ -29,7 +29,11 @@ export function calculateEstimate(input:EstimateInput):{issues:EstimateIssue[];r
  const selectedWindow=input.blocks.length===1?business.windows[input.blocks[0]]:undefined;
  const coverageSupported=!overnight||!planner?.overnightDuration||input.blocks.length===0||Boolean(selectedWindow&&selectedWindow.startHour>=business.overnight.endHour&&selectedWindow.endHour+planner.overnightDuration/60<=business.overnight.startHour);
  const speciesReview=requiresSpeciesReview(input.pets.map(p=>p.type));
- if(speciesReview||planner?.reviewRequired||planner?.incomplete||!coverageSupported)return{issues:[],result:{total:null,serviceSubtotal:null,base:null,petFee:null,units:overnight||continuous?dates.length:dates.length*input.blocks.length,holidayFee:null,holidayCount:0,potentialShortFee:null,shortCount:0,sameDayCount:0,travelFee:null,travelTier:input.travelTier,addOn:null,addOnUnits:0,reviewRequired:true,reviewReasons:speciesReview?['unusual-species']:['planner']}};
+ const passedWindowStart=(date:string,index:number)=>{const window=business.windows[index];return Boolean(window&&shortNoticeKind(date,window.startHour,input.now)==='past')};
+ const passedStart=overnight
+  ?dates.some(date=>shortNoticeKind(date,business.overnight.startHour,input.now,'overnight')==='past'||Boolean(planner?.overnightDuration&&input.blocks.some(index=>passedWindowStart(date,index))))
+  :!continuous&&dates.some(date=>input.blocks.some(index=>passedWindowStart(date,index)));
+ if(speciesReview||planner?.reviewRequired||planner?.incomplete||!coverageSupported||passedStart)return{issues:[],result:{total:null,serviceSubtotal:null,base:null,petFee:null,units:overnight||continuous?dates.length:dates.length*input.blocks.length,holidayFee:null,holidayCount:0,potentialShortFee:null,shortCount:0,sameDayCount:0,travelFee:null,travelTier:input.travelTier,addOn:null,addOnUnits:0,reviewRequired:true,reviewReasons:speciesReview?['unusual-species']:passedStart?['short-notice']:['planner']}};
  const midday=effectiveMiddayService(input);
  const household=householdSpecies(input.pets),petFee=continuous?0:additionalPetFee(input.pets),units=overnight||continuous?dates.length:dates.length*input.blocks.length;
  const reviewReasons:EstimateReviewReason[]=[];
